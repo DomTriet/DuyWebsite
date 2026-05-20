@@ -38,4 +38,4 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class AgentCardComponent {
   @Input() agentInfo: any;
-}le 
+}
