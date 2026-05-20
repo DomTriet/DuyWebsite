@@ -132,7 +132,7 @@ export const getProperties = async (req: Request, res: Response, next: NextFunct
     if (project_id) query = query.eq('project_id', project_id);
     if (min_price) query = query.gte('price', min_price);
     if (max_price) query = query.lte('price', max_price);
-    if (search) query = query.ilike('title', `%${search}%`);
+    if (search) query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
 
     // Logic Phân trang (Pagination)
     const pageNum = parseInt(page as string) || 1;
@@ -164,7 +164,7 @@ export const getPropertyBySlug = async (req: Request, res: Response, next: NextF
     
     const { data, error } = await supabase
       .from('properties')
-      .select('*, projects(name, theme_id), categories(name), property_media(media_url, is_thumbnail)')
+      .select('*, projects(name, theme_id), categories(name), property_media(media_url, is_thumbnail), agent:profiles!properties_agent_id_fkey(id, full_name, phone, email, avatar_url)')
       .eq('slug', slug)
       .eq('is_deleted', false)
       .single();

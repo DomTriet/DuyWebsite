@@ -1,0 +1,89 @@
+{
+  "NAVBAR": {
+    "HOME": "首页",
+    "ABOUT": "关于我们",
+    "NEWS": "新闻",
+    "COMMUNITY": "社区",
+    "CONTACT": "联系我们",
+    "LOGIN": "登录",
+    "REGISTER": "注册",
+    "PROFILE": "个人资料"
+  },
+  "HOME": {
+    "HERO_TITLE": "探索豪华房地产",
+    "HERO_DESC": "在我们各种设计风格的顶级项目中寻找您的梦想之家。",
+    "SEARCH_PLACEHOLDER": "关键字，位置...",
+    "MIN_PRICE": "最低价 (₫)",
+    "MAX_PRICE": "最高价 (₫)",
+    "SEARCH_BTN": "搜索房产",
+    "SEARCH_RESULTS": "搜索结果",
+    "FOUND_PROPS": "找到 {{count}} 个匹配的房产。",
+    "FEATURED_PROJECTS": "推荐项目",
+    "EXPLORE_PROJECT": "探索项目"
+  },
+  "THEME": {
+    "LUXURY": {
+      "OVERVIEW": "概述",
+      "COLLECTION": "收藏",
+      "CONTACT": "联系我们",
+      "HERO_SUB": "生活空间的杰作",
+      "EXPLORE_NOW": "立即探索",
+      "ABOUT_TITLE": "繁荣的 <br>象征。",
+      "LISTING_TITLE": "限量收藏",
+      "LISTING_SUB": "专为尊贵业主打造的建筑杰作。",
+      "BEDROOMS": "卧室",
+      "BATHROOMS": "浴室"
+    },
+    "MINIMALIST": {
+      "ABOUT": "关于项目",
+      "LISTING": "房产列表",
+      "HERO_TITLE": "极简生活空间。",
+      "LISTING_TITLE": "可用房产",
+      "LISTING_SUB": "探索项目中的生活空间选项。"
+    },
+    "ECO_GREEN": {
+      "BADGE": "绿色空间 - 宁静生活",
+      "LISTING_TITLE": "推荐产品",
+      "LISTING_SUB": "发现您自己的绿色家园",
+      "ECO_BADGE": "高绿化密度",
+      "BEDROOMS": "卧室"
+    }
+  },
+  "LEAD_FORM": {
+    "TITLE": "获取咨询",
+    "SUCCESS_MSG": "请求已成功发送，我们的顾问将很快与您联系！",
+    "NAME_LABEL": "姓名 *",
+    "NAME_PLACEHOLDER": "例：张三",
+    "NAME_REQUIRED": "请输入您的姓名。",
+    "PHONE_LABEL": "电话号码 *",
+    "PHONE_PLACEHOLDER": "例：0901234567",
+    "PHONE_REQUIRED": "请输入您的电话号码。",
+    "PHONE_INVALID": "电话号码格式无效。",
+    "EMAIL_LABEL": "电子邮件",
+    "EMAIL_PLACEHOLDER": "例：email@example.com",
+    "EMAIL_INVALID": "电子邮件格式无效。",
+    "MESSAGE_LABEL": "留言",
+    "MESSAGE_PLACEHOLDER": "我希望收到详细的报价...",
+    "SUBMIT_BTN": "发送请求",
+    "SUBMITTING_BTN": "发送中..."
+  },
+  "AGENT_CARD": {
+    "TITLE": "房地产顾问",
+    "SUBTITLE": "24/7 全天候支持",
+    "CALL_NOW": "立即致电",
+    "SEND_EMAIL": "发送电子邮件"
+  },
+  "ATTRIBUTES": {
+    "AREA": "面积",
+    "BEDROOMS": "卧室",
+    "BATHROOMS": "浴室",
+    "FLOORS": "楼层",
+    "FRONTAGE": "临街宽度",
+    "STREET_WIDTH": "道路宽度",
+    "BALCONY_DIR": "阳台朝向",
+    "GREEN_DENSITY": "绿化密度",
+    "LANDSCAPE": "景观",
+    "SECURITY": "安保",
+    "VIEW_LAKE": "湖景"
+  }
+}

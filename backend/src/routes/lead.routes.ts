@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { submitLead, getLeads, updateLead, submitAgentRequest, getAgentRequests, updateAgentRequestStatus } from '../controllers/lead.controller';
+import { submitLead, getLeads, updateLead, submitAgentRequest, getAgentRequests, updateAgentRequestStatus, getMyAgentRequestStatus } from '../controllers/lead.controller';
 import { verifyToken } from '../middlewares/auth.middleware';
 import { requireAgentOrAdmin, requireAdmin } from '../middlewares/role.middleware';
 
@@ -17,6 +17,7 @@ router.put('/:id', verifyToken, requireAgentOrAdmin, updateLead);
 // Agent Requests (Member xin làm Môi giới)
 router.post('/agent-requests', verifyToken, submitAgentRequest);
 router.get('/agent-requests', verifyToken, requireAdmin, getAgentRequests);
+router.get('/agent-requests/status', verifyToken, getMyAgentRequestStatus);
 router.put('/agent-requests/:id/status', verifyToken, requireAdmin, updateAgentRequestStatus);
 
 export default router;

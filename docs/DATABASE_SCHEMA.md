@@ -11,6 +11,7 @@ Tài liệu này mô tả chi tiết cấu trúc cơ sở dữ liệu của nề
 *   **projects** `1 - N` **properties**
 *   **categories** `1 - N` **properties**
 *   **properties** `1 - N` **property_media**
+*   **profiles** `1 - N` **favorites** `N - 1` **properties**
 *   **properties** `1 - N` **leads**
 *   **profiles** `1 - N` **properties** *(Người đăng / Agent phụ trách)*
 *   **profiles** `1 - N` **leads** *(Agent chăm sóc Lead)*
@@ -109,6 +110,15 @@ Lưu trữ bài viết tin tức, bài PR dự án.
 *   **`content_blocks` (JSONB):** Mảng lưu trữ các khối giao diện (Text, Hình ảnh, Video, Header) theo chuẩn Block-based Editor. Rất linh hoạt để xây dựng bố cục bài viết.
 *   `status` (TEXT): Trạng thái bài viết (`'draft'`, `'pending'`, `'published'`).
 
+### 2.8. Danh sách Yêu thích (Favorites) (`10_setup_favorites.sql`)
+
+**Bảng `favorites`**
+Lưu trữ danh sách Bất động sản yêu thích (Wishlist) của người dùng.
+*   `id` (UUID, PK)
+*   `user_id` (UUID, FK): Liên kết bảng `profiles`.
+*   `property_id` (UUID, FK): Liên kết bảng `properties`.
+*   `UNIQUE(user_id, property_id)`: Đảm bảo một user chỉ lưu 1 BĐS một lần.
+
 ---
 
 ## 3. Chính sách Bảo mật (Row Level Security - RLS)
@@ -134,3 +144,6 @@ Các chính sách RLS (`07_setup_rls_policies.sql`) đảm bảo an toàn dữ l
 ### Bảng `blogs`
 *   **SELECT (Read):** Public chỉ xem được các bài đã `'published'`. Admin xem được tất cả. Agent xem được bài của mình.
 *   **INSERT / UPDATE / DELETE:** Admin có toàn quyền. Agent chỉ được quyền thao tác trên các bài do chính họ viết (`auth.uid() = author_id`).
+
+### Bảng `favorites`
+*   **Toàn quyền (ALL):** User chỉ có thể thao tác (Thêm/Xem/Xóa) trên danh sách yêu thích của chính họ (`auth.uid() = user_id`).

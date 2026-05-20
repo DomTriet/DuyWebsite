@@ -26,6 +26,30 @@ export const getLeads = async (req: Request, res: Response, next: NextFunction):
 };
 
 /**
+ * Lấy trạng thái yêu cầu đăng ký Agent của User hiện tại
+ */
+export const getMyAgentRequestStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+
+    // Lấy yêu cầu mới nhất của user này, không văng lỗi nếu không có dữ liệu nhờ maybeSingle()
+    const { data, error } = await supabase
+      .from('agent_requests')
+      .select('status')
+      .eq('agent_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    res.status(200).json({ status: 'success', data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Admin duyệt / từ chối yêu cầu làm Môi giới
  */
 export const updateAgentRequestStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

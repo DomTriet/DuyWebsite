@@ -74,7 +74,7 @@ Base URL: `http://localhost:5000/api` (Đổi thành URL thực tế khi lên Pr
   * `page`, `limit`: Dùng cho Phân trang (Mặc định page=1, limit=10).
   * `manage=true`: Thêm cờ này khi gọi từ Admin/Agent Dashboard.
   * `trash=true`: Kết hợp với `manage=true` để lấy danh sách các BĐS đã bị xóa mềm (nằm trong Thùng rác).
-  * `category_id`, `project_id`, `min_price`, `max_price`, `search`: Bộ lọc tìm kiếm.
+  * `category_id`, `project_id`, `min_price`, `max_price`, `search`: Bộ lọc tìm kiếm. Từ khóa `search` sẽ được đối chiếu trong cả Tiêu đề (`title`) và Mô tả (`description`).
 * **Response:** Trả về danh sách `data` (bao gồm thông tin dự án, danh mục, hình ảnh và thông tin chi tiết người môi giới phụ trách trong object `agent: { full_name, phone, email, avatar_url }`) và cấu trúc phân trang `meta: { total, page, limit }`.
 * **Lưu ý Phân quyền:** 
   * Nếu truyền `manage=true` và gọi bởi Role `agent`, hệ thống tự động lọc CHỈ trả về các BĐS do Agent đó tạo (`created_by`) hoặc phụ trách (`agent_id`).
@@ -277,3 +277,19 @@ Base URL: `http://localhost:5000/api` (Đổi thành URL thực tế khi lên Pr
 ### 9.4 Duyệt Blog `[Auth: Admin]`
 * **Endpoint:** `PUT /blogs/:id/approve`
 * **Body (JSON):** `{ "status": "published" }`
+
+---
+
+## 10. Favorites (Danh sách Yêu thích)
+
+### 10.1 Thêm / Bỏ Yêu thích BĐS `[Auth]`
+* **Endpoint:** `POST /favorites/toggle`
+* **Body (JSON):** `{ "property_id": "<uuid>" }`
+
+### 10.2 Lấy danh sách ID Yêu thích `[Auth]`
+* **Endpoint:** `GET /favorites/ids`
+* **Response:** Trả về mảng chứa các UUID của BĐS để Frontend đồng bộ State UI.
+
+### 10.3 Lấy chi tiết BĐS Yêu thích `[Auth]`
+* **Endpoint:** `GET /favorites`
+* **Response:** Trả về danh sách chi tiết BĐS (bao gồm media) để hiển thị trong trang Profile. Hệ thống sẽ tự động lọc ra những BĐS đã bị xóa (`is_deleted = true`).

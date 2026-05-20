@@ -23,6 +23,7 @@ REAL-ESTATE-PLATFORM/
 │   ├── 07_setup_rls_policies.sql     (Row Level Security - Bức tường lửa)
 │   └── 08_setup_logs.sql             (System Logs - Lịch sử thao tác)
 │   └── 09_setup_blogs.sql            (CMS Blog & Layout Builder JSONB)
+│   └── 10_setup_favorites.sql        (Bất động sản Yêu thích)
 │
 ├── ⚙️ backend/                       <-- LỚP BUS (NODE.JS/RAILWAY)
 │   ├── package.json
@@ -53,6 +54,7 @@ REAL-ESTATE-PLATFORM/
 │   │   │   ├── stats.controller.ts
 │   │   │   ├── seo.controller.ts
 │   │   │   ├── upload.controller.ts
+│   │   │   ├── favorite.controller.ts
 │   │   │   ├── log.controller.ts
 │   │   │   └── blog.controller.ts    (CMS Logic)
 │   │   ├── routes/
@@ -79,9 +81,6 @@ REAL-ESTATE-PLATFORM/
 │   │   │   ├── register.component.ts
 │   │   │   ├── forgot-password.component.ts
 │   │   │   └── reset-password.component.ts
-│   │   ├── forum/                (FORUM MODULE - CỘNG ĐỒNG)
-│   │   │   ├── forum-list.component.ts
-│   │   │   └── forum-detail.component.ts
     │   │   ├── admin/                (DASHBOARD MODULE)
     │   │   │   ├── layout/           (Sidebar, Header với role-based logic)
     │   │   │   ├── pages/
@@ -91,11 +90,15 @@ REAL-ESTATE-PLATFORM/
     │   │   │   │   └── translations-manage/ (Side-by-side view)
 │   │   │   │   └── blog-manage/         (CMS Block Editor & Preview)
     │   │   │   └── admin-routing.module.ts
-    │   │   └── themes/               (THEME ENGINE MODULE)
-    │   │       ├── theme.resolver.ts (Fetch theme_id before loading)
-    │   │       ├── luxury/           (Theme Căn hộ cao cấp)
-    │   │       ├── minimalist/       (Theme Nhà phố)
-    │   │       └── eco-green/        (Theme Khu sinh thái)
+│   │   └── guest/                (GUEST / CUSTOMER MODULE)
+│   │       ├── forum/            (Cộng đồng - Diễn đàn)
+│   │       ├── blogs/            (Tin tức - Bài viết CMS)
+│   │       └── themes/           (THEME ENGINE MODULE)
+│   │           ├── theme.resolver.ts
+│   │           ├── theme-container.component.ts
+│   │           ├── luxury/
+│   │           ├── minimalist/
+│   │           └── eco-green/
     │   ├── assets/
     │   │   ├── i18n/                 (vi.json, en.json, zh.json)
     │   │   └── images/

@@ -1,0 +1,89 @@
+{
+  "NAVBAR": {
+    "HOME": "Home",
+    "ABOUT": "About Us",
+    "NEWS": "News",
+    "COMMUNITY": "Community",
+    "CONTACT": "Contact Us",
+    "LOGIN": "Login",
+    "REGISTER": "Register",
+    "PROFILE": "Profile"
+  },
+  "HOME": {
+    "HERO_TITLE": "Discover Luxury Real Estate",
+    "HERO_DESC": "Find your dream home from our top projects with diverse design styles.",
+    "SEARCH_PLACEHOLDER": "Keyword, location...",
+    "MIN_PRICE": "Min Price (₫)",
+    "MAX_PRICE": "Max Price (₫)",
+    "SEARCH_BTN": "SEARCH PROPERTIES",
+    "SEARCH_RESULTS": "Search Results",
+    "FOUND_PROPS": "Found {{count}} matching properties.",
+    "FEATURED_PROJECTS": "Featured Projects",
+    "EXPLORE_PROJECT": "Explore Project"
+  },
+  "THEME": {
+    "LUXURY": {
+      "OVERVIEW": "OVERVIEW",
+      "COLLECTION": "COLLECTION",
+      "CONTACT": "CONTACT",
+      "HERO_SUB": "Masterpiece of living space",
+      "EXPLORE_NOW": "EXPLORE NOW",
+      "ABOUT_TITLE": "Symbol <br>Of Prosperity.",
+      "LISTING_TITLE": "Limited Collection",
+      "LISTING_SUB": "Architectural masterpieces exclusively for worthy owners.",
+      "BEDROOMS": "Beds",
+      "BATHROOMS": "Baths"
+    },
+    "MINIMALIST": {
+      "ABOUT": "About Project",
+      "LISTING": "Property Listing",
+      "HERO_TITLE": "Minimalist Living Space.",
+      "LISTING_TITLE": "Available Properties",
+      "LISTING_SUB": "Explore the living space options at the project."
+    },
+    "ECO_GREEN": {
+      "BADGE": "GREEN SPACE - PEACEFUL LIVING",
+      "LISTING_TITLE": "Featured Products",
+      "LISTING_SUB": "Discover your own green home",
+      "ECO_BADGE": "High green density",
+      "BEDROOMS": "Beds"
+    }
+  },
+  "LEAD_FORM": {
+    "TITLE": "Get a Consultation",
+    "SUCCESS_MSG": "Request sent successfully, our consultant will contact you shortly!",
+    "NAME_LABEL": "Full Name *",
+    "NAME_PLACEHOLDER": "Ex: John Doe",
+    "NAME_REQUIRED": "Please enter your full name.",
+    "PHONE_LABEL": "Phone Number *",
+    "PHONE_PLACEHOLDER": "Ex: 0901234567",
+    "PHONE_REQUIRED": "Please enter your phone number.",
+    "PHONE_INVALID": "Invalid phone format.",
+    "EMAIL_LABEL": "Email",
+    "EMAIL_PLACEHOLDER": "Ex: email@example.com",
+    "EMAIL_INVALID": "Invalid email format.",
+    "MESSAGE_LABEL": "Message",
+    "MESSAGE_PLACEHOLDER": "I would like to receive a detailed quote...",
+    "SUBMIT_BTN": "Send Request",
+    "SUBMITTING_BTN": "Sending..."
+  },
+  "AGENT_CARD": {
+    "TITLE": "Real Estate Agent",
+    "SUBTITLE": "Ready to support 24/7",
+    "CALL_NOW": "Call Now",
+    "SEND_EMAIL": "Send Email"
+  },
+  "ATTRIBUTES": {
+    "AREA": "Area",
+    "BEDROOMS": "Bedrooms",
+    "BATHROOMS": "Bathrooms",
+    "FLOORS": "Floors",
+    "FRONTAGE": "Frontage",
+    "STREET_WIDTH": "Street Width",
+    "BALCONY_DIR": "Balcony Direction",
+    "GREEN_DENSITY": "GREEN DENSITY",
+    "LANDSCAPE": "LANDSCAPE",
+    "SECURITY": "SECURITY",
+    "VIEW_LAKE": "Lake View"
+  }
+}

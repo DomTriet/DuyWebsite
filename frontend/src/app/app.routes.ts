@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { agentGuard } from './core/guards/agent.guard';
+import { authGuard } from './core/guards/auth.guard';
+import { themeResolver } from './themes/theme.resolver';
 
 export const routes: Routes = [
   {
@@ -18,16 +20,60 @@ export const routes: Routes = [
     canActivate: [agentGuard],
     loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
   },
+  // ==========================================
+  // MODULE GUEST: TIN TỨC & CỘNG ĐỒNG
+  // ==========================================
+  {
+    path: 'about',
+    loadComponent: () => import('./guest/about.component').then(m => m.AboutComponent)
+  },
+  {
+    path: 'contact',
+    loadComponent: () => import('./guest/contact.component').then(m => m.ContactComponent)
+  },
+  {
+    path: 'blogs',
+    loadComponent: () => import('./guest/blog-list.component').then(m => m.BlogListComponent)
+  },
+  {
+    path: 'blogs/:slug',
+    loadComponent: () => import('./guest/blog-detail.component').then(m => m.BlogDetailComponent)
+  },
   {
     path: 'forum',
-    loadComponent: () => import('./forum/forum-list.component').then(m => m.ForumListComponent)
+    loadComponent: () => import('./guest/forum-list.component').then(m => m.ForumListComponent)
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./guest/profile.component').then(m => m.ProfileComponent)
+  },
+  {
+    path: 'forum/create',
+    canActivate: [authGuard], // Bất kỳ user nào đã đăng nhập đều được viết bài
+    loadComponent: () => import('./guest/forum-create.component').then(m => m.ForumCreateComponent)
   },
   {
     path: 'forum/:id',
-    loadComponent: () => import('./forum/forum-detail.component').then(m => m.ForumDetailComponent)
+    loadComponent: () => import('./guest/forum-detail.component').then(m => m.ForumDetailComponent)
   },
-  // Redirect trang chủ về thẳng trang login
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
-  // Bắt các route không tồn tại (404 Error) và đẩy về login
-  { path: '**', redirectTo: 'auth/login' }
+  // ==========================================
+  // MODULE THEME ENGINE: DỰ ÁN & BẤT ĐỘNG SẢN
+  // ==========================================
+  {
+    path: 'project/:id',
+    resolve: { theme: themeResolver },
+    loadComponent: () => import('./themes/theme-container.component').then(m => m.ThemeContainerComponent)
+  },
+  {
+    path: 'project/:id/property/:slug',
+    resolve: { theme: themeResolver },
+    loadComponent: () => import('./themes/theme-property-container.component').then(m => m.ThemePropertyContainerComponent)
+  },
+  // Global Home Page
+  {
+    path: '',
+    loadComponent: () => import('./guest/home.component').then(m => m.HomeComponent),
+    pathMatch: 'full'
+  },
+  { path: '**', redirectTo: '' }
 ];

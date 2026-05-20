@@ -1,0 +1,89 @@
+{
+  "NAVBAR": {
+    "HOME": "Trang chủ",
+    "ABOUT": "Giới thiệu",
+    "NEWS": "Tin tức",
+    "COMMUNITY": "Cộng đồng",
+    "CONTACT": "Liên hệ",
+    "LOGIN": "Đăng nhập",
+    "REGISTER": "Đăng ký",
+    "PROFILE": "Hồ sơ cá nhân"
+  },
+  "HOME": {
+    "HERO_TITLE": "Khám Phá Bất Động Sản Đẳng Cấp",
+    "HERO_DESC": "Tìm kiếm ngôi nhà mơ ước của bạn từ các dự án hàng đầu của chúng tôi với đa dạng phong cách thiết kế.",
+    "SEARCH_PLACEHOLDER": "Từ khóa, khu vực...",
+    "MIN_PRICE": "Giá thấp nhất (₫)",
+    "MAX_PRICE": "Giá cao nhất (₫)",
+    "SEARCH_BTN": "TÌM KIẾM BĐS",
+    "SEARCH_RESULTS": "Kết quả tìm kiếm",
+    "FOUND_PROPS": "Tìm thấy {{count}} bất động sản phù hợp.",
+    "FEATURED_PROJECTS": "Dự Án Nổi Bật",
+    "EXPLORE_PROJECT": "Khám phá dự án"
+  },
+  "THEME": {
+    "LUXURY": {
+      "OVERVIEW": "TỔNG QUAN",
+      "COLLECTION": "BỘ SƯU TẬP",
+      "CONTACT": "LIÊN HỆ",
+      "HERO_SUB": "Tuyệt tác không gian sống",
+      "EXPLORE_NOW": "KHÁM PHÁ NGAY",
+      "ABOUT_TITLE": "Biểu tượng <br>Của sự thịnh vượng.",
+      "LISTING_TITLE": "Bộ Sưu Tập Giới Hạn",
+      "LISTING_SUB": "Những tuyệt tác kiến trúc dành riêng cho chủ nhân xứng tầm.",
+      "BEDROOMS": "PN",
+      "BATHROOMS": "WC"
+    },
+    "MINIMALIST": {
+      "ABOUT": "Về dự án",
+      "LISTING": "Danh sách sản phẩm",
+      "HERO_TITLE": "Không Gian Sống Tối Giản.",
+      "LISTING_TITLE": "Sản phẩm hiện có",
+      "LISTING_SUB": "Khám phá các lựa chọn không gian sống tại dự án."
+    },
+    "ECO_GREEN": {
+      "BADGE": "KHÔNG GIAN XANH - SỐNG AN LÀNH",
+      "LISTING_TITLE": "Sản phẩm nổi bật",
+      "LISTING_SUB": "Khám phá tổ ấm xanh của riêng bạn",
+      "ECO_BADGE": "Mật độ xanh cao",
+      "BEDROOMS": "Ngủ"
+    }
+  },
+  "LEAD_FORM": {
+    "TITLE": "Nhận tư vấn ngay",
+    "SUCCESS_MSG": "Đã gửi yêu cầu thành công, chuyên viên tư vấn sẽ sớm liên hệ bạn!",
+    "NAME_LABEL": "Họ và tên *",
+    "NAME_PLACEHOLDER": "VD: Nguyễn Văn A",
+    "NAME_REQUIRED": "Vui lòng nhập họ tên.",
+    "PHONE_LABEL": "Số điện thoại *",
+    "PHONE_PLACEHOLDER": "VD: 0901234567",
+    "PHONE_REQUIRED": "Vui lòng nhập số điện thoại.",
+    "PHONE_INVALID": "Số điện thoại không hợp lệ (Ví dụ: 09x, 03x, 08x).",
+    "EMAIL_LABEL": "Email",
+    "EMAIL_PLACEHOLDER": "VD: email@example.com",
+    "EMAIL_INVALID": "Email không hợp lệ.",
+    "MESSAGE_LABEL": "Lời nhắn",
+    "MESSAGE_PLACEHOLDER": "Tôi muốn nhận báo giá chi tiết...",
+    "SUBMIT_BTN": "Gửi yêu cầu",
+    "SUBMITTING_BTN": "Đang gửi..."
+  },
+  "AGENT_CARD": {
+    "TITLE": "Chuyên viên tư vấn",
+    "SUBTITLE": "Sẵn sàng hỗ trợ 24/7",
+    "CALL_NOW": "Gọi ngay",
+    "SEND_EMAIL": "Gửi Email"
+  },
+  "ATTRIBUTES": {
+    "AREA": "Diện tích",
+    "BEDROOMS": "Phòng ngủ",
+    "BATHROOMS": "Phòng tắm",
+    "FLOORS": "Số tầng",
+    "FRONTAGE": "Mặt tiền",
+    "STREET_WIDTH": "Lộ giới",
+    "BALCONY_DIR": "Hướng ban công",
+    "GREEN_DENSITY": "MẬT ĐỘ XANH",
+    "LANDSCAPE": "CẢNH QUAN",
+    "SECURITY": "AN NINH",
+    "VIEW_LAKE": "View Hồ"
+  }
+}

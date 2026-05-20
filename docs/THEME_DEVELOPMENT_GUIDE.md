@@ -1,17 +1,17 @@
 # 🎨 HƯỚNG DẪN PHÁT TRIỂN THEME (THEME DEVELOPMENT GUIDE)
 
-Tài liệu này hướng dẫn các Frontend Developer cách tạo mới, cấu hình và tích hợp một Theme hoàn toàn mới vào hệ thống Multi-Theme Engine của dự án Pro-RealEstate bằng Angular.
+Tài liệu này hướng dẫn các Frontend Developer cách tạo mới, cấu hình và tích hợp một Theme hoàn toàn mới vào hệ thống **Multi-Theme Engine** của dự án Pro-RealEstate. Dự án sử dụng kiến trúc **Angular Standalone Components**, giúp việc tạo và tích hợp Theme trở nên cực kỳ đơn giản.
 
 ## 1. Cơ chế hoạt động của Theme Engine
 Hệ thống nhận diện giao diện thông qua `theme_id` của bảng Dự án (Projects). 
-Khi khách hàng truy cập một dự án, Angular sẽ gọi API lấy thông tin và dùng Lazy Loading để nạp đúng Module giao diện tương ứng (Ví dụ: `luxury.module.ts` hoặc `eco-green.module.ts`), giúp tối ưu tốc độ tải trang vì không nạp CSS/JS dư thừa.
+Khi khách hàng truy cập một dự án, Angular Resolver sẽ gọi API lấy thông tin và dùng **Dynamic Component Loading** để nạp đúng Component giao diện tương ứng (Ví dụ: `LuxuryComponent` hoặc `EcoGreenComponent`), giúp tối ưu tốc độ tải trang vì không nạp CSS/JS dư thừa.
 
 ## 2. Các bước khởi tạo một Theme mới
 
-### Bước 1: Tạo Module và Component
-Sử dụng Angular CLI để tạo lazy module:
+### Bước 1: Tạo Standalone Component cho Theme
+Sử dụng Angular CLI để tạo một Component độc lập mới trong thư mục `frontend/src/app/guest/themes/`:
 ```bash
-ng generate module themes/my-new-theme --route my-new-theme --module app-routing.module
+ng generate component guest/themes/my-new-theme --standalone
 ```
 
 ### Bước 2: Thiết lập SCSS Variables (Biến màu sắc)

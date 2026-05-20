@@ -19,6 +19,30 @@ export const getProjects = async (req: Request, res: Response, next: NextFunctio
 };
 
 /**
+ * Lấy chi tiết 1 dự án theo ID
+ */
+export const getProjectById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id } = req.params;
+    
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      res.status(404).json({ status: 'error', message: 'Project not found' });
+      return;
+    }
+
+    res.status(200).json({ status: 'success', data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Tạo mới dự án
  */
 export const createProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

@@ -12,6 +12,7 @@ import logRoutes from './log.routes';
 import statsRoutes from './stats.routes';
 import seoRoutes from './seo.routes';
 import blogRoutes from './blog.routes';
+import favoriteRoutes from './favorite.routes';
 
 const router = Router();
 
@@ -27,5 +28,6 @@ router.use('/logs', logRoutes);
 router.use('/stats', statsRoutes);
 router.use('/seo', seoRoutes);
 router.use('/blogs', blogRoutes);
+router.use('/favorites', favoriteRoutes);
 
 export default router;

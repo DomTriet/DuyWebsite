@@ -1,0 +1,89 @@
+{
+  "NAVBAR": {
+    "HOME": "홈",
+    "ABOUT": "회사 소개",
+    "NEWS": "뉴스",
+    "COMMUNITY": "커뮤니티",
+    "CONTACT": "연락처",
+    "LOGIN": "로그인",
+    "REGISTER": "회원가입",
+    "PROFILE": "프로필"
+  },
+  "HOME": {
+    "HERO_TITLE": "럭셔리 부동산 탐색",
+    "HERO_DESC": "다양한 디자인 스타일의 최고 프로젝트에서 꿈의 집을 찾아보세요.",
+    "SEARCH_PLACEHOLDER": "키워드, 위치...",
+    "MIN_PRICE": "최저가 (₫)",
+    "MAX_PRICE": "최고가 (₫)",
+    "SEARCH_BTN": "부동산 검색",
+    "SEARCH_RESULTS": "검색 결과",
+    "FOUND_PROPS": "{{count}}개의 일치하는 부동산을 찾았습니다.",
+    "FEATURED_PROJECTS": "추천 프로젝트",
+    "EXPLORE_PROJECT": "프로젝트 탐색"
+  },
+  "THEME": {
+    "LUXURY": {
+      "OVERVIEW": "개요",
+      "COLLECTION": "컬렉션",
+      "CONTACT": "연락처",
+      "HERO_SUB": "생활 공간의 걸작",
+      "EXPLORE_NOW": "지금 탐색",
+      "ABOUT_TITLE": "번영의 <br>상징.",
+      "LISTING_TITLE": "한정 컬렉션",
+      "LISTING_SUB": "가치 있는 소유자만을 위한 건축 명작.",
+      "BEDROOMS": "침실",
+      "BATHROOMS": "욕실"
+    },
+    "MINIMALIST": {
+      "ABOUT": "프로젝트 소개",
+      "LISTING": "부동산 목록",
+      "HERO_TITLE": "미니멀리스트 생활 공간.",
+      "LISTING_TITLE": "이용 가능한 부동산",
+      "LISTING_SUB": "프로젝트의 생활 공간 옵션을 탐색하세요."
+    },
+    "ECO_GREEN": {
+      "BADGE": "녹색 공간 - 평화로운 삶",
+      "LISTING_TITLE": "추천 상품",
+      "LISTING_SUB": "나만의 녹색 집 발견",
+      "ECO_BADGE": "높은 녹지 밀도",
+      "BEDROOMS": "침실"
+    }
+  },
+  "LEAD_FORM": {
+    "TITLE": "상담 받기",
+    "SUCCESS_MSG": "요청이 성공적으로 전송되었습니다. 상담원이 곧 연락드릴 것입니다!",
+    "NAME_LABEL": "성명 *",
+    "NAME_PLACEHOLDER": "예: 홍길동",
+    "NAME_REQUIRED": "성명을 입력해주세요.",
+    "PHONE_LABEL": "전화번호 *",
+    "PHONE_PLACEHOLDER": "예: 0901234567",
+    "PHONE_REQUIRED": "전화번호를 입력해주세요.",
+    "PHONE_INVALID": "잘못된 전화번호 형식입니다.",
+    "EMAIL_LABEL": "이메일",
+    "EMAIL_PLACEHOLDER": "예: email@example.com",
+    "EMAIL_INVALID": "잘못된 이메일 형식입니다.",
+    "MESSAGE_LABEL": "메시지",
+    "MESSAGE_PLACEHOLDER": "자세한 견적을 받고 싶습니다...",
+    "SUBMIT_BTN": "요청 보내기",
+    "SUBMITTING_BTN": "전송 중..."
+  },
+  "AGENT_CARD": {
+    "TITLE": "부동산 중개인",
+    "SUBTITLE": "연중무휴 24시간 지원",
+    "CALL_NOW": "지금 전화하기",
+    "SEND_EMAIL": "이메일 보내기"
+  },
+  "ATTRIBUTES": {
+    "AREA": "면적",
+    "BEDROOMS": "침실",
+    "BATHROOMS": "욕실",
+    "FLOORS": "층수",
+    "FRONTAGE": "전면",
+    "STREET_WIDTH": "도로 너비",
+    "BALCONY_DIR": "발코니 방향",
+    "GREEN_DENSITY": "녹지 밀도",
+    "LANDSCAPE": "조경",
+    "SECURITY": "보안",
+    "VIEW_LAKE": "호수 전망"
+  }
+}
