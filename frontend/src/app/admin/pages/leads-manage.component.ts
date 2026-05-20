@@ -8,53 +8,53 @@ import { ApiService } from '../../core/services/api.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="max-w-7xl mx-auto mt-4">
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Quản lý Khách hàng (Leads)</h2>
-        <p class="text-gray-500 text-sm mt-1">Theo dõi, cập nhật trạng thái và ghi chú cho khách hàng.</p>
+    <div>
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-black text-gray-900">Quản lý khách hàng</h1>
+        <p class="text-gray-600 mt-2">Theo dõi và cập nhật thông tin khách hàng (Leads)</p>
       </div>
 
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
+          <table class="w-full text-left">
             <thead>
-              <tr class="bg-gray-50 border-b border-gray-100 text-gray-500 text-xs uppercase tracking-wider">
-                <th class="px-6 py-4 font-semibold">Khách hàng</th>
-                <th class="px-6 py-4 font-semibold">BĐS Quan tâm</th>
-                <th class="px-6 py-4 font-semibold">Ghi chú nội bộ</th>
-                <th class="px-6 py-4 font-semibold">Trạng thái</th>
-                <th class="px-6 py-4 font-semibold text-right">Lưu</th>
+              <tr class="bg-gray-50 border-b border-gray-200">
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm">Khách hàng</th>
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm">Bất động sản quan tâm</th>
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm">Ghi chú</th>
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm">Trạng thái</th>
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm text-right">Lưu</th>
               </tr>
             </thead>
             
-            <tbody *ngIf="isLoading" class="divide-y divide-gray-100">
-              <tr *ngFor="let i of [1,2,3]" class="animate-pulse">
-                <td class="px-6 py-4"><div class="h-10 bg-gray-200 rounded w-full"></div></td>
-                <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-24"></div></td>
-                <td class="px-6 py-4"><div class="h-8 bg-gray-200 rounded w-full"></div></td>
-                <td class="px-6 py-4"><div class="h-8 bg-gray-200 rounded w-24"></div></td>
-                <td class="px-6 py-4"><div class="h-8 bg-gray-200 rounded w-16 ml-auto"></div></td>
+            <tbody *ngIf="isLoading" class="divide-y divide-gray-200">
+              <tr *ngFor="let i of [1,2,3]" class="hover:bg-gray-50/50 animate-pulse">
+                <td class="px-6 py-4"><div class="h-10 bg-gray-200 rounded-lg w-full"></div></td>
+                <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-32"></div></td>
+                <td class="px-6 py-4"><div class="h-16 bg-gray-200 rounded-lg w-full"></div></td>
+                <td class="px-6 py-4"><div class="h-8 bg-gray-200 rounded-lg w-24"></div></td>
+                <td class="px-6 py-4"><div class="h-8 bg-gray-200 rounded-lg w-16 ml-auto"></div></td>
               </tr>
             </tbody>
 
-            <tbody *ngIf="!isLoading && leads.length === 0">
+            <tbody *ngIf="!isLoading && leads.length === 0" class="divide-y divide-gray-200">
               <tr>
-                <td colspan="5" class="px-6 py-12 text-center text-gray-500">Chưa có khách hàng nào.</td>
+                <td colspan="5" class="px-6 py-12 text-center text-gray-500">Chưa có khách hàng nào</td>
               </tr>
             </tbody>
 
-            <tbody *ngIf="!isLoading && leads.length > 0" class="divide-y divide-gray-100">
-              <tr *ngFor="let lead of leads" class="hover:bg-gray-50 transition-colors">
+            <tbody *ngIf="!isLoading && leads.length > 0" class="divide-y divide-gray-200">
+              <tr *ngFor="let lead of leads" class="hover:bg-gray-50/50 transition-colors">
                 <td class="px-6 py-4">
-                  <p class="text-sm font-semibold text-gray-800">{{ lead.customer_name }}</p>
-                  <p class="text-xs text-gray-500">{{ lead.customer_phone || 'Không có SĐT' }} | {{ lead.customer_email || 'Không có Email' }}</p>
-                  <p class="text-xs text-gray-400 mt-1 italic max-w-xs truncate" [title]="lead.message">"{{ lead.message }}"</p>
+                  <p class="text-sm font-bold text-gray-900">{{ lead.customer_name }}</p>
+                  <p class="text-xs text-gray-600">{{ lead.customer_phone || '-' }} • {{ lead.customer_email || '-' }}</p>
                 </td>
-                <td class="px-6 py-4 text-sm text-indigo-600 font-medium">
-                  {{ lead.properties?.title || 'Không rõ/Đã xóa' }}
+                <td class="px-6 py-4 text-sm text-indigo-600 font-bold">
+                  {{ lead.properties?.title || '(Đã xóa)' }}
                 </td>
                 <td class="px-6 py-4">
-                  <textarea [(ngModel)]="lead.notes" rows="2" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none" placeholder="Thêm ghi chú..."></textarea>
+                  <textarea [(ngModel)]="lead.notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none" placeholder="Ghi chú..."></textarea>
                 </td>
                 <td class="px-6 py-4">
                   <select [(ngModel)]="lead.status" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-600 outline-none">
