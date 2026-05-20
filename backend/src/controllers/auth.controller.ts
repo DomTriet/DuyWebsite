@@ -26,6 +26,17 @@ export const register = async (req: Request, res: Response, next: NextFunction):
       return;
     }
 
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('app_notification', {
+        type: 'new_user',
+        targetRoles: ['admin'],
+        title: 'Thành viên mới',
+        message: `${full_name || email} vừa đăng ký tài khoản hệ thống.`,
+        link: '/admin/users'
+      });
+    }
+
     res.status(201).json({ 
       status: 'success', 
       message: 'Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.',

@@ -150,6 +150,17 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
 
     if (userId) await logAction(userId, 'CREATE_FORUM_POST', `Created post (Pending): ${censoredTitle}`);
 
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('app_notification', {
+        type: 'new_post',
+        targetRoles: ['admin'],
+        title: 'Bài viết cộng đồng mới',
+        message: `Có một bài viết mới đang chờ được duyệt.`,
+        link: '/admin/forum-approval'
+      });
+    }
+
     res.status(201).json({ 
       status: 'success', 
       message: 'Bài viết đã được gửi và đang chờ Ban Quản Trị kiểm duyệt.',
@@ -195,6 +206,20 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
 
     const { data: comment, error } = await supabase.from('forum_comments').insert([{ post_id: postId, content: censorContent(content), author_id: userId, status: 'approved' }]).select().single();
     if (error) throw error;
+
+    // Báo cho tác giả bài viết
+    const { data: post } = await supabase.from('forum_posts').select('author_id, title').eq('id', postId).single();
+    const io = req.app.get('io');
+    if (io && post?.author_id && post.author_id !== userId) {
+      io.emit('app_notification', {
+        type: 'new_comment',
+        targetUserId: post.author_id,
+        title: 'Bình luận mới',
+        message: `Có người vừa bình luận vào bài viết "${post.title}" của bạn.`,
+        link: `/forum/${postId}`
+      });
+    }
+
     res.status(201).json({ status: 'success', data: comment });
   } catch (error) {
     next(error);
@@ -235,6 +260,20 @@ export const toggleReaction = async (req: Request, res: Response, next: NextFunc
       res.status(200).json({ status: 'success', message: 'Đã bỏ thích bài viết' });
     } else {
       await supabase.from('forum_reactions').insert([{ post_id: postId, user_id: userId }]);
+
+      // Báo cho tác giả bài viết
+      const { data: post } = await supabase.from('forum_posts').select('author_id, title').eq('id', postId).single();
+      const io = req.app.get('io');
+      if (io && post?.author_id && post.author_id !== userId) {
+        io.emit('app_notification', {
+          type: 'new_reaction',
+          targetUserId: post.author_id,
+          title: 'Lượt thích mới',
+          message: `Có người vừa thích bài viết "${post.title}" của bạn.`,
+          link: `/forum/${postId}`
+        });
+      }
+
       res.status(201).json({ status: 'success', message: 'Đã thích bài viết' });
     }
   } catch (error) {
@@ -259,6 +298,18 @@ export const reportPost = async (req: Request, res: Response, next: NextFunction
     }
 
     await supabase.from('forum_reports').insert([{ post_id: postId, reporter_id: userId, reason }]);
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('app_notification', {
+        type: 'new_report',
+        targetRoles: ['admin'],
+        title: 'Báo cáo vi phạm mới',
+        message: `Một bài viết vừa bị báo cáo với lý do: ${reason}`,
+        link: '/admin/forum-approval'
+      });
+    }
+
     res.status(201).json({ status: 'success', message: 'Đã gửi báo cáo vi phạm. Admin sẽ xem xét.' });
   } catch (error) {
     next(error);
