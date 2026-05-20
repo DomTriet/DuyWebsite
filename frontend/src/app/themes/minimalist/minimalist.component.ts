@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FavoriteService } from '../../core/services/favorite.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-minimalist-theme',
@@ -96,85 +97,9 @@ import { FavoriteService } from '../../core/services/favorite.service';
     <div class="min-h-screen bg-white text-gray-900 pb-24">
       
       <!-- Minimalist Navigation -->
-      <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 px-6 py-4">
+      <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-          <div class="text-2xl font-black tracking-tight text-gray-900">MINIMAL</div>
-          <div class="hidden md:flex gap-12 items-center text-sm font-medium">
-            <a routerLink="/" class="text-gray-600 hover:text-gray-900 transition-colors">Home</a>
-            <a routerLink="/about" class="text-gray-600 hover:text-gray-900 transition-colors">About</a>
-            <a routerLink="/blogs" class="text-gray-600 hover:text-gray-900 transition-colors">Blog</a>
-            <a routerLink="/contact" class="text-gray-600 hover:text-gray-900 transition-colors">Contact</a>
-          </div>
-          <app-language-selector></app-language-selector>
-        </div>
-      </nav>
-
-      <!-- Hero Section -->
-      <section class="py-24 px-6 text-center border-b border-gray-100">
-        <h1 class="text-6xl md:text-7xl font-black text-gray-900 mb-6 tracking-tight">{{ project?.name || 'Minimalist Living' }}</h1>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">{{ project?.description }}</p>
-      </section>
-
-      <!-- Main Content -->
-      <div class="max-w-7xl mx-auto px-6 py-20">
-        <!-- Listing Header -->
-        <div class="mb-16">
-          <h2 class="text-4xl font-black text-gray-900 mb-2">Properties</h2>
-          <div class="w-12 h-1 bg-gray-900"></div>
-        </div>
-
-        <!-- Loading State -->
-        <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div *ngFor="let i of [1,2,3,4,5,6]" class="bg-gray-100 h-80 rounded-lg animate-pulse"></div>
-        </div>
-
-        <!-- Properties Grid -->
-        <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div 
-            *ngFor="let prop of properties; let i = index" 
-            class="group border border-gray-200 overflow-hidden hover:border-gray-900 transition-all duration-300"
-            [style.animation]="'fadeInUp 0.5s ease-out ' + (i * 0.05) + 's backwards'">
-            
-            <!-- Image -->
-            <a [routerLink]="['/project', project?.id || prop.project_id, 'property', prop.slug]" class="block h-64 overflow-hidden bg-gray-100">
-              <img [src]="getThumbnail(prop)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            </a>
-
-            <!-- Content -->
-            <div class="p-8">
-              <a [routerLink]="['/project', project?.id || prop.project_id, 'property', prop.slug]">
-                <h3 class="text-lg font-bold text-gray-900 group-hover:text-gray-600 transition-colors line-clamp-2 mb-3">{{ prop.title }}</h3>
-              </a>
-              <p class="text-sm text-gray-600 line-clamp-2 mb-6">{{ prop.description }}</p>
-              
-              <!-- Price -->
-              <div class="text-2xl font-black text-gray-900 mb-6">{{ prop.price | number }} ₫</div>
-
-              <!-- Specs -->
-              <div class="space-y-2 text-sm">
-                <div *ngIf="prop.attributes?.area" class="flex justify-between">
-                  <span class="text-gray-600">Area</span>
-                  <span class="font-semibold text-gray-900">{{ prop.attributes.area }} m²</span>
-                </div>
-                <div *ngIf="prop.attributes?.bedrooms" class="flex justify-between">
-                  <span class="text-gray-600">Bedrooms</span>
-                  <span class="font-semibold text-gray-900">{{ prop.attributes.bedrooms }}</span>
-                </div>
-              </div>
-
-              <!-- Favorite button -->
-              <button (click)="toggleFav($event, prop.id)" class="mt-6 w-full py-2 border border-gray-200 hover:border-gray-900 text-gray-900 font-semibold rounded transition-all">
-                {{ isFav(prop.id) ? '★ Favorited' : '☆ Add to Favorites' }}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Empty State -->
-        <div *ngIf="!isLoading && properties.length === 0" class="text-center py-20">
-          <p class="text-gray-600 text-lg mb-4">No properties available</p>
-        </div>
-      </div>
+          <div class="text-2xl font-black tracking-tight text-gray-900">
           {{ (project?.name || 'MINIMALIST') | uppercase }}.
         </div>
         <nav class="hidden md:flex gap-12 items-center text-sm font-medium text-gray-600">
@@ -184,6 +109,7 @@ import { FavoriteService } from '../../core/services/favorite.service';
           <a routerLink="/contact" class="minimalist-underline hover:text-gray-900 transition-colors">{{ 'NAVBAR.CONTACT' | translate }}</a>
           <app-language-selector></app-language-selector>
         </nav>
+        </div>
       </header>
 
       <!-- Whitespace-Focused Hero Section -->
@@ -289,12 +215,13 @@ export class MinimalistComponent implements OnInit {
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
   private favoriteService = inject(FavoriteService);
+  private destroyRef = inject(DestroyRef);
   properties: any[] = [];
   isLoading = true;
 
   ngOnInit() {
     const endpoint = this.project?.id ? `/properties?project_id=${this.project.id}` : '/properties';
-    this.api.get<any>(endpoint).subscribe({
+    this.api.get<any>(endpoint).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => { this.properties = res.data || []; this.isLoading = false; this.cdr.markForCheck(); },
       error: () => { this.isLoading = false; this.cdr.markForCheck(); }
     });

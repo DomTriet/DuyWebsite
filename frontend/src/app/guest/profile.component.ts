@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, PLATFORM_ID, DestroyRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { ApiService } from '../core/services/api.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-profile',
@@ -148,6 +149,7 @@ export class ProfileComponent implements OnInit {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
+  private destroyRef = inject(DestroyRef);
 
   profile: any = null;
   isLoading = true;
@@ -168,14 +170,14 @@ export class ProfileComponent implements OnInit {
         return;
       }
 
-      this.api.get<any>('/profiles/me').subscribe({
+      this.api.get<any>('/profiles/me').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res) => {
           this.profile = res.data;
           this.profileForm.patchValue({ full_name: this.profile?.full_name, phone: this.profile?.phone });          
 
           // [NÂNG CẤP] Lấy trạng thái yêu cầu làm Agent trực tiếp từ Database
           if (this.profile?.role === 'member') {
-            this.api.get<any>(`/leads/agent-requests/status`).subscribe(reqStatus => {
+            this.api.get<any>(`/leads/agent-requests/status`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(reqStatus => {
               if (reqStatus.data) {
                 this.agentRequestStatus = reqStatus.data.status;
                 if (this.agentRequestStatus !== 'approved') {
@@ -187,7 +189,7 @@ export class ProfileComponent implements OnInit {
           }
           
           // Lấy danh sách BĐS yêu thích
-          this.api.get<any>('/favorites').subscribe(favRes => {
+          this.api.get<any>('/favorites').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(favRes => {
             this.favoriteProperties = favRes.data || [];
             this.cdr.detectChanges();
           });
@@ -202,7 +204,7 @@ export class ProfileComponent implements OnInit {
 
   updateProfile() {
     this.isSaving = true;
-    this.api.put<any>('/profiles/me', this.profileForm.value).subscribe({
+    this.api.put<any>('/profiles/me', this.profileForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => { 
         // Fallback giữ nguyên dữ liệu trên UI nếu API không trả về res.data
         if (res.data) { this.profile = res.data; }
@@ -219,7 +221,7 @@ export class ProfileComponent implements OnInit {
   submitAgentRequest() {
     if (this.agentForm.invalid) return;
     this.isRequesting = true;
-    this.api.post<any>('/leads/agent-requests', { request_data: this.agentForm.value }).subscribe({
+    this.api.post<any>('/leads/agent-requests', { request_data: this.agentForm.value }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => { 
         this.isRequesting = false; 
         this.requestSubmitted = true; 
@@ -230,7 +232,7 @@ export class ProfileComponent implements OnInit {
   }
 
   logout() {
-    this.api.post('/auth/logout', {}).subscribe({ next: () => this.clearSession(), error: () => this.clearSession() });
+    this.api.post('/auth/logout', {}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ next: () => this.clearSession(), error: () => this.clearSession() });
   }
   
   clearSession() {

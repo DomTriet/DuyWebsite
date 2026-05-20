@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { SocketService } from '../../core/services/socket.service';
 import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dashboard',
@@ -148,34 +149,48 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private socketService = inject(SocketService);
   private cdr = inject(ChangeDetectorRef);
+  private platformId = inject(PLATFORM_ID);
+  private destroyRef = inject(DestroyRef);
 
   stats: any = null;
   isLoading = true;
   hasNewLead = false;
   private socketSub?: Subscription;
 
-  get isAdmin() { return this.authService.currentUser?.role === 'admin'; }
+  get isAdmin() {
+    if (isPlatformBrowser(this.platformId)) {
+      return this.authService.currentUser?.role === 'admin';
+    }
+    return false;
+  }
 
   ngOnInit() {
-    this.api.get<any>('/stats').subscribe({
-      next: (res) => {
-        this.stats = res.data || res;
-        this.isLoading = false;
-        this.cdr.detectChanges(); // Ép Angular cập nhật giao diện
-      },
-      error: (err) => {
-        console.error('Lỗi khi tải dữ liệu thống kê:', err);
-        this.stats = {}; // Gán object rỗng để hiển thị các số 0, tránh kẹt Skeleton Loading
-        this.isLoading = false;
+    // CHỈ GỌI API KHI ĐANG Ở TRÌNH DUYỆT (Client-side)
+    if (isPlatformBrowser(this.platformId)) {
+      this.api.get<any>('/stats').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (res) => {
+          this.stats = res.data || res;
+          this.isLoading = false;
+          this.cdr.detectChanges(); // Ép Angular cập nhật giao diện
+        },
+        error: (err) => {
+          console.error('Lỗi khi tải dữ liệu thống kê:', err);
+          this.stats = {}; // Gán object rỗng để hiển thị các số 0, tránh kẹt Skeleton Loading
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+      this.socketSub = this.socketService.listen('new_lead').subscribe(() => {
+        if (this.stats) { this.stats.leads = (this.stats.leads || 0) + 1; }
+        this.hasNewLead = true;
         this.cdr.detectChanges();
-      }
-    });
-    this.socketSub = this.socketService.listen('new_lead').subscribe(() => {
-      if (this.stats) { this.stats.leads = (this.stats.leads || 0) + 1; }
-      this.hasNewLead = true;
-      this.cdr.detectChanges();
-      setTimeout(() => { this.hasNewLead = false; this.cdr.detectChanges(); }, 3000);
-    });
+        setTimeout(() => { this.hasNewLead = false; this.cdr.detectChanges(); }, 3000);
+      });
+    } else {
+      // On server, we start with loading state and do nothing else.
+      // The client will take over and fetch the real data.
+      this.isLoading = true;
+    }
   }
 
   ngOnDestroy() { if (this.socketSub) this.socketSub.unsubscribe(); }

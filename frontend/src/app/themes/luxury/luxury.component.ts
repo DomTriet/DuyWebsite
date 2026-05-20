@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FavoriteService } from '../../core/services/favorite.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-luxury-theme',
@@ -269,13 +270,14 @@ export class LuxuryComponent implements OnInit {
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
   private favoriteService = inject(FavoriteService);
+  private destroyRef = inject(DestroyRef);
   properties: any[] = [];
   isLoading = true;
 
   ngOnInit() {
     // Gọi API lấy danh sách sản phẩm. Ưu tiên lọc theo dự án hiện tại
     const endpoint = this.project?.id ? `/properties?project_id=${this.project.id}` : '/properties';
-    this.api.get<any>(endpoint).subscribe({
+    this.api.get<any>(endpoint).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.properties = res.data || [];
         this.isLoading = false;

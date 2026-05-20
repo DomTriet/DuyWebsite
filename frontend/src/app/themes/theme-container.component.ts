@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, ViewContainerRef, ViewChild, Type, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ViewContainerRef, ViewChild, Type, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ThemeStateService } from '../core/services/theme-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-theme-container',
@@ -23,11 +24,15 @@ export class ThemeContainerComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private themeStateService = inject(ThemeStateService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
+  private isDestroyed = false;
   isLoading = true;
 
   ngOnInit() {
+    this.destroyRef.onDestroy(() => this.isDestroyed = true);
+    
     // Lấy toàn bộ Object Project từ ThemeResolver đã cấu hình ở file routing
-    this.route.data.subscribe(data => {
+    this.route.data.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(data => {
       const projectData = data['theme'] || { theme_id: 'minimalist' };
       const themeId = projectData.theme_id || 'minimalist';
       
@@ -53,17 +58,28 @@ export class ThemeContainerComponent implements OnInit {
         componentType = (await import('./minimalist/minimalist.component')).MinimalistComponent;
       }
       
+      // Bỏ qua nếu Component đã bị hủy (người dùng chuyển trang khác) trước khi tải xong Theme JS
+      if (this.isDestroyed) return;
+      
       const componentRef = this.themeContainer.createComponent(componentType);
       // Data Passing: Truyền dữ liệu Project xuống component Theme con
       componentRef.setInput('project', projectData);
     } catch (error) {
       console.error('Lỗi khi nạp theme, chuyển về Minimalist...', error);
+      
+      if (this.isDestroyed) return;
+      
       const fallback = (await import('./minimalist/minimalist.component')).MinimalistComponent;
+      
+      if (this.isDestroyed) return;
+      
       const componentRef = this.themeContainer.createComponent(fallback);
       componentRef.setInput('project', projectData);
     } finally {
-      this.isLoading = false;
-      this.cdr.detectChanges(); // Ép Angular render ngay lập tức sau khi load xong component
+      if (!this.isDestroyed) {
+        this.isLoading = false;
+        this.cdr.detectChanges(); // Ép Angular render ngay lập tức sau khi load xong component
+      }
     }
   }
 }

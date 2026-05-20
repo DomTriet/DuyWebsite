@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, PLATFORM_ID, DestroyRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { LanguageSelectorComponent } from '../shared/components/language-selecto
 import { TranslateModule } from '@ngx-translate/core';
 import { SeoService } from '../core/services/seo.service';
 import { FavoriteService } from '../core/services/favorite.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
@@ -153,6 +154,7 @@ export class HomeComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private seoService = inject(SeoService);
   private favoriteService = inject(FavoriteService);
+  private destroyRef = inject(DestroyRef);
   
   projects: any[] = [];
   searchedProperties: any[] = [];
@@ -177,7 +179,7 @@ export class HomeComponent implements OnInit {
       image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
     });
 
-    this.api.get<any>('/projects').subscribe({
+    this.api.get<any>('/projects').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => { this.projects = res.data || []; this.isLoading = false; this.cdr.markForCheck(); },
       error: () => { this.isLoading = false; this.cdr.markForCheck(); }
     });
@@ -190,7 +192,7 @@ export class HomeComponent implements OnInit {
     if (min_price) query += `min_price=${min_price}&`;
     if (max_price) query += `max_price=${max_price}&`;
     
-    this.api.get<any>(query).subscribe({
+    this.api.get<any>(query).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => { this.searchedProperties = res.data || []; this.cdr.markForCheck(); },
       error: (err) => console.error(err)
     });
