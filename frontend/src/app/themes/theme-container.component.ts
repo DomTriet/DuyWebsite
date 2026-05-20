@@ -9,12 +9,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <!-- Vị trí để Angular nhúng giao diện Theme vào -->
     <ng-container #themeContainer></ng-container>
     
-    <!-- Hiển thị Loading trong vài mili-giây khi đang tải code JS của Theme -->
-    <div *ngIf="isLoading" class="min-h-screen flex items-center justify-center bg-gray-50">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    <div *ngIf="isLoading" class="min-h-screen bg-white flex flex-col items-center justify-center">
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-12 h-12 border-4 border-gray-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p class="text-gray-600 text-sm">Đang tải...</p>
+      </div>
     </div>
   `
 })

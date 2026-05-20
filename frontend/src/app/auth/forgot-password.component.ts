@@ -12,38 +12,48 @@ import { take } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gray-50">
-      <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Quên mật khẩu?</h2>
-        <p class="text-sm text-center text-gray-600 mb-6">Nhập email của bạn và chúng tôi sẽ gửi liên kết để đặt lại mật khẩu.</p>
-        
-        <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-sm">
-          {{ errorMessage }}
+    <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center px-6">
+      <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-12">
+          <h1 class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent mb-2">RESTATE</h1>
+          <p class="text-gray-600">Quản lý bất động sản hiện đại</p>
         </div>
 
-        <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 text-sm">
-          {{ successMessage }}
-        </div>
-
-        <form [formGroup]="forgotForm" (ngSubmit)="onSubmit()">
-          <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
-            <input formControlName="email" id="email" type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" placeholder="Nhập email của bạn">
-            <p *ngIf="forgotForm.get('email')?.invalid && forgotForm.get('email')?.touched" class="text-red-500 text-xs italic mt-1">Vui lòng nhập một email hợp lệ.</p>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
+          <h2 class="text-2xl font-black text-gray-900 mb-2 text-center">Quên mật khẩu?</h2>
+          <p class="text-sm text-gray-600 text-center mb-8">Nhập email của bạn, chúng tôi sẽ gửi liên kết để đặt lại mật khẩu</p>
+          
+          <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+            {{ errorMessage }}
           </div>
 
-          <div class="mb-4">
-            <button [disabled]="forgotForm.invalid || isLoading || countdown > 0" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 w-full transition-colors" type="submit">
+          <div *ngIf="successMessage" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 text-sm">
+            {{ successMessage }}
+          </div>
+
+          <form [formGroup]="forgotForm" (ngSubmit)="onSubmit()" class="space-y-5">
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2" for="email">Email</label>
+              <input formControlName="email" id="email" type="email" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" placeholder="your@email.com">
+              <p *ngIf="forgotForm.get('email')?.invalid && forgotForm.get('email')?.touched" class="text-red-600 text-xs mt-1.5">Email không hợp lệ</p>
+            </div>
+
+            <!-- Submit Button -->
+            <button [disabled]="forgotForm.invalid || isLoading || countdown > 0" class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-8" type="submit">
+              <span *ngIf="isLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               <ng-container *ngIf="isLoading">Đang gửi yêu cầu...</ng-container>
               <ng-container *ngIf="!isLoading && countdown === 0">Gửi liên kết khôi phục</ng-container>
               <ng-container *ngIf="!isLoading && countdown > 0">Gửi lại sau {{ countdown }}s</ng-container>
             </button>
+          </form>
+
+          <!-- Back to Login -->
+          <div class="text-center text-sm mt-8">
+            <a routerLink="/auth/login" class="text-indigo-600 font-semibold hover:text-indigo-700">Quay lại đăng nhập</a>
           </div>
-          
-          <div class="text-center text-sm text-gray-600">
-            <a routerLink="/auth/login" class="text-blue-600 font-semibold hover:underline">Quay lại đăng nhập</a>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   `

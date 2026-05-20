@@ -7,26 +7,27 @@ import { ApiService } from '../../core/services/api.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="max-w-7xl mx-auto mt-4">
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Nhật ký Hệ thống (System Logs)</h2>
-        <p class="text-gray-500 text-sm mt-1">Theo dõi các hoạt động quan trọng của người dùng và quản trị viên.</p>
+    <div>
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-black text-gray-900">Nhật ký hệ thống</h1>
+        <p class="text-gray-600 mt-2">Theo dõi hoạt động của người dùng và quản trị viên</p>
       </div>
 
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
+          <table class="w-full text-left">
             <thead>
-              <tr class="bg-gray-50 border-b border-gray-100 text-gray-500 text-xs uppercase tracking-wider">
-                <th class="px-6 py-4 font-semibold">Thời gian</th>
-                <th class="px-6 py-4 font-semibold">Tài khoản</th>
-                <th class="px-6 py-4 font-semibold">Hành động</th>
-                <th class="px-6 py-4 font-semibold">Chi tiết</th>
+              <tr class="bg-gray-50 border-b border-gray-200">
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm">Thời gian</th>
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm">Tài khoản</th>
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm">Hành động</th>
+                <th class="px-6 py-4 font-bold text-gray-900 text-sm">Chi tiết</th>
               </tr>
             </thead>
             
-            <tbody *ngIf="isLoading" class="divide-y divide-gray-100">
-              <tr *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+            <tbody *ngIf="isLoading" class="divide-y divide-gray-200">
+              <tr *ngFor="let i of [1,2,3,4,5]" class="hover:bg-gray-50/50 animate-pulse">
                 <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-32"></div></td>
                 <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-48"></div></td>
                 <td class="px-6 py-4"><div class="h-6 bg-gray-200 rounded-full w-32"></div></td>
@@ -34,29 +35,29 @@ import { ApiService } from '../../core/services/api.service';
               </tr>
             </tbody>
 
-            <tbody *ngIf="!isLoading && logs.length === 0">
+            <tbody *ngIf="!isLoading && logs.length === 0" class="divide-y divide-gray-200">
               <tr>
-                <td colspan="4" class="px-6 py-12 text-center text-gray-500">Chưa có dữ liệu nhật ký nào.</td>
+                <td colspan="4" class="px-6 py-12 text-center text-gray-500">Không có dữ liệu</td>
               </tr>
             </tbody>
 
-            <tbody *ngIf="!isLoading && logs.length > 0" class="divide-y divide-gray-100 text-sm">
-              <tr *ngFor="let log of logs" class="hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-4 whitespace-nowrap text-gray-500">
-                  {{ log.created_at | date:'dd/MM/yyyy HH:mm:ss' }}
+            <tbody *ngIf="!isLoading && logs.length > 0" class="divide-y divide-gray-200 text-sm">
+              <tr *ngFor="let log of logs" class="hover:bg-gray-50/50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-mono">
+                  {{ log.created_at | date:'dd/MM/yyyy HH:mm' }}
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-2">
-                    <span class="font-medium text-gray-800">{{ log.profiles?.full_name || log.profiles?.username || 'Hệ thống' }}</span>
-                    <span class="text-xs text-gray-400">({{ log.profiles?.role || 'N/A' }})</span>
+                    <span class="font-bold text-gray-900">{{ log.profiles?.full_name || log.profiles?.username || 'System' }}</span>
+                    <span class="text-xs text-gray-500 font-mono">[{{ log.profiles?.role || 'N/A' }}]</span>
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="px-2.5 py-1 text-xs font-semibold rounded-md border" [ngClass]="getActionClass(log.action)">
+                  <span class="px-3 py-1 text-xs font-bold rounded-lg border" [ngClass]="getActionClass(log.action)">
                     {{ log.action }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-gray-600">{{ log.details }}</td>
+                <td class="px-6 py-4 text-gray-700">{{ log.details }}</td>
               </tr>
             </tbody>
           </table>

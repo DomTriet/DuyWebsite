@@ -8,40 +8,41 @@ import { ApiService } from '../../core/services/api.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="max-w-7xl mx-auto mt-4">
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Quản lý Dịch thuật (Đa ngôn ngữ)</h2>
-        <p class="text-gray-500 text-sm mt-1">Đối chiếu, chỉnh sửa và phê duyệt các bản dịch do máy tạo ra.</p>
+    <div>
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-black text-gray-900">Quản lý dịch thuật</h1>
+        <p class="text-gray-600 mt-2">Chỉnh sửa và phê duyệt bản dịch đa ngôn ngữ</p>
       </div>
 
-      <div *ngIf="isLoading" class="text-center py-8 text-gray-500">Đang tải dữ liệu...</div>
-      <div *ngIf="!isLoading && translations.length === 0" class="bg-white rounded-xl p-8 text-center text-gray-500 border border-gray-100 shadow-sm">
-        Không có bản dịch nào đang chờ duyệt.
+      <div *ngIf="isLoading" class="text-center py-12 text-gray-500">Đang tải...</div>
+      <div *ngIf="!isLoading && translations.length === 0" class="bg-white rounded-2xl p-12 text-center text-gray-600 border border-gray-200">
+        Không có bản dịch chờ duyệt
       </div>
 
       <div class="space-y-6">
-        <div *ngFor="let item of translations" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div class="bg-gray-50 px-6 py-3 border-b border-gray-100 flex justify-between items-center">
+        <div *ngFor="let item of translations" class="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-all">
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-8 py-5 border-b border-gray-200 flex justify-between items-center">
             <div>
-              <span class="font-bold text-gray-700 uppercase tracking-wider text-sm">{{ item.entity_type }}</span>
-              <span class="text-xs text-gray-400 ml-2">ID: {{ item.entity_id }}</span>
+              <span class="font-black text-gray-900 uppercase tracking-wider text-sm">{{ item.entity_type }}</span>
+              <span class="text-xs text-gray-500 ml-3">ID: {{ item.entity_id }}</span>
             </div>
-            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 font-bold rounded text-xs">Ngôn ngữ: {{ item.lang_code | uppercase }}</span>
+            <span class="px-4 py-2 bg-indigo-100 text-indigo-700 font-bold rounded-lg text-xs">{{ item.lang_code | uppercase }}</span>
           </div>
 
-          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Cột Dữ liệu (Key-Value) -->
-            <div class="col-span-2">
-              <div *ngFor="let key of getKeys(item.translation_data)" class="mb-4">
-                <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Trường: {{ key }}</label>
-                <textarea [(ngModel)]="item.translation_data[key]" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-600 outline-none" [class.border-indigo-300]="true"></textarea>
-              </div>
+          <!-- Content -->
+          <div class="p-8">
+            <div *ngFor="let key of getKeys(item.translation_data)" class="mb-6">
+              <label class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">{{ key }}</label>
+              <textarea [(ngModel)]="item.translation_data[key]" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none transition-all"></textarea>
             </div>
           </div>
 
-          <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
-            <button (click)="saveAndApprove(item)" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm">
-              Lưu & Phê duyệt hiển thị
+          <!-- Footer -->
+          <div class="bg-gray-50 px-8 py-5 border-t border-gray-200 flex justify-end">
+            <button (click)="saveAndApprove(item)" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-bold transition-all">
+              Lưu & Phê duyệt
             </button>
           </div>
         </div>

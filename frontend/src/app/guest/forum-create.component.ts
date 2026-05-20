@@ -10,31 +10,78 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule],
   template: `
-    <div class="max-w-4xl mx-auto px-4 py-8">
-      <a routerLink="/forum" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium mb-8 transition-colors">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Trở về cộng đồng
-      </a>
-      <h1 class="text-3xl font-bold text-gray-900 mb-8">Viết bài mới</h1>
+    <div class="min-h-screen bg-white">
+      <!-- Navigation -->
+      <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-200 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+          <a routerLink="/" class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">RESTATE</a>
+          <a routerLink="/forum" class="inline-flex items-center gap-2 text-gray-700 hover:text-indigo-600 font-semibold transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Quay lại
+          </a>
+        </div>
+      </nav>
 
-      <form [formGroup]="postForm" (ngSubmit)="submitPost()" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
-        <div>
-          <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề bài viết *</label>
-          <input type="text" id="title" formControlName="title" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="VD: Kinh nghiệm đầu tư đất nền ven đô...">
-          <p *ngIf="postForm.get('title')?.invalid && postForm.get('title')?.touched" class="text-red-500 text-xs mt-1">Vui lòng nhập tiêu đề.</p>
+      <div class="max-w-4xl mx-auto px-6 py-20">
+        <!-- Header -->
+        <div class="mb-16">
+          <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">Viết bài mới</h1>
+          <p class="text-lg text-gray-600">Chia sẻ kinh nghiệm và thảo luận với cộng đồng</p>
         </div>
-        <div>
-          <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Nội dung *</label>
-          <textarea id="content" formControlName="content" rows="10" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Chia sẻ kinh nghiệm của bạn..."></textarea>
-          <p *ngIf="postForm.get('content')?.invalid && postForm.get('content')?.touched" class="text-red-500 text-xs mt-1">Vui lòng nhập nội dung.</p>
+
+        <!-- Form -->
+        <form [formGroup]="postForm" (ngSubmit)="submitPost()" class="bg-white rounded-2xl border border-gray-200 p-10 shadow-lg">
+          <!-- Title -->
+          <div class="mb-6">
+            <label for="title" class="block text-sm font-semibold text-gray-900 mb-2">Tiêu đề</label>
+            <input 
+              type="text" 
+              id="title" 
+              formControlName="title" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" 
+              placeholder="Tiêu đề bài viết..."
+            >
+            <p *ngIf="postForm.get('title')?.invalid && postForm.get('title')?.touched" class="text-red-600 text-xs mt-1.5">Vui lòng nhập tiêu đề</p>
+          </div>
+
+          <!-- Content -->
+          <div class="mb-8">
+            <label for="content" class="block text-sm font-semibold text-gray-900 mb-2">Nội dung</label>
+            <textarea 
+              id="content" 
+              formControlName="content" 
+              rows="10" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none" 
+              placeholder="Chia sẻ kinh nghiệm hoặc câu hỏi của bạn..."
+            ></textarea>
+            <p *ngIf="postForm.get('content')?.invalid && postForm.get('content')?.touched" class="text-red-600 text-xs mt-1.5">Vui lòng nhập nội dung</p>
+            <p class="text-xs text-gray-500 mt-2">Bài viết sẽ được duyệt trước khi công khai</p>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+            <a routerLink="/forum" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">Hủy</a>
+            <button 
+              type="submit" 
+              [disabled]="postForm.invalid || isSubmitting" 
+              class="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-3 rounded-lg font-bold transition-all flex items-center gap-2"
+            >
+              <span *ngIf="isSubmitting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              {{ isSubmitting ? 'Đang gửi...' : 'Gửi bài viết' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Guidelines -->
+        <div class="mt-12 bg-indigo-50 border border-indigo-200 rounded-xl p-6">
+          <p class="font-semibold text-indigo-900 mb-2">Hướng dẫn đăng bài</p>
+          <ul class="text-sm text-indigo-800 space-y-1">
+            <li>• Nội dung phải lịch sự và có giá trị</li>
+            <li>• Không spam hoặc quảng cáo trái phép</li>
+            <li>• Tuân thủ quy định của cộng đồng</li>
+          </ul>
         </div>
-        <div class="flex justify-end">
-          <button type="submit" [disabled]="postForm.invalid || isSubmitting" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors flex items-center gap-2">
-            <span *ngIf="isSubmitting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-            {{ isSubmitting ? 'Đang gửi...' : 'Gửi bài viết' }}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   `
 })
