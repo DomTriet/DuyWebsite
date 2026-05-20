@@ -9,88 +9,76 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
-    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8">
-      <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ 'LEAD_FORM.TITLE' | translate }}</h3>
-      <p class="text-gray-600 text-sm mb-6">Điền thông tin để được hỗ trợ tư vấn</p>
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-lg p-10">
+      <h3 class="text-2xl font-black text-gray-900 mb-2">Liên hệ tư vấn</h3>
+      <p class="text-gray-600 text-sm mb-8">Chúng tôi sẽ hỗ trợ bạn nhanh chóng</p>
       
-      <!-- Success Message -->
-      <div *ngIf="showSuccess" class="bg-green-50 border border-green-200 text-green-700 p-6 rounded-xl mb-6 flex items-start gap-3 animate-in fade-in slide-in-from-top">
-        <svg class="w-6 h-6 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <!-- Success -->
+      <div *ngIf="showSuccess" class="bg-green-50 border border-green-200 text-green-700 p-6 rounded-xl mb-6 flex gap-3 animate-in fade-in">
+        <svg class="w-6 h-6 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
         <div>
-          <p class="font-semibold">Thành công!</p>
-          <p class="text-sm">{{ 'LEAD_FORM.SUCCESS_MSG' | translate }}</p>
+          <p class="font-bold">Thành công!</p>
+          <p class="text-sm">Chúng tôi sẽ liên hệ bạn sớm nhất</p>
         </div>
       </div>
 
       <form [formGroup]="leadForm" (ngSubmit)="onSubmit()" *ngIf="!showSuccess" class="space-y-5">
-        <!-- Name Field -->
+        <!-- Name -->
         <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-2">{{ 'LEAD_FORM.NAME_LABEL' | translate }} *</label>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">Tên *</label>
           <input 
             type="text" 
             formControlName="customer_name" 
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-400" 
-            [placeholder]="'LEAD_FORM.NAME_PLACEHOLDER' | translate"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" 
+            placeholder="Họ và tên"
           >
-          <p *ngIf="leadForm.get('customer_name')?.invalid && leadForm.get('customer_name')?.touched" class="text-red-600 text-sm mt-1 flex items-center gap-1">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-            {{ 'LEAD_FORM.NAME_REQUIRED' | translate }}
-          </p>
+          <p *ngIf="leadForm.get('customer_name')?.invalid && leadForm.get('customer_name')?.touched" class="text-red-600 text-xs mt-1.5">Vui lòng nhập tên</p>
         </div>
 
-        <!-- Phone Field -->
+        <!-- Phone -->
         <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-2">{{ 'LEAD_FORM.PHONE_LABEL' | translate }} *</label>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">Điện thoại *</label>
           <input 
             type="tel" 
             formControlName="customer_phone" 
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-400" 
-            [placeholder]="'LEAD_FORM.PHONE_PLACEHOLDER' | translate"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" 
+            placeholder="0XXXXXXXXX"
           >
-          <p *ngIf="leadForm.get('customer_phone')?.hasError('required') && leadForm.get('customer_phone')?.touched" class="text-red-600 text-sm mt-1 flex items-center gap-1">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-            {{ 'LEAD_FORM.PHONE_REQUIRED' | translate }}
-          </p>
-          <p *ngIf="leadForm.get('customer_phone')?.hasError('pattern') && leadForm.get('customer_phone')?.touched" class="text-red-600 text-sm mt-1 flex items-center gap-1">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-            {{ 'LEAD_FORM.PHONE_INVALID' | translate }}
-          </p>
+          <p *ngIf="leadForm.get('customer_phone')?.hasError('required') && leadForm.get('customer_phone')?.touched" class="text-red-600 text-xs mt-1.5">Vui lòng nhập số điện thoại</p>
+          <p *ngIf="leadForm.get('customer_phone')?.hasError('pattern') && leadForm.get('customer_phone')?.touched" class="text-red-600 text-xs mt-1.5">Số điện thoại không hợp lệ</p>
         </div>
 
-        <!-- Email Field -->
+        <!-- Email -->
         <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-2">{{ 'LEAD_FORM.EMAIL_LABEL' | translate }}</label>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">Email</label>
           <input 
             type="email" 
             formControlName="customer_email" 
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-400" 
-            [placeholder]="'LEAD_FORM.EMAIL_PLACEHOLDER' | translate"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" 
+            placeholder="your@email.com"
           >
-          <p *ngIf="leadForm.get('customer_email')?.invalid && leadForm.get('customer_email')?.touched" class="text-red-600 text-sm mt-1 flex items-center gap-1">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-            {{ 'LEAD_FORM.EMAIL_INVALID' | translate }}
-          </p>
+          <p *ngIf="leadForm.get('customer_email')?.invalid && leadForm.get('customer_email')?.touched" class="text-red-600 text-xs mt-1.5">Email không hợp lệ</p>
         </div>
 
-        <!-- Message Field -->
+        <!-- Message -->
         <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-2">{{ 'LEAD_FORM.MESSAGE_LABEL' | translate }}</label>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">Tin nhắn</label>
           <textarea 
             formControlName="message" 
-            rows="4" 
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-gray-400 resize-none" 
-            [placeholder]="'LEAD_FORM.MESSAGE_PLACEHOLDER' | translate"
+            rows="3" 
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none" 
+            placeholder="Tin nhắn của bạn..."
           ></textarea>
         </div>
 
-        <!-- Submit Button -->
+        <!-- Submit -->
         <button 
           type="submit" 
           [disabled]="leadForm.invalid || isSubmitting" 
-          class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-6"
+          class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl font-bold transition-all flex justify-center items-center gap-2 mt-8"
         >
           <span *ngIf="isSubmitting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-          {{ isSubmitting ? ('LEAD_FORM.SUBMITTING_BTN' | translate) : ('LEAD_FORM.SUBMIT_BTN' | translate) }}
+          {{ isSubmitting ? 'Đang gửi...' : 'Gửi thông tin' }}
         </button>
       </form>
     </div>

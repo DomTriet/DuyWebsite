@@ -9,38 +9,50 @@ import { AuthService } from '../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gray-50">
-      <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Đăng nhập</h2>
-        
-        <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-sm">
-          {{ errorMessage }}
+    <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center px-6">
+      <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-12">
+          <h1 class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent mb-2">RESTATE</h1>
+          <p class="text-gray-600">Quản lý bất động sản hiện đại</p>
         </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
-            <input formControlName="email" id="email" type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" placeholder="Nhập email của bạn">
-            <p *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-red-500 text-xs italic mt-1">Email không hợp lệ.</p>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
+          <h2 class="text-2xl font-black text-gray-900 mb-8 text-center">Đăng nhập</h2>
+          
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+            {{ errorMessage }}
           </div>
 
-          <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Mật khẩu</label>
-            <input formControlName="password" id="password" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" placeholder="******************">
-            <p *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-red-500 text-xs italic mt-1">Vui lòng nhập mật khẩu (từ 6 ký tự).</p>
-          </div>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2" for="email">Email</label>
+              <input formControlName="email" id="email" type="email" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" placeholder="your@email.com">
+              <p *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-red-600 text-xs mt-1.5">Email không hợp lệ</p>
+            </div>
 
-          <div class="flex items-center justify-between mb-4">
-            <button [disabled]="loginForm.invalid || isLoading" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 w-full transition-colors" type="submit">
+            <!-- Password -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2" for="password">Mật khẩu</label>
+              <input formControlName="password" id="password" type="password" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" placeholder="••••••••">
+              <p *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-red-600 text-xs mt-1.5">Mật khẩu tối thiểu 6 ký tự</p>
+            </div>
+
+            <!-- Submit Button -->
+            <button [disabled]="loginForm.invalid || isLoading" class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-8" type="submit">
+              <span *ngIf="isLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               {{ isLoading ? 'Đang xác thực...' : 'Đăng nhập' }}
             </button>
+          </form>
+
+          <!-- Links -->
+          <div class="mt-8 space-y-4 text-center text-sm">
+            <a routerLink="/auth/forgot-password" class="block text-indigo-600 font-semibold hover:text-indigo-700 transition-colors">Quên mật khẩu?</a>
+            <p class="text-gray-600">Chưa có tài khoản? <a routerLink="/auth/register" class="text-indigo-600 font-bold hover:text-indigo-700">Đăng ký ngay</a></p>
           </div>
-          
-          <div class="text-center text-sm text-gray-600 flex justify-between">
-            <a routerLink="/auth/forgot-password" class="hover:text-blue-600 hover:underline">Quên mật khẩu?</a>
-            <span>Chưa có tài khoản? <a routerLink="/auth/register" class="text-blue-600 font-semibold hover:underline">Đăng ký</a></span>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   `

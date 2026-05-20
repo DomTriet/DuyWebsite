@@ -9,47 +9,64 @@ import { AuthService } from '../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md">
-        <div>
-          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Đăng ký tài khoản</h2>
-        </div>
-        
-        <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-          {{ errorMessage }}
+    <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center px-6 py-12">
+      <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-12">
+          <h1 class="text-3xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent mb-2">RESTATE</h1>
+          <p class="text-gray-600">Quản lý bất động sản hiện đại</p>
         </div>
 
-        <div *ngIf="successMessage" class="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-md text-sm">
-          {{ successMessage }}
-        </div>
-
-        <form *ngIf="!successMessage" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
-          <div class="rounded-md shadow-sm -space-y-px">
-            <div class="mb-4">
-              <input formControlName="full_name" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Họ và tên">
-            </div>
-            <div class="mb-4">
-              <input formControlName="email" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Địa chỉ Email">
-            </div>
-            <div class="mb-4">
-              <input formControlName="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Mật khẩu">
-            </div>
-            <div>
-              <input formControlName="confirm_password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Xác nhận mật khẩu">
-            </div>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
+          <h2 class="text-2xl font-black text-gray-900 mb-8 text-center">Đăng ký tài khoản</h2>
+          
+          <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+            {{ errorMessage }}
           </div>
 
-          <div *ngIf="registerForm.errors?.['mismatch']" class="text-red-500 text-xs mt-1">Mật khẩu xác nhận không khớp.</div>
+          <div *ngIf="successMessage" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 text-sm">
+            {{ successMessage }}
+          </div>
 
-          <div>
-            <button type="submit" [disabled]="registerForm.invalid || isLoading" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+          <form *ngIf="!successMessage" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
+            <!-- Full Name -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Họ và tên</label>
+              <input formControlName="full_name" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" placeholder="Nguyễn Văn A">
+              <p *ngIf="registerForm.get('full_name')?.invalid && registerForm.get('full_name')?.touched" class="text-red-600 text-xs mt-1.5">Vui lòng nhập tên</p>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Email</label>
+              <input formControlName="email" type="email" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" placeholder="your@email.com">
+              <p *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-red-600 text-xs mt-1.5">Email không hợp lệ</p>
+            </div>
+
+            <!-- Password -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Mật khẩu</label>
+              <input formControlName="password" type="password" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" placeholder="••••••••">
+              <p *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-red-600 text-xs mt-1.5">Mật khẩu tối thiểu 6 ký tự</p>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-900 mb-2">Xác nhận mật khẩu</label>
+              <input formControlName="confirm_password" type="password" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all" placeholder="••••••••">
+              <p *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('confirm_password')?.touched" class="text-red-600 text-xs mt-1.5">Mật khẩu không khớp</p>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" [disabled]="registerForm.invalid || isLoading" class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-8">
+              <span *ngIf="isLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               {{ isLoading ? 'Đang xử lý...' : 'Đăng ký' }}
             </button>
-          </div>
-          <div class="text-sm text-center">
-            <a routerLink="/auth/login" class="font-medium text-indigo-600 hover:text-indigo-500">Đã có tài khoản? Đăng nhập ngay</a>
-          </div>
-        </form>
+
+            <!-- Login Link -->
+            <p class="text-center text-sm text-gray-600 pt-4">Đã có tài khoản? <a routerLink="/auth/login" class="text-indigo-600 font-bold hover:text-indigo-700">Đăng nhập</a></p>
+          </form>
+        </div>
       </div>
     </div>
   `
