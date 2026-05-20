@@ -22,35 +22,60 @@ import { FavoriteService } from '../../core/services/favorite.service';
       --theme-accent: #111827;
       font-family: 'Inter', sans-serif;
     }
+
+    @keyframes minimalistSlide {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-minimal-fade {
+      animation: minimalistSlide 0.5s ease-out forwards;
+    }
+
+    .spec-row {
+      transition: all 0.3s ease;
+    }
+
+    .spec-row:hover {
+      background-color: rgb(249, 250, 251);
+    }
   `],
   template: `
     <div class="min-h-screen bg-white text-gray-900 pb-24" *ngIf="property">
       
-      <!-- Minimalist Header -->
-      <header class="py-6 px-6 max-w-6xl mx-auto flex justify-between items-center bg-white z-50">
-        <a routerLink=".." class="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
+      <!-- Clean Minimalist Header -->
+      <header class="py-6 px-6 max-w-6xl mx-auto flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur z-50 border-b border-gray-200">
+        <a routerLink=".." class="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-all hover:scale-105">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           Quay lại
         </a>
       </header>
 
-      <main class="max-w-6xl mx-auto px-6 pt-4">
+      <main class="max-w-6xl mx-auto px-6 pt-8">
         
-        <!-- Header Info -->
-        <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
+        <!-- Enhanced Header Info -->
+        <div class="mb-12 flex flex-col md:flex-row md:justify-between md:items-end gap-8 animate-minimal-fade">
           <div class="flex-1 w-full min-w-0">
             <div class="flex items-start justify-between gap-4">
-              <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-2 flex-1 break-words">{{ property.title }}</h1>
-              <button (click)="toggleFav()" class="p-2 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0 mt-1">
-                <svg [ngClass]="isFav ? 'text-red-500 fill-current' : 'text-gray-400'" class="w-8 h-8 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-              </button>
-              <button (click)="shareProperty()" class="p-2 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0 mt-1" title="Chia sẻ">
-                <svg class="w-8 h-8 text-gray-400 hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-              </button>
+              <h1 class="text-5xl md:text-6xl font-black tracking-tight mb-3 flex-1 break-words text-gray-900">{{ property.title }}</h1>
+              <div class="flex gap-3 flex-shrink-0 mt-2">
+                <button (click)="toggleFav()" class="p-2.5 rounded-full hover:bg-gray-200 transition-all hover:scale-110">
+                  <svg [ngClass]="isFav ? 'text-red-500 fill-current scale-125' : 'text-gray-500'" class="w-7 h-7 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                </button>
+                <button (click)="shareProperty()" class="p-2.5 rounded-full hover:bg-gray-200 transition-all hover:scale-110" title="Chia sẻ">
+                  <svg class="w-7 h-7 text-gray-500 hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                </button>
+              </div>
             </div>
-            <p class="text-gray-500 font-medium">{{ property.categories?.name || 'Nhà phố' }}</p>
+            <p class="text-gray-600 font-semibold text-sm uppercase tracking-wide">{{ property.categories?.name || 'Nhà phố' }}</p>
           </div>
-          <div class="text-3xl font-bold tracking-tight">
+          <div class="text-4xl font-black tracking-tight text-gray-900 border-b-2 border-gray-900 pb-2">
             {{ property.price | number }} ₫
           </div>
         </div>
@@ -72,44 +97,44 @@ import { FavoriteService } from '../../core/services/favorite.service';
 
         <!-- Single Column Centered Layout -->
         <div class="max-w-3xl mx-auto">
-          <h2 class="text-2xl font-bold tracking-tight mb-6">Tổng quan</h2>
-          <p class="text-gray-600 leading-relaxed whitespace-pre-wrap mb-12 text-lg font-light">{{ property.description }}</p>
+          <h2 class="text-3xl font-bold tracking-tight mb-8 animate-minimal-fade" style="animation-delay: 0.1s;">Tổng quan</h2>
+          <p class="text-gray-700 leading-relaxed whitespace-pre-wrap mb-16 text-lg font-light animate-minimal-fade" style="animation-delay: 0.2s;">{{ property.description }}</p>
 
-          <h2 class="text-2xl font-bold tracking-tight mb-6">Thông số chi tiết</h2>
-          <dl class="divide-y divide-gray-200 border-t border-b border-gray-200 mb-16">
-            <div *ngIf="property.attributes?.area" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.AREA' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.area }} m²</dd>
+          <h2 class="text-3xl font-bold tracking-tight mb-8 animate-minimal-fade" style="animation-delay: 0.3s;">Thông số chi tiết</h2>
+          <dl class="divide-y divide-gray-200 border-y border-gray-200 mb-16 animate-minimal-fade" style="animation-delay: 0.4s;">
+            <div *ngIf="property.attributes?.area" class="spec-row py-5 flex justify-between items-center px-2 hover:px-4 transition-all">
+              <dt class="text-gray-600 font-medium">{{ 'ATTRIBUTES.AREA' | translate }}</dt>
+              <dd class="font-bold text-gray-900 text-lg">{{ property.attributes.area }} <span class="text-sm text-gray-500 font-normal">m²</span></dd>
             </div>
-            <div *ngIf="property.attributes?.floors" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.FLOORS' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.floors }}</dd>
+            <div *ngIf="property.attributes?.floors" class="spec-row py-5 flex justify-between items-center px-2 hover:px-4 transition-all">
+              <dt class="text-gray-600 font-medium">{{ 'ATTRIBUTES.FLOORS' | translate }}</dt>
+              <dd class="font-bold text-gray-900 text-lg">{{ property.attributes.floors }}</dd>
             </div>
-            <div *ngIf="property.attributes?.bedrooms" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.BEDROOMS' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.bedrooms }}</dd>
+            <div *ngIf="property.attributes?.bedrooms" class="spec-row py-5 flex justify-between items-center px-2 hover:px-4 transition-all">
+              <dt class="text-gray-600 font-medium">{{ 'ATTRIBUTES.BEDROOMS' | translate }}</dt>
+              <dd class="font-bold text-gray-900 text-lg">{{ property.attributes.bedrooms }}</dd>
             </div>
-            <div *ngIf="property.attributes?.bathrooms" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.BATHROOMS' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.bathrooms }}</dd>
+            <div *ngIf="property.attributes?.bathrooms" class="spec-row py-5 flex justify-between items-center px-2 hover:px-4 transition-all">
+              <dt class="text-gray-600 font-medium">{{ 'ATTRIBUTES.BATHROOMS' | translate }}</dt>
+              <dd class="font-bold text-gray-900 text-lg">{{ property.attributes.bathrooms }}</dd>
             </div>
-            <div *ngIf="property.attributes?.frontage" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.FRONTAGE' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.frontage }} m</dd>
+            <div *ngIf="property.attributes?.frontage" class="spec-row py-5 flex justify-between items-center px-2 hover:px-4 transition-all">
+              <dt class="text-gray-600 font-medium">{{ 'ATTRIBUTES.FRONTAGE' | translate }}</dt>
+              <dd class="font-bold text-gray-900 text-lg">{{ property.attributes.frontage }} <span class="text-sm text-gray-500 font-normal">m</span></dd>
             </div>
-            <div *ngIf="property.attributes?.street_width" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.STREET_WIDTH' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.street_width }} m</dd>
+            <div *ngIf="property.attributes?.street_width" class="spec-row py-5 flex justify-between items-center px-2 hover:px-4 transition-all">
+              <dt class="text-gray-600 font-medium">{{ 'ATTRIBUTES.STREET_WIDTH' | translate }}</dt>
+              <dd class="font-bold text-gray-900 text-lg">{{ property.attributes.street_width }} <span class="text-sm text-gray-500 font-normal">m</span></dd>
             </div>
           </dl>
 
-          <!-- Vị trí -->
-          <h2 class="text-2xl font-bold tracking-tight mb-6">Vị trí</h2>
-          <div class="w-full h-64 bg-gray-100 mb-16 flex items-center justify-center relative overflow-hidden border border-gray-200">
-             <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover opacity-60 filter grayscale" alt="Map">
-             <div class="relative z-10 bg-white px-6 py-3 shadow-md text-gray-900 font-bold flex items-center gap-2">
-               <svg class="w-5 h-5 text-gray-900" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-               Vị trí Trung tâm
+          <!-- Location Section -->
+          <h2 class="text-3xl font-bold tracking-tight mb-8 animate-minimal-fade" style="animation-delay: 0.5s;">Vị trí</h2>
+          <div class="w-full h-72 bg-gradient-to-br from-gray-100 to-gray-50 mb-16 flex items-center justify-center relative overflow-hidden border-2 border-gray-200 hover:border-gray-900 transition-all rounded-lg animate-minimal-fade" style="animation-delay: 0.6s;">
+             <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover opacity-40 hover:opacity-60 transition-opacity filter grayscale" alt="Map">
+             <div class="relative z-10 bg-white px-8 py-4 shadow-lg border-2 border-gray-900 text-gray-900 font-bold flex items-center gap-3 hover:shadow-2xl hover:-translate-y-1 transition-all">
+               <svg class="w-6 h-6 text-gray-900" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+               Vị trí trung tâm
              </div>
           </div>
 
