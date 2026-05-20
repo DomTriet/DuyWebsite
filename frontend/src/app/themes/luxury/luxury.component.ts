@@ -96,28 +96,30 @@ import { FavoriteService } from '../../core/services/favorite.service';
     }
   `],
   template: `
-    <div class="min-h-screen bg-black text-white">
+    <div class="min-h-screen bg-gradient-to-b from-slate-900 via-black to-slate-950 text-white">
       
-      <!-- Luxury Header with Enhanced Styling -->
-      <header class="absolute top-0 w-full z-50 py-8 px-8 md:px-12 flex justify-between items-center bg-gradient-to-b from-black/60 to-transparent backdrop-blur-md border-b border-white/10">
-        <div class="text-3xl font-serif text-accent font-bold tracking-widest">
-          {{ project?.name || 'LUXURY' }}
-        </div>
-        <nav class="hidden md:flex gap-10 items-center text-sm font-sans tracking-widest text-gray-300">
-          <a routerLink="/" class="hover:text-accent transition-all duration-300 relative group">{{ 'NAVBAR.HOME' | translate }}<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-500"></span></a>
-          <a routerLink="/about" class="hover:text-accent transition-all duration-300 relative group">{{ 'NAVBAR.ABOUT' | translate }}<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-500"></span></a>
-          <a routerLink="/blogs" class="hover:text-accent transition-all duration-300 relative group">{{ 'NAVBAR.NEWS' | translate }}<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-500"></span></a>
-          <a routerLink="/contact" class="hover:text-accent transition-all duration-300 relative group">{{ 'NAVBAR.CONTACT' | translate }}<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-500"></span></a>
+      <!-- Modern Navigation -->
+      <nav class="sticky top-0 z-50 bg-black/95 backdrop-blur border-b border-amber-500/10 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+          <div class="text-2xl font-serif font-bold text-amber-500 tracking-widest">
+            {{ project?.name || 'LUXURY' }}
+          </div>
+          <div class="hidden md:flex gap-10 items-center text-sm tracking-wide">
+            <a routerLink="/" class="text-gray-300 hover:text-amber-400 transition-colors">{{ 'NAVBAR.HOME' | translate }}</a>
+            <a routerLink="/about" class="text-gray-300 hover:text-amber-400 transition-colors">{{ 'NAVBAR.ABOUT' | translate }}</a>
+            <a routerLink="/blogs" class="text-gray-300 hover:text-amber-400 transition-colors">{{ 'NAVBAR.NEWS' | translate }}</a>
+            <a routerLink="/contact" class="text-gray-300 hover:text-amber-400 transition-colors">{{ 'NAVBAR.CONTACT' | translate }}</a>
+          </div>
           <app-language-selector></app-language-selector>
-        </nav>
-      </header>
+        </div>
+      </nav>
 
-      <!-- Premium Hero Section with Parallax -->
-      <section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
-        <!-- Enhanced gradient overlay -->
-        <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#0f172a]/80 z-10"></div>
-        <!-- Accent glow effect -->
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-accent/10 rounded-full blur-3xl z-0"></div>
+      <!-- Premium Hero -->
+      <section class="relative min-h-[90vh] w-full flex items-center justify-center overflow-hidden pt-20">
+        <!-- Background gradient -->
+        <div class="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-black z-0"></div>
+        <!-- Gold glow accent -->
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl z-0"></div>
         
         <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
              class="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-700" alt="Hero">
