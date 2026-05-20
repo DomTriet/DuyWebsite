@@ -15,8 +15,6 @@ import { FavoriteService } from '../../core/services/favorite.service';
   standalone: true,
   imports: [CommonModule, RouterModule, LeadFormComponent, AgentCardComponent, TranslateModule],
   styles: [`
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap');
-    
     :host {
       --theme-primary: #0f172a;
       --theme-accent: #d4af37;
@@ -26,35 +24,6 @@ import { FavoriteService } from '../../core/services/favorite.service';
     .border-accent { border-color: var(--theme-accent); }
     .font-serif { font-family: 'Playfair Display', serif; }
     .font-sans { font-family: 'Inter', sans-serif; }
-
-    @keyframes luxuryFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .animate-luxury-fade {
-      animation: luxuryFadeIn 0.8s ease-out forwards;
-    }
-
-    .thumbnail-active {
-      border-color: var(--theme-accent);
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-    }
-
-    .attribute-luxury {
-      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .attribute-luxury:hover {
-      border-color: var(--theme-accent);
-      transform: translateY(-4px);
-    }
   `],
   template: `
     <div class="min-h-screen bg-[#0a0f1c] text-gray-300 font-sans pb-24" *ngIf="property">
@@ -105,51 +74,59 @@ import { FavoriteService } from '../../core/services/favorite.service';
             <div class="text-3xl font-bold text-accent font-sans">{{ property.price | number }} ₫</div>
           </header>
 
-          <!-- Enhanced Premium Attributes -->
-          <section class="grid grid-cols-2 md:grid-cols-4 gap-6 border-y border-gray-700/50 py-12 animate-luxury-fade" style="animation-delay: 0.3s;">
+          <!-- JSONB Extractor (Dynamic Attributes) -->
+          <section class="grid grid-cols-2 md:grid-cols-4 gap-6 border-y border-gray-800 py-10">
             
-            <div *ngIf="property.attributes?.bedrooms" class="attribute-luxury flex flex-col gap-4 p-6 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 hover:border-accent rounded-lg">
-              <svg class="w-8 h-8 text-accent self-start" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-              <span class="text-gray-400 text-xs uppercase tracking-widest font-semibold">{{ 'ATTRIBUTES.BEDROOMS' | translate }}</span>
-              <div class="text-3xl text-white font-light font-serif">{{ property.attributes.bedrooms }}</div>
+            <div *ngIf="property.attributes?.bedrooms" class="flex flex-col gap-3">
+              <span class="text-gray-500 text-xs uppercase tracking-[0.2em]">{{ 'ATTRIBUTES.BEDROOMS' | translate }}</span>
+              <div class="flex items-center gap-3 text-2xl text-white font-light">
+                <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                {{ property.attributes.bedrooms }}
+              </div>
             </div>
             
-            <div *ngIf="property.attributes?.bathrooms" class="attribute-luxury flex flex-col gap-4 p-6 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 hover:border-accent rounded-lg">
-              <svg class="w-8 h-8 text-accent self-start" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-              <span class="text-gray-400 text-xs uppercase tracking-widest font-semibold">{{ 'ATTRIBUTES.BATHROOMS' | translate }}</span>
-              <div class="text-3xl text-white font-light font-serif">{{ property.attributes.bathrooms }}</div>
+            <div *ngIf="property.attributes?.bathrooms" class="flex flex-col gap-3">
+              <span class="text-gray-500 text-xs uppercase tracking-[0.2em]">{{ 'ATTRIBUTES.BATHROOMS' | translate }}</span>
+              <div class="flex items-center gap-3 text-2xl text-white font-light">
+                <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                {{ property.attributes.bathrooms }}
+              </div>
             </div>
 
-            <div *ngIf="property.attributes?.area" class="attribute-luxury flex flex-col gap-4 p-6 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 hover:border-accent rounded-lg">
-              <svg class="w-8 h-8 text-accent self-start" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
-              <span class="text-gray-400 text-xs uppercase tracking-widest font-semibold">{{ 'ATTRIBUTES.AREA' | translate }}</span>
-              <div class="text-3xl text-white font-light font-serif">{{ property.attributes.area }} <span class="text-base text-gray-400">m²</span></div>
+            <div *ngIf="property.attributes?.area" class="flex flex-col gap-3">
+              <span class="text-gray-500 text-xs uppercase tracking-[0.2em]">{{ 'ATTRIBUTES.AREA' | translate }}</span>
+              <div class="flex items-center gap-3 text-2xl text-white font-light">
+                <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                {{ property.attributes.area }} m²
+              </div>
             </div>
 
-            <div *ngIf="property.attributes?.balcony_direction" class="attribute-luxury flex flex-col gap-4 p-6 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 hover:border-accent rounded-lg">
-              <svg class="w-8 h-8 text-accent self-start" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-              <span class="text-gray-400 text-xs uppercase tracking-widest font-semibold">{{ 'ATTRIBUTES.BALCONY_DIR' | translate }}</span>
-              <div class="text-2xl text-white font-light font-serif">{{ property.attributes.balcony_direction }}</div>
+            <div *ngIf="property.attributes?.balcony_direction" class="flex flex-col gap-3">
+              <span class="text-gray-500 text-xs uppercase tracking-[0.2em]">{{ 'ATTRIBUTES.BALCONY_DIR' | translate }}</span>
+              <div class="flex items-center gap-3 text-2xl text-white font-light">
+                <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                {{ property.attributes.balcony_direction }}
+              </div>
             </div>
 
           </section>
 
-          <!-- Enhanced Description Text -->
-          <section class="animate-luxury-fade" style="animation-delay: 0.5s;">
-            <h2 class="text-4xl font-serif text-white mb-8">Tổng quan không gian sống</h2>
-            <div class="prose prose-invert max-w-none text-gray-300 text-lg leading-relaxed whitespace-pre-wrap font-light border-l-4 border-accent pl-8">
+          <!-- Description Text -->
+          <section>
+            <h2 class="text-2xl font-serif text-white mb-6">Tổng quan không gian sống</h2>
+            <div class="prose prose-invert max-w-none text-gray-400 text-lg leading-loose whitespace-pre-wrap">
               {{ property.description }}
             </div>
           </section>
 
-          <!-- Enhanced Location & Map -->
-          <section class="animate-luxury-fade" style="animation-delay: 0.7s;">
-             <h2 class="text-4xl font-serif text-white mb-8">Vị trí dự án</h2>
-             <div class="w-full h-72 bg-gradient-to-b from-gray-800 to-gray-900 rounded-xl border-2 border-gray-700 hover:border-accent/50 flex items-center justify-center relative overflow-hidden shadow-2xl transition-all">
-                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover opacity-30 hover:opacity-50 transition-opacity" alt="Map">
-                <div class="relative z-10 bg-black/70 backdrop-blur-md px-8 py-4 rounded-lg border border-accent text-accent font-sans font-bold flex items-center gap-3 hover:bg-black/90 transition-all hover:shadow-[0_0_30px_rgba(212,175,55,0.5)]">
-                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-                  Tọa độ Độc tôn - Vị Trí Chiến Lược
+          <!-- Location & Map -->
+          <section>
+             <h2 class="text-2xl font-serif text-white mb-6">Vị trí dự án</h2>
+             <div class="w-full h-64 bg-gray-800 rounded-xl border border-gray-700 flex items-center justify-center relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover opacity-40" alt="Map">
+                <div class="relative z-10 bg-black/60 backdrop-blur px-6 py-3 rounded-full border border-accent/50 text-accent font-sans font-bold flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                  Tọa độ Độc tôn
                 </div>
              </div>
           </section>

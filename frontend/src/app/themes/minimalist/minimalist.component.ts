@@ -12,8 +12,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [CommonModule, RouterModule, LanguageSelectorComponent, TranslateModule],
   styles: [`
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
     :host {
       --theme-primary: #ffffff;
       --theme-accent: #111827;
