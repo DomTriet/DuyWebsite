@@ -1,19 +1,21 @@
-import { Component, OnInit, inject, ViewContainerRef, ViewChild, Type, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ViewContainerRef, ViewChild, Type, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ThemeStateService } from '../core/services/theme-state.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-theme-container',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <!-- Vị trí để Angular nhúng giao diện Theme vào -->
     <ng-container #themeContainer></ng-container>
     
-    <!-- Hiển thị Loading trong vài mili-giây khi đang tải code JS của Theme -->
-    <div *ngIf="isLoading" class="min-h-screen flex items-center justify-center bg-gray-50">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    <div *ngIf="isLoading" class="min-h-screen bg-white flex flex-col items-center justify-center">
+      <div class="flex flex-col items-center gap-4">
+        <div class="w-12 h-12 border-4 border-gray-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p class="text-gray-600 text-sm">Đang tải...</p>
+      </div>
     </div>
   `
 })
@@ -23,11 +25,15 @@ export class ThemeContainerComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private themeStateService = inject(ThemeStateService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
+  private isDestroyed = false;
   isLoading = true;
 
   ngOnInit() {
+    this.destroyRef.onDestroy(() => this.isDestroyed = true);
+    
     // Lấy toàn bộ Object Project từ ThemeResolver đã cấu hình ở file routing
-    this.route.data.subscribe(data => {
+    this.route.data.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(data => {
       const projectData = data['theme'] || { theme_id: 'minimalist' };
       const themeId = projectData.theme_id || 'minimalist';
       
@@ -53,17 +59,28 @@ export class ThemeContainerComponent implements OnInit {
         componentType = (await import('./minimalist/minimalist.component')).MinimalistComponent;
       }
       
+      // Bỏ qua nếu Component đã bị hủy (người dùng chuyển trang khác) trước khi tải xong Theme JS
+      if (this.isDestroyed) return;
+      
       const componentRef = this.themeContainer.createComponent(componentType);
       // Data Passing: Truyền dữ liệu Project xuống component Theme con
       componentRef.setInput('project', projectData);
     } catch (error) {
       console.error('Lỗi khi nạp theme, chuyển về Minimalist...', error);
+      
+      if (this.isDestroyed) return;
+      
       const fallback = (await import('./minimalist/minimalist.component')).MinimalistComponent;
+      
+      if (this.isDestroyed) return;
+      
       const componentRef = this.themeContainer.createComponent(fallback);
       componentRef.setInput('project', projectData);
     } finally {
-      this.isLoading = false;
-      this.cdr.detectChanges(); // Ép Angular render ngay lập tức sau khi load xong component
+      if (!this.isDestroyed) {
+        this.isLoading = false;
+        this.cdr.detectChanges(); // Ép Angular render ngay lập tức sau khi load xong component
+      }
     }
   }
 }

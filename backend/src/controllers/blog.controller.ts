@@ -52,6 +52,18 @@ export const createBlog = async (req: Request, res: Response, next: NextFunction
 
     if (error) throw error;
     if (userId) await logAction(userId, 'CREATE_BLOG', `Created blog: ${title}`);
+
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('app_notification', {
+        type: 'new_blog',
+        targetRoles: ['admin'],
+        title: status === 'pending' ? 'Bài báo mới chờ duyệt' : 'Bài báo mới',
+        message: status === 'pending' ? `Agent vừa đăng bài viết "${title}" cần duyệt.` : `Bài viết "${title}" vừa được xuất bản.`,
+        link: '/admin/blogs-manage'
+      });
+    }
+
     res.status(201).json({ status: 'success', data });
   } catch (error) { next(error); }
 };

@@ -15,8 +15,6 @@ import { FavoriteService } from '../../core/services/favorite.service';
   standalone: true,
   imports: [CommonModule, RouterModule, LeadFormComponent, AgentCardComponent, TranslateModule],
   styles: [`
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
     :host {
       --theme-primary: #ffffff;
       --theme-accent: #111827;
@@ -145,7 +143,7 @@ export class MinimalistPropertyDetailComponent implements OnInit {
   ngOnInit() {
     const slug = this.route.snapshot.paramMap.get('slug');
     if (slug) {
-      this.api.get<any>(`/properties/${slug}`).subscribe(res => { 
+      this.api.get<any>(`/properties/${slug}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => { 
         this.property = res.data; 
         this.originalProperty = JSON.parse(JSON.stringify(res.data));
         this.isFav = this.favoriteService.isFavorite(this.property.id);
@@ -192,7 +190,7 @@ export class MinimalistPropertyDetailComponent implements OnInit {
       return;
     }
     
-    this.languageService.getDynamicTranslation('property', this.property.id)?.subscribe(res => {
+    this.languageService.getDynamicTranslation('property', this.property.id)?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (!res.fallback) {
         this.property.title = res.data.title;
         this.property.description = res.data.description;

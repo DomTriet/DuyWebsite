@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { SocketService } from '../../core/services/socket.service';
 import { Subscription } from 'rxjs';
+import { NotificationService } from '../../core/services/notification.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,14 +47,13 @@ import { Subscription } from 'rxjs';
 
       <!-- Leads Stat (Real-time) -->
       <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 border-l-4 border-l-green-500 hover:shadow-md transition-shadow relative overflow-hidden">
-        <div *ngIf="hasNewLead" class="absolute top-0 right-0 w-2 h-2 bg-rose-500 rounded-full mt-2 mr-2 animate-ping"></div>
         <div class="flex items-center">
           <div class="p-3 rounded-full bg-green-50 text-green-600 mr-4">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           </div>
           <div>
             <p class="text-sm font-medium text-gray-500">Khách hàng (Leads)</p>
-            <p class="text-2xl font-bold text-gray-800 transition-all duration-500" [class.text-green-600]="hasNewLead">{{ stats.leads || 0 }}</p>
+            <p class="text-2xl font-bold text-gray-800 transition-all duration-500">{{ stats.leads || 0 }}</p>
           </div>
         </div>
       </div>
@@ -148,34 +149,49 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private socketService = inject(SocketService);
   private cdr = inject(ChangeDetectorRef);
+  private platformId = inject(PLATFORM_ID);
+  private destroyRef = inject(DestroyRef);
+  private notificationService = inject(NotificationService);
 
   stats: any = null;
   isLoading = true;
-  hasNewLead = false;
   private socketSub?: Subscription;
 
-  get isAdmin() { return this.authService.currentUser?.role === 'admin'; }
+  get isAdmin() {
+    if (isPlatformBrowser(this.platformId)) {
+      return this.authService.currentUser?.role === 'admin';
+    }
+    return false;
+  }
 
   ngOnInit() {
-    this.api.get<any>('/stats').subscribe({
-      next: (res) => {
-        this.stats = res.data || res;
-        this.isLoading = false;
-        this.cdr.detectChanges(); // Ép Angular cập nhật giao diện
-      },
-      error: (err) => {
-        console.error('Lỗi khi tải dữ liệu thống kê:', err);
-        this.stats = {}; // Gán object rỗng để hiển thị các số 0, tránh kẹt Skeleton Loading
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      }
-    });
-    this.socketSub = this.socketService.listen('new_lead').subscribe(() => {
-      if (this.stats) { this.stats.leads = (this.stats.leads || 0) + 1; }
-      this.hasNewLead = true;
-      this.cdr.detectChanges();
-      setTimeout(() => { this.hasNewLead = false; this.cdr.detectChanges(); }, 3000);
-    });
+    // CHỈ GỌI API KHI ĐANG Ở TRÌNH DUYỆT (Client-side)
+    if (isPlatformBrowser(this.platformId)) {
+      this.api.get<any>('/stats').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (res) => {
+          this.stats = res.data || res;
+          this.isLoading = false;
+          this.cdr.detectChanges(); // Ép Angular cập nhật giao diện
+        },
+        error: (err) => {
+          console.error('Lỗi khi tải dữ liệu thống kê:', err);
+          this.stats = {}; // Gán object rỗng để hiển thị các số 0, tránh kẹt Skeleton Loading
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+      this.socketSub = this.socketService.listen('app_notification').subscribe((notification: any) => {
+        if (this.stats) { 
+           if (notification.type === 'new_lead') this.stats.leads = (this.stats.leads || 0) + 1; 
+           if (notification.type === 'new_post') this.stats.pending_posts = (this.stats.pending_posts || 0) + 1; 
+           this.cdr.detectChanges(); 
+        }
+      });
+    } else {
+      // On server, we start with loading state and do nothing else.
+      // The client will take over and fetch the real data.
+      this.isLoading = true;
+    }
   }
 
   ngOnDestroy() { if (this.socketSub) this.socketSub.unsubscribe(); }

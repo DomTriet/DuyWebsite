@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../core/services/api.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-forum-detail',
@@ -71,6 +72,7 @@ export class ForumDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   post: any = null;
   comments: any[] = [];
@@ -82,11 +84,11 @@ export class ForumDetailComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.api.get<any>(`/forum/${id}`).subscribe({
+      this.api.get<any>(`/forum/${id}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res) => { this.post = res.data; this.cdr.markForCheck(); },
         error: () => { this.cdr.markForCheck(); }
       });
-      this.api.get<any>(`/forum/${id}/comments`).subscribe({
+      this.api.get<any>(`/forum/${id}/comments`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (res) => { this.comments = res.data || []; this.cdr.markForCheck(); },
         error: () => { this.cdr.markForCheck(); }
       });
@@ -96,7 +98,7 @@ export class ForumDetailComponent implements OnInit {
   toggleLike() {
     this.isLiked = !this.isLiked; // Optimistic UI: Đổi UI ngay lập tức
     this.cdr.markForCheck();
-    this.api.post(`/forum/${this.post.id}/react`, {}).subscribe({ 
+    this.api.post(`/forum/${this.post.id}/react`, {}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({ 
       next: () => { this.cdr.markForCheck(); },
       error: () => { this.isLiked = !this.isLiked; this.cdr.markForCheck(); } 
     }); // Rollback nếu lỗi
@@ -105,7 +107,7 @@ export class ForumDetailComponent implements OnInit {
   submitComment() {
     if (this.commentForm.invalid) return;
     this.isSubmitting = true;
-    this.api.post<any>(`/forum/${this.post.id}/comments`, this.commentForm.value).subscribe({
+    this.api.post<any>(`/forum/${this.post.id}/comments`, this.commentForm.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         // Immutable array update + CDR ép UI làm mới ngay lập tức
         this.comments = [...this.comments, { ...res.data, profiles: { username: 'Bạn (Vừa xong)' }, created_at: new Date() }];

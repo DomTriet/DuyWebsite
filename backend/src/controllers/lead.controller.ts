@@ -113,7 +113,15 @@ export const submitLead = async (req: Request, res: Response, next: NextFunction
     // 1. Insert thông tin Lead vào Database
     const { data: lead, error } = await supabase
       .from('leads')
-      .insert([{ customer_name, customer_email, customer_phone, message, property_id, agent_id }])
+      .insert([{
+        customer_name,
+        customer_email,
+        customer_phone,
+        message,
+        property_id,
+        // Đảm bảo agent_id là NULL nếu không được cung cấp, tránh lỗi với RLS Policy quá chặt chẽ
+        agent_id: agent_id || null
+      }])
       .select()
       .single();
 
@@ -143,11 +151,17 @@ export const submitLead = async (req: Request, res: Response, next: NextFunction
       }
     }
 
-    // 4. Bắn thông báo Real-time (Socket.io) cho Admin/Agent đang online trên Dashboard
+    // 4. Bắn thông báo Real-time
     const io = req.app.get('io');
     if (io) {
-      io.emit('new_lead', { customer_name, property_id, agent_id, status: 'new' });
-      console.log(`[Socket.io] ⚡ Đã phát sự kiện new_lead cho khách hàng: ${customer_name}`);
+      io.emit('app_notification', {
+        type: 'new_lead',
+        targetRoles: agent_id ? ['admin', 'agent'] : ['admin'],
+        targetUserId: agent_id || null,
+        title: 'Khách hàng mới!',
+        message: `Khách hàng ${customer_name} vừa gửi yêu cầu tư vấn.`,
+        link: '/admin/leads'
+      });
     }
 
     res.status(201).json({ 

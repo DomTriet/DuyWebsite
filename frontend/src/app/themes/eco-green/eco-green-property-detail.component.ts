@@ -15,8 +15,6 @@ import { FavoriteService } from '../../core/services/favorite.service';
   standalone: true,
   imports: [CommonModule, RouterModule, LeadFormComponent, AgentCardComponent, TranslateModule],
   styles: [`
-    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
-    
     :host {
       --theme-primary: #f0fdf4;
       --theme-accent: #15803d;

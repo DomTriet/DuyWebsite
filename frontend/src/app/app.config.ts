@@ -7,6 +7,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 import viTrans from '../assets/i18n/vi.json';
 import enTrans from '../assets/i18n/en.json';
@@ -45,7 +46,9 @@ export const appConfig: ApplicationConfig = {
           provide: TranslateLoader,
           useFactory: HttpLoaderFactory,
         }
-      })
-    )
+      }),
+    ),
+    // Kích hoạt Animations (Dùng Async để tối ưu bundle size)
+    provideAnimations()
   ]
 };
