@@ -115,7 +115,8 @@ import { Observable } from 'rxjs';
               {{ 'NAVBAR.LOGIN' | translate }}
             </a>
             <a routerLink="/auth/register"
-               style="background:#0D0D0D; color:#F7F6F3; padding:11px 16px; border-radius:8px; font-size:0.85rem; font-weight:700; text-decoration:none; transition:background 0.2s; min-height:44px; display:inline-flex; align-items:center;"
+               class="hidden md:inline-flex items-center"
+               style="background:#0D0D0D; color:#F7F6F3; padding:11px 16px; border-radius:8px; font-size:0.85rem; font-weight:700; text-decoration:none; transition:background 0.2s; min-height:44px;"
                onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0D0D0D'">
               {{ 'NAVBAR.REGISTER' | translate }}
             </a>

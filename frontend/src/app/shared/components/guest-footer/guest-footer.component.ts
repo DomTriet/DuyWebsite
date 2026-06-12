@@ -51,7 +51,7 @@ import { Observable } from 'rxjs';
             <ul class="space-y-2 text-sm">
               <li style="white-space:nowrap;">📞 0975 982 592</li>
               <li style="white-space:nowrap; padding-left:1.4rem;">0983 123 306</li>
-              <li>✉️ bdsdiemtam&#64;gmail.com</li>
+              <li style="display:flex; align-items:flex-start; gap:4px;"><span style="flex-shrink:0;">✉️</span><span style="word-break:break-all;">bdsdiemtam&#64;gmail.com</span></li>
               <li>📍 TP. Hồ Chí Minh</li>
             </ul>
           </div>
