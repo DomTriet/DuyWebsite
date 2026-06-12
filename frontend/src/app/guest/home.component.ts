@@ -73,17 +73,24 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
       </section>
 
       <!-- ── Hero + Search ── -->
-      <section style="background:#F7F6F3; padding: clamp(52px,10vw,96px) 16px clamp(48px,9vw,80px);">
-        <div class="max-w-5xl mx-auto">
+      <section style="position:relative; background:#0f0d0a; overflow:hidden;">
+        <!-- Background image -->
+        <div style="position:absolute; inset:0; background:url('assets/images/hero-bg.png') center/cover no-repeat; transform:scale(1.02);"></div>
+        <!-- Vignette: tối dần từ rìa vào, trung tâm rõ ảnh -->
+        <div style="position:absolute; inset:0; background: radial-gradient(ellipse at 50% 45%, transparent 18%, rgba(0,0,0,0.42) 55%, rgba(0,0,0,0.78) 100%);"></div>
+        <!-- Top + bottom fade -->
+        <div style="position:absolute; inset:0; background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 22%, transparent 68%, rgba(0,0,0,0.55) 100%);"></div>
+
+        <div class="max-w-5xl mx-auto" style="position:relative; z-index:2; padding: clamp(80px,12vw,120px) 16px clamp(64px,10vw,96px);">
 
           <div class="text-center reveal" style="margin-bottom:52px;">
-            <p style="font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#999; margin-bottom:18px;">
+            <p style="font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:18px;">
               Bất Động Sản Điểm Tâm
             </p>
-            <h1 class="hero-title" style="font-size: clamp(2.6rem, 7vw, 5.5rem); font-weight: 900; color: #0D0D0D; margin-bottom: 20px;">
+            <h1 class="hero-title" style="font-size: clamp(2.6rem, 7vw, 5.5rem); font-weight: 900; color: #F7F6F3; margin-bottom: 20px; text-shadow: 0 2px 24px rgba(0,0,0,0.45);">
               {{ 'HOME.HERO_TITLE' | translate }}
             </h1>
-            <p style="font-size: 1.05rem; color: #6B7280; max-width: 500px; margin: 0 auto; line-height: 1.75;">
+            <p style="font-size: 1.05rem; color: rgba(247,246,243,0.82); max-width: 500px; margin: 0 auto; line-height: 1.75; text-shadow: 0 1px 10px rgba(0,0,0,0.35);">
               {{ 'HOME.HERO_DESC' | translate }}
             </p>
           </div>
