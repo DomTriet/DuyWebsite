@@ -436,7 +436,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   goToPage(page: number) { this.onSearch(page); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
   clearSearch() {
-    this.searchForm.reset({ sort: 'newest' });
+    this.searchForm.reset({
+      search: '', min_price: '', max_price: '',
+      bedrooms: '', property_type: '', min_area: '', max_area: '',
+      sort: 'newest'
+    });
     this.searchedProperties = [];
     this.hasSearched = false;
     this.suggestions = [];
