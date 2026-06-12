@@ -29,7 +29,7 @@ import { take } from 'rxjs/operators';
           <p class="text-gray-500 text-sm">Nền tảng bất động sản cao cấp</p>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-10">
 
           <!-- Header -->
           <div class="text-center mb-8">
@@ -72,7 +72,7 @@ import { take } from 'rxjs/operators';
               <input formControlName="email" id="email" type="email"
                      [class.field-error]="f['email'].invalid && f['email'].touched"
                      (input)="errorMessage=''"
-                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
+                     class="w-full px-4 py-3 min-h-[44px] border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
                      placeholder="your@email.com">
               <p *ngIf="f['email'].invalid && f['email'].touched" class="text-red-500 text-xs mt-1.5 flex items-center gap-1">
                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
@@ -82,7 +82,7 @@ import { take } from 'rxjs/operators';
 
             <!-- Submit -->
             <button [disabled]="isLoading || countdown > 0" type="submit"
-                    class="w-full bg-gray-900 hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-2">
+                    class="w-full bg-gray-900 hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 min-h-[44px] rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-2">
               <span *ngIf="isLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               <ng-container *ngIf="isLoading">Đang gửi yêu cầu...</ng-container>
               <ng-container *ngIf="!isLoading && countdown === 0">Gửi liên kết đặt lại mật khẩu</ng-container>

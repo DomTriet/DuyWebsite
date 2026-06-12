@@ -28,7 +28,7 @@ import { CustomValidators } from '../shared/validators/custom.validators';
           <p class="text-gray-500 text-sm">Nền tảng bất động sản cao cấp</p>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-10">
 
           <!-- Header -->
           <div class="text-center mb-8">
@@ -75,7 +75,7 @@ import { CustomValidators } from '../shared/validators/custom.validators';
                 <input formControlName="password" id="password"
                        [type]="showPwd ? 'text' : 'password'"
                        [class.field-error]="f['password'].invalid && f['password'].touched"
-                       class="w-full px-4 py-3 pr-11 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
+                       class="w-full px-4 py-3 pr-11 min-h-[44px] border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
                        placeholder="Tối thiểu 6 ký tự">
                 <button type="button" (click)="showPwd=!showPwd"
                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
@@ -101,7 +101,7 @@ import { CustomValidators } from '../shared/validators/custom.validators';
                 <input formControlName="confirm_password" id="confirm_password"
                        [type]="showConfirm ? 'text' : 'password'"
                        [class.field-error]="confirmHasError"
-                       class="w-full px-4 py-3 pr-11 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
+                       class="w-full px-4 py-3 pr-11 min-h-[44px] border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
                        placeholder="Nhập lại mật khẩu mới">
                 <button type="button" (click)="showConfirm=!showConfirm"
                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
@@ -122,7 +122,7 @@ import { CustomValidators } from '../shared/validators/custom.validators';
 
             <!-- Submit -->
             <button type="submit" [disabled]="isLoading"
-                    class="w-full bg-gray-900 hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-6">
+                    class="w-full bg-gray-900 hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 min-h-[44px] rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-6">
               <span *ngIf="isLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               {{ isLoading ? 'Đang cập nhật...' : 'Đặt mật khẩu mới' }}
             </button>

@@ -30,7 +30,7 @@ import { Observable } from 'rxjs';
     .nav-link.active { color: #0D0D0D; }
     .nav-link.active::after { width: 100%; }
     .acct-menu {
-      position: absolute; right: 0; top: calc(100% + 8px); min-width: 200px;
+      position: absolute; right: 0; top: calc(100% + 8px); min-width: 200px; max-width: calc(100vw - 24px);
       background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.12); overflow: hidden; z-index: 60;
       animation: acctPop .16s ease;
@@ -73,7 +73,7 @@ import { Observable } from 'rxjs';
               {{ 'NAVBAR.LOGIN' | translate }}
             </a>
             <a routerLink="/auth/register"
-               style="background:#0D0D0D; color:#F7F6F3; padding:8px 16px; border-radius:8px; font-size:0.85rem; font-weight:700; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0D0D0D'">
+               style="background:#0D0D0D; color:#F7F6F3; padding:11px 16px; border-radius:8px; font-size:0.85rem; font-weight:700; text-decoration:none; transition:background 0.2s; min-height:44px; display:inline-flex; align-items:center;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0D0D0D'">
               {{ 'NAVBAR.REGISTER' | translate }}
             </a>
           </ng-container>

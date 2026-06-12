@@ -41,12 +41,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
       </section>
 
       <!-- Content -->
-      <main class="flex-1 max-w-7xl mx-auto w-full px-6" style="padding-top:72px; padding-bottom:80px;">
+      <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6" style="padding-top:56px; padding-bottom:80px;">
 
         <!-- Skeleton -->
         <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div *ngFor="let i of [1,2,3,4,5,6]" class="animate-pulse">
-            <div style="background:#EBEBEB; border-radius:18px; height:220px; margin-bottom:16px;"></div>
+            <div style="background:#EBEBEB; border-radius:18px; height:clamp(180px,55vw,220px); margin-bottom:16px;"></div>
             <div style="background:#EBEBEB; border-radius:5px; height:12px; width:80px; margin-bottom:12px;"></div>
             <div style="background:#EBEBEB; border-radius:5px; height:20px; width:75%; margin-bottom:8px;"></div>
             <div style="background:#EBEBEB; border-radius:5px; height:12px; width:100%; margin-bottom:6px;"></div>
@@ -57,7 +57,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
         <!-- Grid -->
         <div *ngIf="!isLoading && blogs.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <article *ngFor="let blog of blogs" class="group blog-card">
-            <a [routerLink]="['/blogs', blog.slug]" style="display:block; position:relative; height:220px; overflow:hidden; background:#F0EFE9; flex-shrink:0;">
+            <a [routerLink]="['/blogs', blog.slug]" style="display:block; position:relative; height:clamp(180px,55vw,220px); overflow:hidden; background:#F0EFE9; flex-shrink:0;">
               <img *ngIf="getThumbnail(blog)" [src]="getThumbnail(blog)"
                    style="width:100%;height:100%;object-fit:cover;transition:transform 0.6s cubic-bezier(0.16,1,0.3,1);" class="group-hover:scale-105"
                    [alt]="blog.title" loading="lazy">
@@ -74,7 +74,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
               <h2 class="blog-title" style="font-size:1.15rem; font-weight:700; color:#0D0D0D; line-height:1.4; margin-bottom:16px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; flex:1; transition:color 0.2s; font-style:italic;" class="group-hover:text-gray-500">
                 <a [routerLink]="['/blogs', blog.slug]" style="text-decoration:none; color:inherit;">{{ blog.title }}</a>
               </h2>
-              <a [routerLink]="['/blogs', blog.slug]" class="read-more" style="margin-top:auto; transition:gap 0.2s;">
+              <a [routerLink]="['/blogs', blog.slug]" class="read-more" style="margin-top:auto; transition:gap 0.2s; min-height:44px; display:inline-flex; align-items:center;">
                 {{ 'BLOG_LIST.READ_MORE' | translate }}
                 <svg style="width:14px;height:14px;transition:transform 0.2s;" class="group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
               </a>

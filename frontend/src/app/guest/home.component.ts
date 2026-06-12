@@ -19,7 +19,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
     :host { display: block; }
     .hero-title { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.035em; line-height: 1.05; }
     .section-title { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; }
-    .field { border: 1.5px solid #E5E4E0; border-radius: 10px; padding: 11px 14px; font-size: 0.875rem; background: #fff; transition: border-color 0.2s; width: 100%; color: #111; appearance: none; }
+    .field { border: 1.5px solid #E5E4E0; border-radius: 10px; padding: 12px 14px; font-size: 0.875rem; background: #fff; transition: border-color 0.2s; width: 100%; color: #111; appearance: none; min-height: 44px; }
     .field:focus { outline: none; border-color: #111; }
     .search-wrap { box-shadow: 0 2px 40px rgba(0,0,0,0.08); }
     .suggest-item:hover { background: #F8F7F5; }
@@ -29,7 +29,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
     .proj-card { border: 1px solid #EBEBEB; border-radius: 20px; background: #fff; transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s; display: flex; flex-direction: column; }
     .proj-card:hover { transform: translateY(-6px); box-shadow: 0 24px 56px rgba(0,0,0,0.11); }
     .price-tag { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; color: #0D0D0D; }
-    .brand-btn { display: block; text-align: center; background: #0D0D0D; color: #fff !important; border-radius: 10px; font-weight: 700; font-size: 0.875rem; padding: 11px 20px; border: none; cursor: pointer; transition: background 0.2s; text-decoration: none; }
+    .brand-btn { display: block; text-align: center; background: #0D0D0D; color: #fff !important; border-radius: 10px; font-weight: 700; font-size: 0.875rem; padding: 12px 20px; border: none; cursor: pointer; transition: background 0.2s; text-decoration: none; min-height: 44px; }
     .brand-btn:hover { background: #2A2A2A; }
     .reveal { animation: revealUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
     @keyframes revealUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
@@ -73,7 +73,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
       </section>
 
       <!-- ── Hero + Search ── -->
-      <section style="background:#F7F6F3; padding: 96px 24px 80px;">
+      <section style="background:#F7F6F3; padding: clamp(52px,10vw,96px) 16px clamp(48px,9vw,80px);">
         <div class="max-w-5xl mx-auto">
 
           <div class="text-center reveal" style="margin-bottom:52px;">
@@ -212,7 +212,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
               </a>
               <button (click)="toggleFav($event, prop.id)"
                       [attr.aria-label]="isFav(prop.id) ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'"
-                      style="position:absolute;top:12px;right:12px;padding:8px;border-radius:50%;background:rgba(255,255,255,0.9);backdrop-filter:blur(4px);border:none;cursor:pointer;line-height:0;">
+                      style="position:absolute;top:10px;right:10px;padding:11px;border-radius:50%;background:rgba(255,255,255,0.9);backdrop-filter:blur(4px);border:none;cursor:pointer;line-height:0;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;">
                 <svg aria-hidden="true" [ngClass]="isFav(prop.id) ? 'text-red-500 fill-current' : 'text-gray-400'" style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
@@ -245,7 +245,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
         <!-- Pagination -->
         <div *ngIf="!isSearching && searchMeta.totalPages > 1" style="display:flex;justify-content:center;gap:8px;margin-top:48px;">
           <button *ngFor="let p of paginationPages" (click)="goToPage(p)"
-                  style="width:36px;height:36px;border-radius:10px;font-size:0.875rem;font-weight:700;border:none;cursor:pointer;transition:all 0.15s;"
+                  style="width:44px;height:44px;border-radius:10px;font-size:0.875rem;font-weight:700;border:none;cursor:pointer;transition:all 0.15s;"
                   [style.background]="p === searchMeta.page ? '#0D0D0D' : '#F5F4F2'"
                   [style.color]="p === searchMeta.page ? '#fff' : '#374151'">
             {{ p }}

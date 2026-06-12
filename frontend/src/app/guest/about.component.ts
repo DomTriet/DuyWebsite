@@ -24,7 +24,7 @@ import { GuestFooterComponent } from '../shared/components/guest-footer/guest-fo
 
       <!-- Hero -->
       <section style="background:#F7F6F3; border-bottom:1px solid #EBEBEB; padding:80px 24px;">
-        <div style="max-width:1152px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;" class="md:grid-cols-2 grid-cols-1">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-center">
           <div>
             <p style="font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#999; margin-bottom:16px;">
               {{ 'NAVBAR.ABOUT' | translate }}
@@ -32,7 +32,7 @@ import { GuestFooterComponent } from '../shared/components/guest-footer/guest-fo
             <h1 class="page-title" style="font-size:clamp(2.2rem,5.5vw,3.8rem); font-weight:700; color:#0D0D0D; margin-bottom:18px; line-height:1.1;">{{ 'ABOUT_PAGE.HERO_TITLE' | translate }}</h1>
             <p style="font-size:1.05rem; color:#6B7280; line-height:1.8;">{{ 'ABOUT_PAGE.HERO_SUB' | translate }}</p>
           </div>
-          <div style="border-radius:20px; overflow:hidden; height:320px; box-shadow:0 24px 60px rgba(0,0,0,0.12);">
+          <div style="border-radius:20px; overflow:hidden; height:clamp(200px,55vw,320px); box-shadow:0 24px 60px rgba(0,0,0,0.12);">
             <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=80"
                  style="width:100%; height:100%; object-fit:cover;" alt="Về chúng tôi" loading="eager">
           </div>
@@ -60,7 +60,7 @@ import { GuestFooterComponent } from '../shared/components/guest-footer/guest-fo
 
       <!-- Mission & Vision -->
       <section style="background:#F7F6F3; border-top:1px solid #EBEBEB; border-bottom:1px solid #EBEBEB; padding:80px 24px;">
-        <div style="max-width:1152px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:24px;" class="md:grid-cols-2 grid-cols-1">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           <div style="background:#fff; border-radius:20px; border:1px solid #EBEBEB; padding:40px;">
             <p style="font-size:0.65rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#999; margin-bottom:14px;">{{ 'ABOUT_PAGE.MISSION_LABEL' | translate }}</p>
             <h3 class="page-title" style="font-size:1.5rem; font-weight:700; color:#0D0D0D; margin-bottom:14px;">{{ 'ABOUT_PAGE.MISSION_TITLE' | translate }}</h3>

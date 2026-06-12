@@ -27,7 +27,7 @@ import { HttpErrorResponse } from '@angular/common/http';
           <p class="text-gray-500 text-sm">Nền tảng bất động sản cao cấp</p>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-10">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-10">
           <h2 class="text-2xl font-black text-gray-900 mb-8 text-center">Đăng nhập</h2>
 
           <!-- Error Banner -->
@@ -49,7 +49,7 @@ import { HttpErrorResponse } from '@angular/common/http';
               <input formControlName="email" id="email" type="email"
                      [class.field-error]="f['email'].invalid && f['email'].touched"
                      (input)="errorMessage=''"
-                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
+                     class="w-full px-4 py-3 min-h-[44px] border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
                      placeholder="your@email.com">
               <p *ngIf="f['email'].invalid && f['email'].touched" class="text-red-500 text-xs mt-1.5 flex items-center gap-1">
                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
@@ -68,7 +68,7 @@ import { HttpErrorResponse } from '@angular/common/http';
                        [type]="showPwd ? 'text' : 'password'"
                        [class.field-error]="f['password'].invalid && f['password'].touched"
                        (input)="errorMessage=''"
-                       class="w-full px-4 py-3 pr-11 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
+                       class="w-full px-4 py-3 pr-11 min-h-[44px] border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all text-sm"
                        placeholder="••••••••">
                 <button type="button" (click)="showPwd=!showPwd"
                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors">
@@ -89,7 +89,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
             <!-- Submit -->
             <button [disabled]="isLoading" type="submit"
-                    class="w-full bg-gray-900 hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-6">
+                    class="w-full bg-gray-900 hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 px-4 min-h-[44px] rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-6">
               <span *ngIf="isLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               {{ isLoading ? 'Đang xác thực...' : 'Đăng nhập' }}
             </button>

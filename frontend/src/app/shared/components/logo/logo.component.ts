@@ -38,7 +38,7 @@ import { CommonModule } from '@angular/common';
 
     <!-- Compact SVG: horizontal lockup cropped from the logo SVG (nav / footer) -->
     <div *ngIf="variant === 'compact'" class="logo-compact" [style.width]="compactWidth">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="155 355 490 115" [attr.height]="compactHeight">
+      <svg xmlns="https://www.w3.org/2000/svg" viewBox="155 355 490 115" [attr.height]="compactHeight">
         <defs>
           <style>
             @import url('https://fonts.googleapis.com/css2?family=Lora:wght@600&amp;family=Space+Grotesk:wght@400;700&amp;display=swap');
