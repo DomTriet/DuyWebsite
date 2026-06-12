@@ -1,7 +1,7 @@
 -- Bảng forum_posts
 CREATE TABLE public.forum_posts (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
     author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE public.forum_posts (
 -- Bảng forum_comments
 CREATE TABLE public.forum_comments (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
     post_id UUID REFERENCES public.forum_posts(id) ON DELETE CASCADE,
     author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE public.forum_reactions (
     post_id UUID REFERENCES public.forum_posts(id) ON DELETE CASCADE,
     user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
     reaction_type TEXT DEFAULT 'like',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
     UNIQUE(post_id, user_id) -- Mỗi user chỉ được like 1 lần cho 1 bài
 );
 
@@ -35,5 +35,5 @@ CREATE TABLE public.forum_reports (
     reporter_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     reason TEXT NOT NULL,
     status TEXT DEFAULT 'pending',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );

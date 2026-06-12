@@ -38,4 +38,23 @@ Không fix cứng (hardcode) văn bản vào HTML. Luôn sử dụng Pipe `trans
 <button>{{ 'THEME.CONTACT_AGENT' | translate }}</button>
 ```
 
+---
+
+## 4. Custom Theme — Kiến trúc Block-based (v2)
+
+Ngoài 3 theme cố định (`minimalist`, `luxury`, `eco-green`), hệ thống có theme **`custom`** render hoàn toàn từ cấu hình `projects.layout_config` do Admin tự dựng.
+
+**Các file liên quan:**
+*   `frontend/src/app/themes/custom/custom-layout.model.ts` — định nghĩa `LayoutConfig`, `LayoutBlock`, danh sách block (`BLOCK_PALETTE`), font (`FONT_OPTIONS`), `defaultLayout()`, `normalizeLayout()`.
+*   `frontend/src/app/themes/custom/custom.component.ts` — `CustomThemeComponent`: đọc `layout_config`, áp tokens (màu/font) qua biến CSS trong `:host`, render block theo `[ngSwitch]="block.type"`. Tái dùng logic dữ liệu của theme minimalist (properties/facets/categories/sections/blogs/favorites).
+*   `frontend/src/app/admin/pages/theme-builder.component.ts` — `ThemeBuilderComponent`: trình dựng 2 cột (điều khiển + live preview `<app-custom-theme>`), kéo-thả block bằng HTML5 native, lưu qua `PUT /projects/:id`.
+
+**Thêm 1 loại block mới:** bổ sung `BlockType` + `defaultBlock()` trong model → thêm `case` render trong `custom.component.ts` → thêm panel sửa `props` trong `theme-builder.component.ts`.
+
+**Container:**
+*   `theme-container.component.ts`: nhánh `themeId === 'custom'` → lazy-load `CustomThemeComponent`.
+*   `theme-property-container.component.ts`: dự án custom dùng `layout_config.basePropertyTheme` (mặc định `minimalist`) cho trang chi tiết BĐS.
+
+> Bản dịch nội dung động của Section (`project_section`) được các theme đọc qua `LanguageService.getDynamicTranslation('project_section', id)` và chỉ áp khi bản dịch đã được Admin duyệt.
+
 *Tài liệu sẽ liên tục được cập nhật trong quá trình triển khai Giai đoạn 4.*

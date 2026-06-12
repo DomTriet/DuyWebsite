@@ -8,7 +8,7 @@ CREATE TABLE public.categories (
 -- Bảng properties: Bảng cốt lõi
 CREATE TABLE public.properties (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
     project_id UUID REFERENCES public.projects(id) ON DELETE SET NULL,
     category_id INTEGER REFERENCES public.categories(id) ON DELETE SET NULL,
     title TEXT NOT NULL,
@@ -19,7 +19,8 @@ CREATE TABLE public.properties (
     created_by UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     agent_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     status TEXT DEFAULT 'available',
-    is_deleted BOOLEAN DEFAULT false -- Hỗ trợ Soft Delete
+    is_deleted BOOLEAN DEFAULT false, -- Hỗ trợ Soft Delete
+    detail_theme TEXT -- Theme riêng cho trang chi tiết BĐS (NULL = theo dự án)
 );
 
 -- Đánh Index trên cột JSONB để tăng tốc độ tìm kiếm theo thuộc tính mở rộng
@@ -32,5 +33,5 @@ CREATE TABLE public.property_media (
     media_url TEXT NOT NULL,
     media_type TEXT DEFAULT 'image',
     is_thumbnail BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );

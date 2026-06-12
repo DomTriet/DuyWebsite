@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-leads-manage',
@@ -50,14 +51,14 @@ import { ApiService } from '../../core/services/api.service';
                   <p class="text-sm font-bold text-gray-900">{{ lead.customer_name }}</p>
                   <p class="text-xs text-gray-600">{{ lead.customer_phone || '-' }} • {{ lead.customer_email || '-' }}</p>
                 </td>
-                <td class="px-6 py-4 text-sm text-indigo-600 font-bold">
+                <td class="px-6 py-4 text-sm text-gray-700 font-bold">
                   {{ lead.properties?.title || '(Đã xóa)' }}
                 </td>
                 <td class="px-6 py-4">
-                  <textarea [(ngModel)]="lead.notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none" placeholder="Ghi chú..."></textarea>
+                  <textarea [(ngModel)]="lead.notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none resize-none" placeholder="Ghi chú..."></textarea>
                 </td>
                 <td class="px-6 py-4">
-                  <select [(ngModel)]="lead.status" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-600 outline-none">
+                  <select [(ngModel)]="lead.status" class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-gray-900 outline-none">
                     <option value="new">Mới</option>
                     <option value="contacted">Đã liên hệ</option>
                     <option value="interested">Đang tư vấn</option>
@@ -66,7 +67,7 @@ import { ApiService } from '../../core/services/api.service';
                   </select>
                 </td>
                 <td class="px-6 py-4 text-right">
-                  <button (click)="updateLead(lead)" class="px-4 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg font-medium text-sm transition-colors">
+                  <button (click)="updateLead(lead)" class="px-4 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-100 rounded-lg font-medium text-sm transition-colors">
                     Lưu
                   </button>
                 </td>
@@ -81,6 +82,7 @@ import { ApiService } from '../../core/services/api.service';
 export class LeadsManageComponent implements OnInit {
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
+  private toast = inject(ToastService);
   leads: any[] = [];
   isLoading = true;
 
@@ -97,8 +99,8 @@ export class LeadsManageComponent implements OnInit {
   }
   updateLead(lead: any) {
     this.api.put<any>(`/leads/${lead.id}`, { status: lead.status, notes: lead.notes }).subscribe({
-      next: () => alert('Cập nhật trạng thái và ghi chú thành công!'),
-      error: (err) => alert('Lỗi: ' + (err.error?.error || 'Lỗi hệ thống'))
+      next: () => this.toast.success('Cập nhật trạng thái và ghi chú thành công!'),
+      error: (err) => this.toast.error('Lỗi: ' + (err.error?.error || 'Lỗi hệ thống'))
     });
   }
 }

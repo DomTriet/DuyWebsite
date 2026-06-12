@@ -3,6 +3,7 @@ CREATE TABLE public.blogs (
     title TEXT NOT NULL,
     slug TEXT UNIQUE NOT NULL,
     property_id UUID REFERENCES public.properties(id) ON DELETE SET NULL,
+    project_id UUID REFERENCES public.projects(id) ON DELETE SET NULL, -- Blog gắn trực tiếp với 1 dự án
     author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
     content_blocks JSONB DEFAULT '[]'::jsonb, -- Lưu trữ Layout Builder dưới dạng Mảng JSON
     status TEXT CHECK (status IN ('draft', 'pending', 'published')) DEFAULT 'draft',

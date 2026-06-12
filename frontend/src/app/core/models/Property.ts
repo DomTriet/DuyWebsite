@@ -19,6 +19,8 @@ export interface Property {
   agent_id?: string;
   status: string;
   is_deleted: boolean;
+  address?: string;
+  map_embed_url?: string;
   property_media?: PropertyMedia[];
   categories?: { name: string };
   projects?: { name: string, theme_id: string };

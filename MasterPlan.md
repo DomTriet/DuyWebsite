@@ -397,6 +397,7 @@
 * [ ] Chạy Google Lighthouse quét điểm SEO, Accessibility, Performance (Mục tiêu > 90 điểm).
 
 ### 5.6. Chốt sổ Giai đoạn 5 (Documentation)
-* [ ] Hoàn thiện tài liệu nghiệm thu (Checklist Testing, Config Vercel/Railway) vào file `docs/PHASE_5_DEPLOY_QA.md`.
-* [ ] Cập nhật hướng dẫn triển khai lên Vercel và Railway vào `docs/DEPLOYMENT.md`.
-* [ ] Rà soát, duyệt lại và đóng băng tất cả các tài liệu hệ thống trước khi Go-live.
+* [x] Hoàn thiện tài liệu nghiệm thu (Checklist Testing, Config Vercel/Railway) vào file `docs/PHASE_5_DEPLOY_QA.md`.
+* [x] Cập nhật hướng dẫn triển khai lên Vercel và Railway vào `docs/DEPLOYMENT.md`.
+* [x] Cập nhật tài liệu hệ thống phản ánh nâng cấp v2 (Custom Theme, Section dự án, Blog-dự án, i18n, Dịch thuật gom nhóm) + tạo `HANDOVER.md`.
+* [ ] *(Khách thực hiện)* Chạy checklist QA `5.1–5.4` trên môi trường live + đóng băng tài liệu trước khi Go-live.

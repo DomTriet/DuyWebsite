@@ -1,0 +1,26 @@
+{
+  "name": "duywebsite",
+  "version": "1.0.0",
+  "description": "[![Tech Stack](https://img.shields.io/badge/Stack-Angular%20%7C%20Node.js%20%7C%20Supabase-blue)](https://github.com/your-username/your-repo)\r [![Architecture](https://img.shields.io/badge/Architecture-GUI--BLL--DAL-orange)](#system-architecture)\r [![Deployment](https://img.shields.io/badge/Deploy-Vercel%20%26%20Railway-green)](#deployment)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DomTriet/DuyWebsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DomTriet/DuyWebsite/issues"
+  },
+  "homepage": "https://github.com/DomTriet/DuyWebsite#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
+  }
+}

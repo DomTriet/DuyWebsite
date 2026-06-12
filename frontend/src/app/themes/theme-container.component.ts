@@ -1,6 +1,6 @@
-import { Component, OnInit, inject, ViewContainerRef, ViewChild, Type, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { Component, OnInit, inject, ViewContainerRef, ViewChild, Type, ChangeDetectorRef, DestroyRef, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ThemeStateService } from '../core/services/theme-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     
     <div *ngIf="isLoading" class="min-h-screen bg-white flex flex-col items-center justify-center">
       <div class="flex flex-col items-center gap-4">
-        <div class="w-12 h-12 border-4 border-gray-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <div class="w-12 h-12 border-4 border-gray-200 border-t-gray-800 rounded-full animate-spin"></div>
         <p class="text-gray-600 text-sm">Đang tải...</p>
       </div>
     </div>
@@ -26,6 +26,7 @@ export class ThemeContainerComponent implements OnInit {
   private themeStateService = inject(ThemeStateService);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
+  private platformId = inject(PLATFORM_ID);
   private isDestroyed = false;
   isLoading = true;
 
@@ -45,8 +46,13 @@ export class ThemeContainerComponent implements OnInit {
   }
 
   async loadThemeComponent(themeId: string, projectData: any) {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.isLoading = false;
+      return;
+    }
+
     this.isLoading = true;
-    this.themeContainer.clear(); // Xóa giao diện cũ nếu có
+    this.themeContainer.clear();
 
     try {
       // DYNAMIC COMPONENT LOADER: Tải lười (Lazy Load) file JS dựa trên tên theme
@@ -55,6 +61,8 @@ export class ThemeContainerComponent implements OnInit {
         componentType = (await import('./luxury/luxury.component')).LuxuryComponent;
       } else if (themeId === 'eco-green') {
         componentType = (await import('./eco-green/eco-green.component')).EcoGreenComponent;
+      } else if (themeId === 'custom') {
+        componentType = (await import('./custom/custom.component')).CustomThemeComponent;
       } else {
         componentType = (await import('./minimalist/minimalist.component')).MinimalistComponent;
       }

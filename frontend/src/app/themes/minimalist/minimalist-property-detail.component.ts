@@ -1,128 +1,307 @@
-import { Component, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { Component, OnInit, Input, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { LeadFormComponent } from '../../guest/lead-form.component';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { ToastService } from '../../core/services/toast.service';
 import { LanguageService } from '../../core/services/language.service';
 import { AgentCardComponent } from '../../guest/agent-card.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SeoService } from '../../core/services/seo.service';
 import { FavoriteService } from '../../core/services/favorite.service';
+import { TrustUrlPipe } from '../../shared/pipes/trust-url.pipe';
 
 @Component({
   selector: 'app-minimalist-property-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, LeadFormComponent, AgentCardComponent, TranslateModule],
+  imports: [CommonModule, RouterModule, LeadFormComponent, AgentCardComponent, TranslateModule, TrustUrlPipe],
   styles: [`
     :host {
-      --theme-primary: #ffffff;
-      --theme-accent: #111827;
-      font-family: 'Inter', sans-serif;
+      --ink: #0F0F0F;
+      --ink-2: #3A3A3A;
+      --subtle: #8A8A8A;
+      --rule: #E4E4E0;
+      --bg: #FAFAF8;
+      --white: #FFFFFF;
+      --blue: #0052CC;
+    }
+
+    .font-head { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .font-body { font-family: 'Inter', system-ui, sans-serif; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.65s cubic-bezier(0.16,1,0.3,1) both; }
+
+    .min-nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* Gallery */
+    .gallery-wrap {
+      display: grid; grid-template-columns: 1fr 180px;
+      gap: 4px; height: 68vh; min-height: 420px;
+      background: var(--bg);
+    }
+    @media (max-width: 768px) {
+      .gallery-wrap { grid-template-columns: 1fr; height: auto; }
+      .gallery-strip { display: none; }
+    }
+    .gallery-main-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: opacity 0.4s ease;
+    }
+    .gallery-strip {
+      display: flex; flex-direction: column; gap: 4px;
+      overflow-y: auto; scrollbar-width: none;
+    }
+    .gallery-strip::-webkit-scrollbar { display: none; }
+    .thumb-img {
+      width: 100%; height: 88px; object-fit: cover;
+      cursor: pointer; opacity: 0.5;
+      border: 2px solid transparent;
+      transition: opacity 0.25s, border-color 0.25s;
+      flex-shrink: 0;
+    }
+    .thumb-img.active { opacity: 1; border-color: var(--blue); }
+    .thumb-img:hover   { opacity: 0.85; }
+
+    /* Attr grid */
+    .attr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 1px; background: var(--rule); }
+    .attr-cell { background: var(--white); padding: 20px 16px; }
+    .attr-label { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--subtle); margin-bottom: 8px; }
+    .attr-val   { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+
+    /* Action btn */
+    .act-btn {
+      width: 40px; height: 40px; border: 1px solid var(--rule);
+      background: var(--white); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s;
+    }
+    .act-btn:hover { border-color: var(--ink); }
+
+    /* Lead sidebar */
+    .lead-sidebar {
+      position: sticky; top: 76px;
+      border: 1px solid var(--rule);
+      background: var(--white);
+    }
+    .lead-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--rule);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--subtle);
     }
   `],
   template: `
-    <div class="min-h-screen bg-white text-gray-900 pb-24" *ngIf="property">
-      
-      <!-- Minimalist Header -->
-      <header class="py-6 px-6 max-w-6xl mx-auto flex justify-between items-center bg-white z-50">
-        <a routerLink=".." class="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-          Quay lại
-        </a>
-      </header>
+    <div *ngIf="property" class="font-body" style="min-height:100vh; background:var(--bg);">
 
-      <main class="max-w-6xl mx-auto px-6 pt-4">
-        
-        <!-- Header Info -->
-        <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
-          <div class="flex-1 w-full min-w-0">
-            <div class="flex items-start justify-between gap-4">
-              <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-2 flex-1 break-words">{{ property.title }}</h1>
-              <button (click)="toggleFav()" class="p-2 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0 mt-1">
-                <svg [ngClass]="isFav ? 'text-red-500 fill-current' : 'text-gray-400'" class="w-8 h-8 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-              </button>
-              <button (click)="shareProperty()" class="p-2 rounded-full hover:bg-gray-100 transition-colors flex-shrink-0 mt-1" title="Chia sẻ">
-                <svg class="w-8 h-8 text-gray-400 hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-              </button>
-            </div>
-            <p class="text-gray-500 font-medium">{{ property.categories?.name || 'Nhà phố' }}</p>
-          </div>
-          <div class="text-3xl font-bold tracking-tight">
-            {{ property.price | number }} ₫
-          </div>
-        </div>
-
-        <!-- Airbnb Style Image Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-[50vh] md:h-[60vh] mb-16">
-          <div class="relative w-full h-full overflow-hidden bg-gray-100 group">
-            <img [src]="getMedia(0)" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Cover">
-          </div>
-          <div class="hidden md:grid grid-rows-2 gap-4 h-full">
-            <div class="relative w-full h-full overflow-hidden bg-gray-100 group">
-              <img [src]="getMedia(1)" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Image 2">
-            </div>
-            <div class="relative w-full h-full overflow-hidden bg-gray-100 group">
-              <img [src]="getMedia(2)" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Image 3">
-            </div>
+      <!-- Nav -->
+      <nav class="min-nav">
+        <div style="max-width:1400px; margin:0 auto; padding:0 5vw; height:60px; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+          <a routerLink=".." style="display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--subtle);font-size:0.78rem;letter-spacing:0.05em;transition:color 0.2s;"
+             onmouseenter="this.style.color='var(--ink)'" onmouseleave="this.style.color='var(--subtle)'">
+            <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            {{ 'THEME.DETAIL.BACK_LIST' | translate }}
+          </a>
+          <span class="font-head" style="font-size:0.9rem;font-weight:600;letter-spacing:-0.01em;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:500px;display:none;" class="hidden md:block">
+            {{ property.title }}
+          </span>
+          <div style="display:flex;gap:8px;">
+            <button (click)="toggleFav()" class="act-btn" [attr.aria-label]="'THEME.DETAIL.FAVORITE' | translate">
+              <svg [attr.fill]="isFav ? '#ef4444' : 'none'"
+                   [style.color]="isFav ? '#ef4444' : 'var(--subtle)'"
+                   style="width:16px;height:16px;transition:color 0.2s;"
+                   stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </button>
+            <button (click)="shareProperty()" class="act-btn" [attr.aria-label]="'THEME.DETAIL.SHARE' | translate">
+              <svg style="width:16px;height:16px;color:var(--subtle);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+              </svg>
+            </button>
           </div>
         </div>
+      </nav>
 
-        <!-- Single Column Centered Layout -->
-        <div class="max-w-3xl mx-auto">
-          <h2 class="text-2xl font-bold tracking-tight mb-6">Tổng quan</h2>
-          <p class="text-gray-600 leading-relaxed whitespace-pre-wrap mb-12 text-lg font-light">{{ property.description }}</p>
+      <!-- Gallery -->
+      <ng-container [ngSwitch]="galleryLayout">
+        <!-- Lưới -->
+        <div *ngSwitchCase="'grid'" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:4px; background:var(--bg);">
+          <img *ngFor="let img of property.property_media" [src]="img.media_url" style="width:100%; height:260px; object-fit:cover;" [alt]="property.title">
+        </div>
+        <!-- 1 ảnh lớn -->
+        <div *ngSwitchCase="'single'" style="height:68vh; min-height:420px; overflow:hidden; background:var(--bg);">
+          <img [src]="activeImage" class="gallery-main-img" [alt]="property.title">
+        </div>
+        <!-- Mặc định: ảnh chính + dải thumbnail -->
+        <div *ngSwitchDefault class="gallery-wrap">
+          <div style="overflow:hidden;">
+            <img [src]="activeImage" class="gallery-main-img" [alt]="property.title">
+          </div>
+          <div class="gallery-strip">
+            <img *ngFor="let img of property.property_media; let i = index"
+                 [src]="img.media_url"
+                 (click)="selectImage(img.media_url)"
+                 [ngClass]="{'active': activeImage === img.media_url}"
+                 class="thumb-img" [alt]="'THEME.DETAIL.IMAGE_N' | translate:{ n: i+1 }">
+          </div>
+        </div>
+      </ng-container>
 
-          <h2 class="text-2xl font-bold tracking-tight mb-6">Thông số chi tiết</h2>
-          <dl class="divide-y divide-gray-200 border-t border-b border-gray-200 mb-16">
-            <div *ngIf="property.attributes?.area" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.AREA' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.area }} m²</dd>
-            </div>
-            <div *ngIf="property.attributes?.floors" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.FLOORS' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.floors }}</dd>
-            </div>
-            <div *ngIf="property.attributes?.bedrooms" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.BEDROOMS' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.bedrooms }}</dd>
-            </div>
-            <div *ngIf="property.attributes?.bathrooms" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.BATHROOMS' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.bathrooms }}</dd>
-            </div>
-            <div *ngIf="property.attributes?.frontage" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.FRONTAGE' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.frontage }} m</dd>
-            </div>
-            <div *ngIf="property.attributes?.street_width" class="py-4 flex justify-between">
-              <dt class="text-gray-500">{{ 'ATTRIBUTES.STREET_WIDTH' | translate }}</dt>
-              <dd class="font-medium">{{ property.attributes.street_width }} m</dd>
-            </div>
-          </dl>
+      <!-- Content -->
+      <div style="max-width:1400px; margin:0 auto; padding:56px 5vw 100px;">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-          <!-- Vị trí -->
-          <h2 class="text-2xl font-bold tracking-tight mb-6">Vị trí</h2>
-          <div class="w-full h-64 bg-gray-100 mb-16 flex items-center justify-center relative overflow-hidden border border-gray-200">
-             <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover opacity-60 filter grayscale" alt="Map">
-             <div class="relative z-10 bg-white px-6 py-3 shadow-md text-gray-900 font-bold flex items-center gap-2">
-               <svg class="w-5 h-5 text-gray-900" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-               Vị trí Trung tâm
-             </div>
+          <!-- Left -->
+          <div class="lg:col-span-2 space-y-10 fade-up">
+
+            <!-- Header -->
+            <div>
+              <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--subtle);margin-bottom:12px;">
+                {{ property.categories?.name || ('THEME.SECTION.PROPERTIES' | translate) }}
+              </div>
+              <h1 class="font-head" style="font-size:clamp(1.8rem,3.5vw,3rem);font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1;margin-bottom:16px;">
+                {{ property.title }}
+              </h1>
+              <div class="font-head" style="font-size:1.4rem;font-weight:700;color:var(--blue);letter-spacing:-0.02em;">
+                {{ property.price | number }} ₫
+              </div>
+            </div>
+
+            <!-- Attributes -->
+            <div>
+              <div class="attr-grid">
+                <div *ngIf="property.attributes?.bedrooms" class="attr-cell">
+                  <div class="attr-label">{{ 'ATTRIBUTES.BEDROOMS' | translate }}</div>
+                  <div class="attr-val">{{ property.attributes.bedrooms }}</div>
+                </div>
+                <div *ngIf="property.attributes?.bathrooms" class="attr-cell">
+                  <div class="attr-label">{{ 'ATTRIBUTES.BATHROOMS' | translate }}</div>
+                  <div class="attr-val">{{ property.attributes.bathrooms }}</div>
+                </div>
+                <div *ngIf="property.attributes?.area" class="attr-cell">
+                  <div class="attr-label">{{ 'ATTRIBUTES.AREA' | translate }}</div>
+                  <div class="attr-val">{{ property.attributes.area }}<span style="font-size:0.9rem;color:var(--subtle);"> m²</span></div>
+                </div>
+                <div *ngIf="property.attributes?.balcony_direction" class="attr-cell">
+                  <div class="attr-label">{{ 'ATTRIBUTES.BALCONY_DIR' | translate }}</div>
+                  <div class="attr-val" style="font-size:1.1rem;">{{ property.attributes.balcony_direction }}</div>
+                </div>
+                <div *ngFor="let attr of extraAttributes" class="attr-cell">
+                  <div class="attr-label">{{ attr.key }}</div>
+                  <div class="attr-val" style="font-size:1.1rem;">{{ attr.value }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--subtle);margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+                <span style="display:block;width:20px;height:1px;background:var(--rule);"></span>
+                {{ 'THEME.DETAIL.DESCRIPTION' | translate }}
+              </div>
+              <div style="font-size:0.95rem;color:var(--ink-2);line-height:1.85;white-space:pre-wrap;font-weight:300;">
+                {{ property.description }}
+              </div>
+            </div>
+
+            <!-- Location: address + map (live data or placeholder) -->
+            <div>
+              <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--subtle);margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+                <span style="display:block;width:20px;height:1px;background:var(--rule);"></span>
+                {{ 'THEME.DETAIL.LOCATION' | translate }}
+              </div>
+
+              <!-- Address chip -->
+              <div *ngIf="property.address"
+                   style="display:flex;align-items:flex-start;gap:8px;margin-bottom:16px;">
+                <svg style="width:16px;height:16px;color:var(--subtle);flex-shrink:0;margin-top:2px;" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                </svg>
+                <span style="font-size:0.9rem;color:var(--ink-2);line-height:1.6;">{{ property.address }}</span>
+              </div>
+
+              <!-- Live map embed -->
+              <div *ngIf="property.map_embed_url"
+                   style="width:100%;height:320px;overflow:hidden;border-radius:2px;">
+                <iframe [src]="property.map_embed_url | trustUrl"
+                        width="100%" height="320" style="border:0;display:block;"
+                        loading="lazy" allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+              </div>
+
+              <!-- Placeholder when no map -->
+              <div *ngIf="!property.map_embed_url"
+                   style="width:100%;height:220px;background:var(--rule);overflow:hidden;position:relative;">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=50"
+                     style="width:100%;height:100%;object-fit:cover;opacity:0.4;" [alt]="'THEME.DETAIL.MAP' | translate">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <span style="background:var(--white);border:1px solid var(--rule);padding:10px 20px;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--blue);">
+                    {{ 'THEME.DETAIL.VIEW_MAP' | translate }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Property Sections -->
+            <ng-container *ngIf="property.property_sections && property.property_sections.length > 0">
+              <div *ngFor="let sec of $any(property.property_sections)" style="border-top:1px solid var(--rule);padding-top:32px;">
+                <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--subtle);margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+                  <span style="display:block;width:20px;height:1px;background:var(--rule);"></span>
+                  {{ $any(sec).title }}
+                </div>
+
+                <img *ngIf="$any(sec).image_url" [src]="$any(sec).image_url" [alt]="$any(sec).title"
+                     style="width:100%;max-height:360px;object-fit:cover;border-radius:2px;margin-bottom:16px;">
+
+                <p *ngIf="$any(sec).content" style="font-size:0.95rem;color:var(--ink-2);line-height:1.85;white-space:pre-wrap;font-weight:300;margin-bottom:12px;">{{ $any(sec).content }}</p>
+
+                <ul *ngIf="$any(sec).metadata?.items?.length" style="margin:0;padding-left:20px;">
+                  <li *ngFor="let item of $any(sec).metadata.items"
+                      style="font-size:0.9rem;color:var(--ink-2);margin-bottom:6px;line-height:1.6;">{{ item }}</li>
+                </ul>
+
+                <div *ngIf="$any(sec).section_type === 'location' && $any(sec).metadata?.map_embed_url"
+                     style="width:100%;height:300px;overflow:hidden;border-radius:2px;">
+                  <iframe [src]="$any(sec).metadata.map_embed_url | trustUrl" width="100%" height="300" style="border:0;" loading="lazy"></iframe>
+                </div>
+
+                <div *ngIf="$any(sec).section_type === 'virtual_tour' && $any(sec).metadata?.embed_url"
+                     style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:2px;">
+                  <iframe [src]="$any(sec).metadata.embed_url | trustUrl" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe>
+                </div>
+              </div>
+            </ng-container>
           </div>
 
-          <!-- Contact Inline Bottom -->
-          <h2 class="text-2xl font-bold tracking-tight mb-6">Liên hệ Môi giới</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div class="md:col-span-1">
+          <!-- Sidebar -->
+          <aside>
+            <div class="lead-sidebar">
               <app-agent-card *ngIf="property.agent" [agentInfo]="property.agent"></app-agent-card>
+              <div *ngIf="!preview" class="lead-header">{{ 'THEME.DETAIL.REGISTER_CONSULT' | translate }}</div>
+              <div *ngIf="!preview" style="padding:16px 24px 24px;">
+                <app-lead-form [propertyId]="property.id" [agentId]="property.agent_id"></app-lead-form>
+              </div>
             </div>
-            <div class="md:col-span-2 bg-gray-50 border border-gray-200 p-8">
-               <app-lead-form [propertyId]="property.id" [agentId]="property.agent_id"></app-lead-form>
-            </div>
-          </div>
+          </aside>
         </div>
-      </main>
+      </div>
     </div>
   `
 })
@@ -131,37 +310,57 @@ export class MinimalistPropertyDetailComponent implements OnInit {
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
   private translateService = inject(TranslateService);
+  private toast = inject(ToastService);
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
   private seoService = inject(SeoService);
   private favoriteService = inject(FavoriteService);
-  
-  property: any = null;
+
+  @Input() property: any = null;
+  @Input() preview = false;
   originalProperty: any = null;
+  activeImage = '';
   isFav = false;
 
-  ngOnInit() {
-    const slug = this.route.snapshot.paramMap.get('slug');
-    if (slug) {
-      this.api.get<any>(`/properties/${slug}`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => { 
-        this.property = res.data; 
-        this.originalProperty = JSON.parse(JSON.stringify(res.data));
-        this.isFav = this.favoriteService.isFavorite(this.property.id);
-        
-        this.loadTranslation();
-        this.translateService.onLangChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-          this.loadTranslation();
-        });
+  get galleryLayout(): string { return this.property?.attributes?.gallery_layout || 'default'; }
 
-        this.cdr.markForCheck(); // Đánh dấu cần render, an toàn hơn detectChanges
-      });
+  get extraAttributes(): { key: string; value: any }[] {
+    if (!this.property?.attributes) return [];
+    const known = new Set(['bedrooms', 'bathrooms', 'area', 'balcony_direction', 'property_type']);
+    return Object.entries(this.property.attributes)
+      .filter(([k]) => !known.has(k))
+      .map(([key, value]) => ({ key, value }));
+  }
+
+  ngOnInit() {
+    // Nếu đã được truyền property (qua container hoặc preview) → dùng luôn, không fetch
+    if (this.property) { this.initFromProperty(); return; }
+    const slug = this.route.snapshot.paramMap.get('slug');
+    if (!slug) return;
+    this.api.get<any>(`/properties/${slug}`).subscribe(res => {
+      this.property = res.data;
+      this.initFromProperty();
+      this.cdr.markForCheck();
+    });
+  }
+
+  private initFromProperty() {
+    this.originalProperty = JSON.parse(JSON.stringify(this.property));
+    const thumb = this.property?.property_media?.find((m: any) => m.is_thumbnail);
+    this.activeImage = thumb?.media_url ?? this.property?.property_media?.[0]?.media_url
+      ?? 'https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=1200&q=80';
+    this.isFav = this.property?.id ? this.favoriteService.isFavorite(this.property.id) : false;
+    if (!this.preview) {
+      this.loadTranslation();
+      this.translateService.onLangChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.loadTranslation());
     }
   }
+
+  selectImage(url: string) { this.activeImage = url; }
 
   toggleFav() {
     this.favoriteService.toggleFavorite(this.property.id);
     this.isFav = this.favoriteService.isFavorite(this.property.id);
-    this.cdr.markForCheck();
   }
 
   shareProperty() {
@@ -169,40 +368,28 @@ export class MinimalistPropertyDetailComponent implements OnInit {
     if (navigator.share) {
       navigator.share({ title: this.property.title, url: window.location.href }).catch(console.error);
     } else {
-      navigator.clipboard.writeText(window.location.href).then(() => alert('Đã sao chép đường dẫn!'));
+      navigator.clipboard.writeText(window.location.href).then(() => this.toast.success(this.translateService.instant('THEME.DETAIL.LINK_COPIED')));
     }
   }
 
-  updateSeo() {
+  private updateSeo() {
     this.seoService.setMeta({
-      title: this.property.title,
-      desc: this.property.description?.substring(0, 160) || '',
-      image: this.getMedia(0)
+      title: this.originalProperty?.title || this.property.title,
+      desc: (this.originalProperty?.description || this.property.description)?.substring(0, 160) || '',
+      image: this.activeImage
     });
   }
 
-  loadTranslation() {
+  private loadTranslation() {
     if (this.languageService.currentLang === 'vi') {
       this.property.title = this.originalProperty.title;
       this.property.description = this.originalProperty.description;
-      this.updateSeo();
-      this.cdr.markForCheck();
-      return;
+      this.updateSeo(); this.cdr.markForCheck(); return;
     }
-    
-    this.languageService.getDynamicTranslation('property', this.property.id)?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
-      if (!res.fallback) {
-        this.property.title = res.data.title;
-        this.property.description = res.data.description;
-      }
-      this.updateSeo();
-      this.cdr.markForCheck();
+    this.languageService.getDynamicTranslation('property', this.property.id)?.subscribe(res => {
+      this.property.title = res.fallback ? this.originalProperty.title : res.data.title;
+      this.property.description = res.fallback ? this.originalProperty.description : res.data.description;
+      this.updateSeo(); this.cdr.markForCheck();
     });
-  }
-
-  getMedia(index: number): string {
-    const fallback = 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80';
-    if (!this.property?.property_media || this.property.property_media.length === 0) return fallback;
-    return index < this.property.property_media.length ? this.property.property_media[index].media_url : this.property.property_media[0].media_url;
   }
 }

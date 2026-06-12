@@ -1,6 +1,7 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ApiService } from './api.service';
+import { ToastService } from './toast.service';
 import { Session, User } from '../models/User';
 import { BehaviorSubject, Observable, tap, switchMap, of, map, catchError } from 'rxjs';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ export class AuthService {
   private api = inject(ApiService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private toast = inject(ToastService);
   
   // Quản lý trạng thái User hiện hành
   private currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
@@ -43,8 +45,8 @@ export class AuthService {
     if (this.timeoutId) clearTimeout(this.timeoutId);
     if (this.currentUserSubject.value) {
       this.timeoutId = setTimeout(() => {
-        alert('Phiên làm việc đã hết hạn do không có tương tác. Vui lòng đăng nhập lại.');
-        this.logout().subscribe();
+        this.toast.warning('Phiên làm việc đã hết hạn do không có tương tác. Vui lòng đăng nhập lại.', 'Phiên hết hạn');
+        this.logout('/auth/login').subscribe();
       }, this.TIMEOUT_MS);
     }
   }
@@ -104,10 +106,14 @@ export class AuthService {
     return this.api.post<any>('/auth/register', data);
   }
 
-  logout(): Observable<any> {
+  logout(redirectTo: string = '/'): Observable<any> {
+    // Luôn đăng xuất phía client DÙ API có lỗi (token hết hạn → /auth/logout trả 401).
+    // Nếu chỉ dựa vào thành công của API thì người dùng sẽ kẹt không thoát được.
     return this.api.post<any>('/auth/logout', {}).pipe(
+      catchError(() => of(null)),
       tap(() => {
-        this.clearSession();
+        this.clearSession(redirectTo);
+        this.toast.success('Bạn đã đăng xuất.');
       })
     );
   }
@@ -120,13 +126,13 @@ export class AuthService {
     return this.api.post<any>('/auth/reset-password', { new_password });
   }
 
-  clearSession(): void {
+  clearSession(redirectTo: string = '/auth/login'): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
     }
     this.currentUserSubject.next(null);
     if (this.timeoutId) clearTimeout(this.timeoutId);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate([redirectTo]);
   }
 }

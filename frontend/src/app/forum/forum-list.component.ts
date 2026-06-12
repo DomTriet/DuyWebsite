@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -34,13 +34,13 @@ import { AuthService } from '../core/services/auth.service';
 
         <form [formGroup]="postForm" (ngSubmit)="submitPost()">
           <div class="mb-4">
-            <input formControlName="title" type="text" placeholder="Tiêu đề bài viết..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none">
+            <input formControlName="title" type="text" placeholder="Tiêu đề bài viết..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 outline-none">
           </div>
           <div class="mb-4">
-            <textarea formControlName="content" rows="4" placeholder="Nội dung bài viết..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none"></textarea>
+            <textarea formControlName="content" rows="4" placeholder="Nội dung bài viết..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 outline-none"></textarea>
           </div>
           <div class="flex justify-end">
-            <button type="submit" [disabled]="postForm.invalid || isSubmitting" class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+            <button type="submit" [disabled]="postForm.invalid || isSubmitting" class="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 transition-colors">
               {{ isSubmitting ? 'Đang gửi...' : 'Đăng bài' }}
             </button>
           </div>
@@ -49,7 +49,7 @@ import { AuthService } from '../core/services/auth.service';
 
       <div *ngIf="!isLoggedIn" class="bg-gray-50 rounded-xl p-6 mb-8 text-center border border-gray-200">
         <p class="text-gray-600 mb-4">Bạn cần đăng nhập để tham gia thảo luận cùng cộng đồng.</p>
-        <a routerLink="/auth/login" class="inline-block px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors">Đăng nhập ngay</a>
+        <a routerLink="/auth/login" class="inline-block px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">Đăng nhập ngay</a>
       </div>
 
       <!-- Danh sách bài viết -->
@@ -67,7 +67,7 @@ import { AuthService } from '../core/services/auth.service';
           <p class="text-gray-600 line-clamp-2 mb-4">{{ post.content }}</p>
           <div class="flex items-center text-sm text-gray-500 gap-4">
             <div class="flex items-center gap-2">
-              <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
+              <div class="w-6 h-6 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-xs">
                 {{ (post.profiles?.full_name || 'U')[0] | uppercase }}
               </div>
               <span>{{ post.profiles?.full_name || 'Thành viên' }}</span>

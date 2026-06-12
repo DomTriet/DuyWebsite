@@ -33,9 +33,13 @@ export const getPostById = async (req: Request, res: Response, next: NextFunctio
       .from('forum_posts')
       .select('*, profiles(username, avatar_url, role)')
       .eq('id', id)
+      .eq('status', 'approved')
       .single();
 
-    if (error) throw error;
+    if (error || !data) {
+      res.status(404).json({ status: 'error', message: 'Bài viết không tồn tại hoặc chưa được duyệt.' });
+      return;
+    }
     res.status(200).json({ status: 'success', data });
   } catch (error) {
     next(error);

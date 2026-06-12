@@ -4,7 +4,7 @@ CREATE TYPE user_role AS ENUM ('admin', 'agent', 'member');
 -- Bảng profiles liên kết trực tiếp với auth.users của Supabase
 CREATE TABLE public.profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
     username TEXT UNIQUE,
     full_name TEXT,
     avatar_url TEXT,

@@ -1,9 +1,10 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { ApiService } from '../core/services/api.service';
 import { AuthService } from '../core/services/auth.service';
+import { ToastService } from '../core/services/toast.service';
 
 @Component({
   selector: 'app-forum-detail',
@@ -14,8 +15,8 @@ import { AuthService } from '../core/services/auth.service';
       <!-- Navigation -->
       <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-200 px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-          <a routerLink="/" class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">RESTATE</a>
-          <a routerLink="/forum" class="inline-flex items-center gap-2 text-gray-700 hover:text-indigo-600 font-semibold transition-colors">
+          <a routerLink="/" style="font-family:'Lora',Georgia,serif;font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;color:#0D0D0D;text-decoration:none;">Điểm Tâm BĐS</a>
+          <a routerLink="/forum" class="inline-flex items-center gap-2 text-gray-700 hover:text-gray-700 font-semibold transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             Quay lại
           </a>
@@ -43,7 +44,7 @@ import { AuthService } from '../core/services/auth.service';
           <h1 class="text-4xl md:text-5xl font-black text-gray-900 mb-6">{{ post.title }}</h1>
           <div class="flex items-center gap-4 pb-6 border-b border-gray-200">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+              <div class="w-12 h-12 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center font-bold">
                 {{ (post.profiles?.full_name || 'U')[0] | uppercase }}
               </div>
               <div>
@@ -89,9 +90,9 @@ import { AuthService } from '../core/services/auth.service';
           <!-- Comment Form -->
           <div *ngIf="isLoggedIn" class="bg-gray-50 rounded-xl border border-gray-200 p-6 mb-10">
             <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
-              <textarea formControlName="content" rows="4" placeholder="Viết bình luận của bạn..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all mb-4 resize-none"></textarea>
+              <textarea formControlName="content" rows="4" placeholder="Viết bình luận của bạn..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all mb-4 resize-none"></textarea>
               <div class="flex justify-end">
-                <button type="submit" [disabled]="commentForm.invalid || isCommenting" class="px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 disabled:opacity-50 transition-all flex items-center gap-2">
+                <button type="submit" [disabled]="commentForm.invalid || isCommenting" class="px-6 py-2.5 bg-gray-900 text-white rounded-lg font-bold hover:bg-gray-800 disabled:opacity-50 transition-all flex items-center gap-2">
                   <span *ngIf="isCommenting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                   {{ isCommenting ? 'Đang gửi...' : 'Gửi bình luận' }}
                 </button>
@@ -99,9 +100,9 @@ import { AuthService } from '../core/services/auth.service';
             </form>
           </div>
           
-          <div *ngIf="!isLoggedIn" class="bg-indigo-50 rounded-xl border border-indigo-200 p-6 mb-10 text-center">
+          <div *ngIf="!isLoggedIn" class="bg-gray-50 rounded-xl border border-gray-300 p-6 mb-10 text-center">
             <p class="text-gray-700">
-              <a routerLink="/auth/login" class="text-indigo-600 font-bold hover:text-indigo-700">Đăng nhập</a> để tham gia bình luận
+              <a routerLink="/auth/login" class="text-gray-700 font-bold hover:text-gray-900">Đăng nhập</a> để tham gia bình luận
             </p>
           </div>
 
@@ -109,7 +110,7 @@ import { AuthService } from '../core/services/auth.service';
           <div class="space-y-5">
             <div *ngFor="let comment of comments" class="bg-white rounded-xl border border-gray-200 p-6">
               <div class="flex gap-4">
-                <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold flex-shrink-0">
+                <div class="w-10 h-10 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center font-bold flex-shrink-0">
                   {{ (comment.profiles?.full_name || 'U')[0] | uppercase }}
                 </div>
                 <div class="flex-1">
@@ -131,6 +132,7 @@ import { AuthService } from '../core/services/auth.service';
 })
 export class ForumDetailComponent implements OnInit {
   private api = inject(ApiService);
+  private toast = inject(ToastService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
@@ -201,7 +203,7 @@ export class ForumDetailComponent implements OnInit {
       },
       error: (err: any) => {
         this.isCommenting = false;
-        alert(err.error?.error || 'Lỗi khi gửi bình luận.');
+        this.toast.error(err.error?.error || 'Lỗi khi gửi bình luận.');
         this.cdr.detectChanges();
       }
     });
@@ -227,13 +229,13 @@ export class ForumDetailComponent implements OnInit {
     if (!this.post || !this.reportReason.trim()) return;
     this.api.post<any>(`/forum/${this.post.id}/report`, { reason: this.reportReason }).subscribe({
       next: () => {
-        alert('Cảm ơn bạn đã báo cáo. Ban quản trị sẽ xem xét sớm nhất.');
+        this.toast.success('Cảm ơn bạn đã báo cáo. Ban quản trị sẽ xem xét sớm nhất.');
         this.showReportForm = false;
         this.reportReason = '';
         this.cdr.detectChanges();
       },
       error: (err: any) => {
-        alert(err.error?.error || 'Lỗi khi gửi báo cáo.');
+        this.toast.error(err.error?.error || 'Lỗi khi gửi báo cáo.');
         this.cdr.detectChanges();
       }
     });

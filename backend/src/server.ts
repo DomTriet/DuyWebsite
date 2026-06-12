@@ -11,20 +11,22 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: '*' } });
+
+const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
+const io = new Server(server, { cors: { origin: CORS_ORIGIN } });
 
 // Gắn io vào app để dùng ở mọi Controller qua req.app.get('io')
 app.set('io', io);
 const PORT = process.env.PORT || 5000;
 
 // Middlewares cơ bản
-app.use(cors());
+app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Health Check Route
 app.get('/api/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'success', message: 'Pro-RealEstate API is running smoothly!' });
+  res.status(200).json({ status: 'success', message: 'Điểm Tâm BĐS API is running smoothly!' });
 });
 
 // Khai báo toàn bộ API Routes vào hệ thống

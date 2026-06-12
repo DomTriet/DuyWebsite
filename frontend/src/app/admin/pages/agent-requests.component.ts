@@ -1,6 +1,8 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
+import { ToastService } from '../../core/services/toast.service';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 @Component({
   selector: 'app-agent-requests',
@@ -61,6 +63,8 @@ import { ApiService } from '../../core/services/api.service';
 export class AgentRequestsComponent implements OnInit {
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
+  private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
 
   requests: any[] = [];
   isLoading = true;
@@ -81,13 +85,12 @@ export class AgentRequestsComponent implements OnInit {
     });
   }
 
-  updateStatus(id: string, status: 'approved' | 'rejected') {
+  async updateStatus(id: string, status: 'approved' | 'rejected') {
     const actionStr = status === 'approved' ? 'Phê duyệt' : 'Từ chối';
-    if (confirm(`Bạn có chắc muốn ${actionStr} yêu cầu này?`)) {
-      this.api.put<any>(`/leads/agent-requests/${id}/status`, { status }).subscribe({
-        next: () => this.loadRequests(),
-        error: (err) => alert(`${actionStr} thất bại: ` + (err.error?.error || 'Lỗi hệ thống'))
-      });
-    }
+    if (!await this.confirm.ask({ title: `${actionStr} yêu cầu`, message: `Bạn có chắc muốn ${actionStr} yêu cầu này?`, confirmText: actionStr, danger: status === 'rejected' })) return;
+    this.api.put<any>(`/leads/agent-requests/${id}/status`, { status }).subscribe({
+      next: () => { this.toast.success(`Đã ${actionStr.toLowerCase()} yêu cầu.`); this.loadRequests(); },
+      error: (err) => this.toast.error(`${actionStr} thất bại: ` + (err.error?.error || 'Lỗi hệ thống'))
+    });
   }
 }

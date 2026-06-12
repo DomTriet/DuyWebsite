@@ -2,141 +2,122 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { LanguageSelectorComponent } from '../shared/components/language-selector/language-selector.component';
 import { SeoService } from '../core/services/seo.service';
+import { GuestNavComponent } from '../shared/components/guest-nav/guest-nav.component';
+import { GuestFooterComponent } from '../shared/components/guest-footer/guest-footer.component';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, LanguageSelectorComponent],
+  imports: [CommonModule, RouterModule, TranslateModule, GuestNavComponent, GuestFooterComponent],
+  styles: [`
+    :host { display: block; }
+    .page-title { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.03em; }
+    .editorial-title { font-family: 'Lora', Georgia, serif; font-style: italic; }
+    .value-card { border: 1px solid #EBEBEB; border-radius: 16px; background: #fff; padding: 28px; transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s; }
+    .value-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
+    .icon-box { width: 48px; height: 48px; border-radius: 12px; background: #F0EFE9; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  `],
   template: `
-    <div class="min-h-screen bg-white">
-      <!-- Navigation -->
-      <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-200 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-          <a routerLink="/" class="text-2xl font-black tracking-tight bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent">RESTATE</a>
-          <div class="hidden md:flex gap-10 items-center">
-            <a routerLink="/" class="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors">{{ 'NAVBAR.HOME' | translate }}</a>
-            <a routerLink="/about" class="text-sm font-semibold text-indigo-600">{{ 'NAVBAR.ABOUT' | translate }}</a>
-            <a routerLink="/blogs" class="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors">{{ 'NAVBAR.NEWS' | translate }}</a>
-            <a routerLink="/forum" class="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors">{{ 'NAVBAR.COMMUNITY' | translate }}</a>
-            <a routerLink="/contact" class="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors">{{ 'NAVBAR.CONTACT' | translate }}</a>
-          </div>
-          <div class="flex items-center gap-4">
-            <app-language-selector></app-language-selector>
-          </div>
-        </div>
-      </nav>
+    <div class="min-h-screen flex flex-col bg-white">
+      <app-guest-nav active="about"></app-guest-nav>
 
-      <!-- Hero Section -->
-      <section class="bg-gradient-to-br from-indigo-50 to-white py-24 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-5">
-          <svg viewBox="0 0 100 100" class="h-full w-full"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" stroke-width="0.5"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)"/></svg>
-        </div>
-        <div class="max-w-6xl mx-auto px-6 relative">
-          <div class="text-center mb-16">
-            <span class="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-700 text-sm font-bold rounded-full mb-6">{{ 'NAVBAR.ABOUT' | translate }}</span>
-            <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight">Về chúng tôi</h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">Pro-RealEstate là nền tảng Bất động sản công nghệ cao, kết nối thông minh giữa người mua, người bán và các dự án chất lượng.</p>
+      <!-- Hero -->
+      <section style="background:#F7F6F3; border-bottom:1px solid #EBEBEB; padding:80px 24px;">
+        <div style="max-width:1152px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;" class="md:grid-cols-2 grid-cols-1">
+          <div>
+            <p style="font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#999; margin-bottom:16px;">
+              {{ 'NAVBAR.ABOUT' | translate }}
+            </p>
+            <h1 class="page-title" style="font-size:clamp(2.2rem,5.5vw,3.8rem); font-weight:700; color:#0D0D0D; margin-bottom:18px; line-height:1.1;">{{ 'ABOUT_PAGE.HERO_TITLE' | translate }}</h1>
+            <p style="font-size:1.05rem; color:#6B7280; line-height:1.8;">{{ 'ABOUT_PAGE.HERO_SUB' | translate }}</p>
           </div>
-          <div class="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
-            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover" alt="About Us">
+          <div style="border-radius:20px; overflow:hidden; height:320px; box-shadow:0 24px 60px rgba(0,0,0,0.12);">
+            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=80"
+                 style="width:100%; height:100%; object-fit:cover;" alt="Về chúng tôi" loading="eager">
           </div>
         </div>
       </section>
 
-      <!-- Core Values Section -->
-      <section class="max-w-6xl mx-auto px-6 py-24">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl font-black text-gray-900 mb-4">Giá trị cốt lõi</h2>
-          <p class="text-lg text-gray-600">Ba trụ cột của sứ mệnh Pro-RealEstate</p>
+      <!-- Core Values -->
+      <section style="max-width:1152px; margin:0 auto; padding:80px 24px;">
+        <div style="text-align:center; margin-bottom:52px;">
+          <h2 class="page-title" style="font-size:clamp(1.6rem,4vw,2.4rem); font-weight:700; color:#0D0D0D; margin-bottom:10px;">{{ 'ABOUT_PAGE.VALUES_TITLE' | translate }}</h2>
+          <p style="color:#6B7280; font-size:1rem;">{{ 'ABOUT_PAGE.VALUES_SUB' | translate }}</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="group rounded-xl border border-gray-200 bg-white p-8 hover:shadow-xl hover:border-indigo-300 transition-all duration-300">
-            <div class="w-14 h-14 rounded-xl bg-indigo-100 flex items-center justify-center mb-6 group-hover:bg-indigo-600 transition-colors">
-              <svg class="w-7 h-7 text-indigo-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div *ngFor="let val of values" class="value-card">
+            <div class="icon-box">
+              <svg style="width:22px;height:22px;" [style.color]="val.color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="val.icon"/>
+              </svg>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3">Công nghệ</h3>
-            <p class="text-gray-600 leading-relaxed">Ứng dụng AI và Machine Learning để tối ưu hóa trải nghiệm người dùng và cung cấp khuyến nghị cá nhân hóa.</p>
-          </div>
-
-          <div class="group rounded-xl border border-gray-200 bg-white p-8 hover:shadow-xl hover:border-indigo-300 transition-all duration-300">
-            <div class="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center mb-6 group-hover:bg-green-600 transition-colors">
-              <svg class="w-7 h-7 text-green-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3">Minh bạch</h3>
-            <p class="text-gray-600 leading-relaxed">Độc lập, công khai và công bằng - mọi giao dịch được xác thực và báo cáo một cách rõ ràng.</p>
-          </div>
-
-          <div class="group rounded-xl border border-gray-200 bg-white p-8 hover:shadow-xl hover:border-indigo-300 transition-all duration-300">
-            <div class="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center mb-6 group-hover:bg-purple-600 transition-colors">
-              <svg class="w-7 h-7 text-purple-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3">An toàn</h3>
-            <p class="text-gray-600 leading-relaxed">Bảo vệ dữ liệu người dùng với mã hóa end-to-end và tuân thủ tiêu chuẩn bảo mật quốc tế.</p>
+            <h3 class="page-title" style="font-size:1.1rem; font-weight:700; color:#0D0D0D; margin-bottom:8px;">{{ val.titleKey | translate }}</h3>
+            <p style="color:#6B7280; font-size:0.9rem; line-height:1.7;">{{ val.descKey | translate }}</p>
           </div>
         </div>
       </section>
 
       <!-- Mission & Vision -->
-      <section class="bg-gray-50 py-24">
-        <div class="max-w-6xl mx-auto px-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div class="group rounded-2xl border-2 border-gray-200 bg-white p-10 hover:border-indigo-600 transition-all duration-300">
-              <span class="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-700 text-sm font-bold rounded-lg mb-6">SỨ MỆNH</span>
-              <h3 class="text-3xl font-black text-gray-900 mb-6">Kết nối & Phát triển</h3>
-              <p class="text-lg text-gray-600 leading-relaxed mb-6">Tập hợp các dự án bất động sản chất lượng cao, kết nối thông minh giữa các nhà đầu tư, nhà phát triển và khách hàng để tạo nên hệ sinh thái bất động sản minh bạch và công bằng.</p>
-              <div class="w-1 h-1 rounded-full bg-indigo-600"></div>
-            </div>
-
-            <div class="group rounded-2xl border-2 border-indigo-600 bg-gradient-to-br from-indigo-600 to-indigo-700 p-10 shadow-xl">
-              <span class="inline-block px-4 py-1.5 bg-white/20 text-white text-sm font-bold rounded-lg mb-6">TẦM NHÌN</span>
-              <h3 class="text-3xl font-black text-white mb-6">Dẫn đầu Đông Nam Á</h3>
-              <p class="text-lg text-indigo-100 leading-relaxed mb-6">Trở thành nền tảng bất động sản hàng đầu Đông Nam Á, cung cấp giải pháp toàn diện cho tất cả nhu cầu bất động sản của khách hàng với công nghệ tự động hóa cao.</p>
-              <div class="w-1 h-1 rounded-full bg-white/50"></div>
-            </div>
+      <section style="background:#F7F6F3; border-top:1px solid #EBEBEB; border-bottom:1px solid #EBEBEB; padding:80px 24px;">
+        <div style="max-width:1152px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:24px;" class="md:grid-cols-2 grid-cols-1">
+          <div style="background:#fff; border-radius:20px; border:1px solid #EBEBEB; padding:40px;">
+            <p style="font-size:0.65rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#999; margin-bottom:14px;">{{ 'ABOUT_PAGE.MISSION_LABEL' | translate }}</p>
+            <h3 class="page-title" style="font-size:1.5rem; font-weight:700; color:#0D0D0D; margin-bottom:14px;">{{ 'ABOUT_PAGE.MISSION_TITLE' | translate }}</h3>
+            <p style="color:#6B7280; line-height:1.8;">{{ 'ABOUT_PAGE.MISSION_DESC' | translate }}</p>
+          </div>
+          <div style="background:#0D0D0D; border-radius:20px; padding:40px;">
+            <p style="font-size:0.65rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#555; margin-bottom:14px;">{{ 'ABOUT_PAGE.VISION_LABEL' | translate }}</p>
+            <h3 class="editorial-title" style="font-size:1.5rem; font-weight:700; color:#F7F6F3; margin-bottom:14px;">{{ 'ABOUT_PAGE.VISION_TITLE' | translate }}</h3>
+            <p style="color:#888; line-height:1.8;">{{ 'ABOUT_PAGE.VISION_DESC' | translate }}</p>
           </div>
         </div>
       </section>
 
-      <!-- Team Section (Optional) -->
-      <section class="max-w-6xl mx-auto px-6 py-24">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl font-black text-gray-900 mb-4">Đội ngũ của chúng tôi</h2>
-          <p class="text-lg text-gray-600">Những chuyên gia tận tâm với bất động sản</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div *ngFor="let i of [1,2,3]" class="group rounded-xl overflow-hidden border border-gray-200 bg-white hover:shadow-xl transition-all duration-300">
-            <div class="h-64 bg-gradient-to-br from-indigo-400 to-indigo-600 relative overflow-hidden">
-              <div class="w-full h-full flex items-center justify-center text-6xl text-white/30">👤</div>
-            </div>
-            <div class="p-6">
-              <h4 class="text-lg font-bold text-gray-900">Chuyên gia {{i}}</h4>
-              <p class="text-sm text-gray-600 mt-1">Lĩnh vực bất động sản</p>
-            </div>
-          </div>
+      <!-- CTA -->
+      <section style="padding:80px 24px; text-align:center;">
+        <div style="max-width:580px; margin:0 auto;">
+          <h2 class="page-title" style="font-size:clamp(1.6rem,4vw,2.4rem); font-weight:700; color:#0D0D0D; margin-bottom:14px;">{{ 'ABOUT_PAGE.CTA_TITLE' | translate }}</h2>
+          <p style="color:#6B7280; margin-bottom:28px; font-size:1rem; line-height:1.7;">{{ 'ABOUT_PAGE.CTA_SUB' | translate }}</p>
+          <a routerLink="/" style="display:inline-block; background:#0D0D0D; color:#F7F6F3; padding:13px 32px; border-radius:10px; font-weight:700; font-size:0.9rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0D0D0D'">
+            {{ 'ABOUT_PAGE.CTA_BTN' | translate }}
+          </a>
         </div>
       </section>
 
-      <!-- CTA Section -->
-      <section class="bg-indigo-600 text-white py-20">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-          <h2 class="text-4xl font-black mb-4">Bắt đầu ngay hôm nay</h2>
-          <p class="text-xl text-indigo-100 mb-8">Khám phá hàng ngàn bất động sản chất lượng</p>
-          <a routerLink="/" class="inline-block px-8 py-3 bg-white text-indigo-600 font-bold rounded-lg hover:bg-gray-50 transition-all">Xem dự án</a>
-        </div>
-      </section>
+      <app-guest-footer></app-guest-footer>
     </div>
   `
 })
 export class AboutComponent implements OnInit {
   private seoService = inject(SeoService);
-  
+
+  values = [
+    {
+      titleKey: 'ABOUT_PAGE.VAL_TECH',
+      descKey: 'ABOUT_PAGE.VAL_TECH_DESC',
+      icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+      color: '#4F46E5', bgLight: '#EEF2FF'
+    },
+    {
+      titleKey: 'ABOUT_PAGE.VAL_TRANS',
+      descKey: 'ABOUT_PAGE.VAL_TRANS_DESC',
+      icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+      color: '#059669', bgLight: '#D1FAE5'
+    },
+    {
+      titleKey: 'ABOUT_PAGE.VAL_SAFE',
+      descKey: 'ABOUT_PAGE.VAL_SAFE_DESC',
+      icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+      color: '#7C3AED', bgLight: '#EDE9FE'
+    },
+  ];
+
   ngOnInit() {
     this.seoService.setMeta({
-      title: 'Giới thiệu',
-      desc: 'Pro-RealEstate là nền tảng Bất động sản công nghệ cao, cung cấp các giải pháp kết nối người mua và người bán thông minh, minh bạch và an toàn.',
-      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
+      title: 'Giới thiệu | Điểm Tâm BĐS',
+      desc: 'Điểm Tâm BĐS là nền tảng bất động sản công nghệ cao, kết nối người mua và người bán thông minh, minh bạch và an toàn.',
+      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80'
     });
   }
 }

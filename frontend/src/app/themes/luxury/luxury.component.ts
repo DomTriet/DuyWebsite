@@ -1,307 +1,510 @@
-import { Component, Input, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { LanguageSelectorComponent } from '../../shared/components/language-selector/language-selector.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FavoriteService } from '../../core/services/favorite.service';
+import { LanguageService } from '../../core/services/language.service';
+import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LayoutConfig, LayoutBlock, normalizeLayoutFor } from '../custom/custom-layout.model';
 
 @Component({
   selector: 'app-luxury-theme',
   standalone: true,
-  imports: [CommonModule, RouterModule, LanguageSelectorComponent, TranslateModule],
+  imports: [CommonModule, RouterModule, LanguageSelectorComponent, TranslateModule, FormsModule],
   styles: [`
     :host {
-      --theme-primary: #0f172a;
-      --theme-accent: #d4af37;
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --black: #0A0A0A;
+      --surface: #111111;
+      --surface-2: #181818;
+      --cream: #EDE8DF;
+      --muted: #888880;
+      --border: rgba(201,168,76,0.18);
+      --f-display: 'Cormorant Garamond', Georgia, serif;
+      --f-body: 'DM Sans', system-ui, sans-serif;
     }
-    .text-accent { color: var(--theme-accent); }
-    .bg-accent { background-color: var(--theme-accent); }
-    .border-accent { border-color: var(--theme-accent); }
-    .font-serif { font-family: 'Playfair Display', serif; }
-    .font-sans { font-family: 'Inter', sans-serif; }
+    * { box-sizing: border-box; }
+    .font-display { font-family: var(--f-display); }
+    .font-body    { font-family: var(--f-body); }
 
-    /* Luxury animations */
-    @keyframes fadeUpLuxury {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    @keyframes revealUp { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes revealFade { from { opacity: 0; } to { opacity: 1; } }
+    .reveal-up   { animation: revealUp  0.9s cubic-bezier(0.16,1,0.3,1) both; }
+    .reveal-fade { animation: revealFade 1.2s ease both; }
 
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(-60px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
+    .lux-nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--black) 92%, transparent); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .lux-nav-link { font-family: var(--f-body); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); transition: color 0.3s; text-decoration: none; }
+    .lux-nav-link:hover { color: var(--cream); }
 
-    @keyframes goldGlow {
-      0%, 100% {
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-      }
-      50% {
-        box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
-      }
-    }
+    .lux-hero { position: relative; height: 100svh; min-height: 600px; overflow: hidden; }
+    .lux-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform 12s ease; }
+    .lux-hero:hover .lux-hero-img { transform: scale(1); }
+    .lux-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.35) 40%, rgba(10,10,10,0.85) 100%); }
+    .lux-hero-content { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 0 6vw 10vh; max-width: 1400px; margin: 0 auto; }
+    .lux-eyebrow { font-family: var(--f-body); font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+    .lux-eyebrow::before { content: ''; display: block; width: 36px; height: 1px; background: var(--gold); }
+    .lux-headline { font-family: var(--f-display); font-size: clamp(3.5rem, 9vw, 8.5rem); font-weight: 300; font-style: italic; line-height: 0.95; letter-spacing: -0.02em; color: var(--cream); margin-bottom: 32px; }
+    .lux-hero-sub { font-family: var(--f-body); font-size: 1rem; font-weight: 300; color: rgba(237,232,223,0.65); max-width: 480px; line-height: 1.7; margin-bottom: 48px; }
+    .lux-cta { font-family: var(--f-body); font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--cream); text-decoration: none; display: inline-flex; align-items: center; gap: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(237,232,223,0.3); transition: border-color 0.4s, color 0.3s; }
+    .lux-cta:hover { color: var(--gold); border-color: var(--gold); }
+    .lux-cta-arrow { width: 32px; height: 1px; background: currentColor; position: relative; transition: width 0.4s ease; }
+    .lux-cta:hover .lux-cta-arrow { width: 52px; }
+    .lux-cta-arrow::after { content: ''; position: absolute; right: 0; top: -3px; width: 6px; height: 6px; border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: rotate(45deg); }
 
-    .animate-fade-up-luxury {
-      animation: fadeUpLuxury 0.8s ease-out forwards;
-    }
+    .lux-stat-label { font-family: var(--f-body); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .lux-stat-num { font-family: var(--f-display); font-size: 2.8rem; font-weight: 300; color: var(--cream); line-height: 1; }
+    .lux-stat-num span { color: var(--gold); font-style: italic; }
 
-    .animate-slide-right {
-      animation: slideInRight 0.8s ease-out forwards;
-    }
+    .lux-section-label { font-family: var(--f-body); font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .lux-section-label::before { content: ''; width: 28px; height: 1px; background: var(--gold); flex-shrink: 0; }
+    .lux-section-title { font-family: var(--f-display); font-size: clamp(2.4rem, 5vw, 4.5rem); font-weight: 300; font-style: italic; color: var(--cream); line-height: 1.1; }
 
-    .luxury-card {
-      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
+    .lux-card { background: var(--surface); border: 1px solid transparent; transition: border-color 0.5s, transform 0.5s cubic-bezier(0.16,1,0.3,1); overflow: hidden; }
+    .lux-card:hover { border-color: var(--border); transform: translateY(-6px); }
+    .lux-card-img-wrap { overflow: hidden; aspect-ratio: 3 / 4; position: relative; }
+    .lux-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+    .lux-card:hover .lux-card-img { transform: scale(1.06); }
+    .lux-card-badge { position: absolute; top: 20px; left: 20px; font-family: var(--f-body); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; background: var(--gold); color: var(--black); padding: 5px 12px; font-weight: 600; }
+    .lux-fav-btn { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; background: rgba(10,10,10,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.3s, background 0.3s; }
+    .lux-fav-btn:hover { border-color: var(--gold); background: rgba(10,10,10,0.9); }
+    .lux-card-body { padding: 24px 24px 28px; border-top: 1px solid #1E1E1E; }
+    .lux-card-title { font-family: var(--f-display); font-size: 1.35rem; font-weight: 400; color: var(--cream); line-height: 1.3; margin-bottom: 8px; transition: color 0.3s; }
+    .lux-card:hover .lux-card-title { color: var(--gold-light); }
+    .lux-card-price { font-family: var(--f-body); font-size: 1rem; font-weight: 500; color: var(--gold); margin-bottom: 18px; }
+    .lux-card-divider { height: 1px; background: #1E1E1E; margin-bottom: 18px; }
+    .lux-card-meta { font-family: var(--f-body); font-size: 0.75rem; color: var(--muted); display: flex; gap: 20px; }
+    .lux-card-meta-item { display: flex; align-items: center; gap: 6px; }
 
-    .luxury-card:hover {
-      transform: translateY(-12px);
-      border-color: var(--theme-accent);
-    }
+    .lux-spinner { width: 40px; height: 40px; border: 1px solid rgba(201,168,76,0.15); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .luxury-card:hover img {
-      transform: scale(1.05);
+    @media (max-width: 767px) {
+      .lux-hero-content { padding: 0 24px 8vh; }
+      .lux-headline { letter-spacing: -0.01em; }
+      .lux-hero-sub { display: none; }
     }
-
-    .gold-accent-underline {
-      position: relative;
-    }
-
-    .gold-accent-underline::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      width: 40px;
-      height: 2px;
-      background-color: var(--theme-accent);
-      transition: width 0.6s ease-out;
-    }
-
-    .gold-accent-underline:hover::after {
-      width: 100%;
-    }
+    .lux-chip { background:var(--surface-2); color:var(--cream); border:1px solid #2A2A2A; padding:8px 14px; font-family: var(--f-body); font-size:0.75rem; letter-spacing:0.05em; min-width:130px; }
   `],
   template: `
-    <div class="min-h-screen bg-gradient-to-b from-slate-900 via-black to-slate-950 text-white">
-      
-      <!-- Modern Navigation -->
-      <nav class="sticky top-0 z-50 bg-black/95 backdrop-blur border-b border-amber-500/10 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-          <div class="text-2xl font-serif font-bold text-amber-500 tracking-widest">
-            {{ project?.name || 'LUXURY' }}
-          </div>
-          <div class="hidden md:flex gap-10 items-center text-sm tracking-wide">
-            <a routerLink="/" class="text-gray-300 hover:text-amber-400 transition-colors">{{ 'NAVBAR.HOME' | translate }}</a>
-            <a routerLink="/about" class="text-gray-300 hover:text-amber-400 transition-colors">{{ 'NAVBAR.ABOUT' | translate }}</a>
-            <a routerLink="/blogs" class="text-gray-300 hover:text-amber-400 transition-colors">{{ 'NAVBAR.NEWS' | translate }}</a>
-            <a routerLink="/contact" class="text-gray-300 hover:text-amber-400 transition-colors">{{ 'NAVBAR.CONTACT' | translate }}</a>
+    <div class="min-h-screen font-body"
+         style="background: var(--black); color: var(--cream);"
+         [style.--black]="cfg.tokens.colorBg"
+         [style.--cream]="cfg.tokens.colorText"
+         [style.--gold]="cfg.tokens.colorAccent"
+         [style.--gold-light]="cfg.tokens.colorAccent"
+         [style.--f-display]="fHead"
+         [style.--f-body]="fBody">
+
+      <!-- ── Navigation ── -->
+      <nav class="lux-nav">
+        <div style="max-width:1400px; margin:0 auto; padding:0 6vw;" class="flex items-center justify-between h-16">
+          <a routerLink="/" class="font-display" style="font-size:1.25rem; font-style:italic; font-weight:300; color:var(--cream); letter-spacing:0.04em; text-decoration:none; display:flex; align-items:center; gap:10px;">
+            <img *ngIf="cfg.tokens.logoUrl" [src]="cfg.tokens.logoUrl" alt="logo" style="height:26px; width:auto; object-fit:contain;">
+            <span>{{ cfg.tokens.logoText || project?.name || 'Luxury' }}</span>
+          </a>
+          <div class="hidden md:flex items-center gap-8">
+            <a routerLink="/"       class="lux-nav-link">{{ 'NAVBAR.HOME'    | translate }}</a>
+            <a href="#listing"      class="lux-nav-link">{{ 'THEME.SECTION.PROPERTIES' | translate }}</a>
+            <a *ngFor="let s of projectSections" [href]="'#section-' + s.id" class="lux-nav-link">{{ s.title }}</a>
+            <a routerLink="/about"  class="lux-nav-link">{{ 'NAVBAR.ABOUT'   | translate }}</a>
+            <a routerLink="/contact" class="lux-nav-link">{{ 'NAVBAR.CONTACT' | translate }}</a>
           </div>
           <app-language-selector></app-language-selector>
         </div>
       </nav>
 
-      <!-- Premium Hero -->
-      <section class="relative min-h-[90vh] w-full flex items-center justify-center overflow-hidden pt-20">
-        <!-- Background gradient -->
-        <div class="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-black z-0"></div>
-        <!-- Gold glow accent -->
-        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl z-0"></div>
-        
-        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
-             class="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-700" alt="Hero">
-        
-        <div class="relative z-20 text-center px-4 max-w-4xl mx-auto">
-          <p class="text-accent tracking-[0.35em] text-xs md:text-sm mb-8 uppercase font-sans font-semibold animate-fade-up-luxury" style="animation-delay: 0.1s;">{{ 'THEME.LUXURY.HERO_SUB' | translate }}</p>
-          <h1 class="text-6xl md:text-8xl font-serif font-bold text-white mb-8 leading-tight animate-fade-up-luxury" style="animation-delay: 0.3s;">
-            {{ project?.name || 'Khởi Nguồn Tinh Hoa' }}
-          </h1>
-          <p class="text-lg md:text-xl font-sans text-gray-200 font-light mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-up-luxury" style="animation-delay: 0.5s;">
-            {{ project?.description || 'Khám phá bộ sưu tập những bất động sản đẳng cấp nhất.' }}
-          </p>
-          <a href="#listing" class="inline-flex items-center gap-3 border-2 border-accent text-accent px-10 py-4 font-sans tracking-widest text-sm font-semibold hover:bg-accent hover:text-[#0f172a] transition-all duration-500 hover:shadow-2xl animate-fade-up-luxury group" style="animation-delay: 0.7s;">
-            {{ 'THEME.LUXURY.EXPLORE_NOW' | translate }}
-            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-          </a>
-        </div>
-      </section>
+      <!-- ── Blocks ── -->
+      <ng-container *ngFor="let block of visibleBlocks()">
+        <div [ngSwitch]="block.type">
 
-      <!-- Premium About Section -->
-      <section id="about" class="py-32 px-6 md:px-12 max-w-7xl mx-auto flex flex-col lg:flex-row gap-20 items-center bg-[#0f172a]">
-        <div class="flex-1">
-          <p class="text-accent tracking-[0.2em] text-xs uppercase font-sans font-semibold mb-6">Về dự án</p>
-          <h2 class="text-5xl md:text-6xl font-serif text-white mb-8 leading-tight gold-accent-underline" [innerHTML]="'THEME.LUXURY.ABOUT_TITLE' | translate"></h2>
-          <div class="font-sans text-gray-300 text-lg leading-relaxed space-y-6">
-            <p>{{ project?.description }}</p>
-            <p class="text-gray-400 text-base">Trải nghiệm sống đẳng cấp với những tiện ích tối tân và vị trí đắc địa.</p>
-          </div>
-          
-          <!-- Amenities highlights -->
-          <div class="grid grid-cols-2 gap-4 mt-10">
-            <div class="border border-accent/30 hover:border-accent px-6 py-4 transition-colors group cursor-default">
-              <div class="text-accent font-serif text-2xl font-bold mb-1 group-hover:text-white transition-colors">Bảo Mật</div>
-              <div class="text-gray-400 text-sm">24/7 An ninh</div>
+          <!-- HERO -->
+          <section *ngSwitchCase="'hero'" class="lux-hero">
+            <img [src]="block.props.image || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2400&q=85'"
+                 class="lux-hero-img reveal-fade" alt="Hero" loading="eager">
+            <div class="lux-hero-overlay"></div>
+            <div class="lux-hero-content w-full">
+              <p class="lux-eyebrow reveal-up" style="animation-delay:0.1s;">{{ 'THEME.LUXURY.HERO_SUB' | translate }}</p>
+              <h1 class="lux-headline reveal-up" style="animation-delay:0.25s;">{{ block.props.title || project?.name || ('THEME.LUXURY.DEFAULT_NAME' | translate) }}</h1>
+              <p class="lux-hero-sub reveal-up" style="animation-delay:0.4s;">{{ block.props.subtitle || project?.description || ('THEME.LUXURY.DEFAULT_DESC' | translate) }}</p>
+              <a [href]="block.props.ctaLink || '#listing'" class="lux-cta reveal-up" style="animation-delay:0.55s;">
+                {{ block.props.ctaText || ('THEME.LUXURY.EXPLORE_NOW' | translate) }}
+                <span class="lux-cta-arrow"></span>
+              </a>
             </div>
-            <div class="border border-accent/30 hover:border-accent px-6 py-4 transition-colors group cursor-default">
-              <div class="text-accent font-serif text-2xl font-bold mb-1 group-hover:text-white transition-colors">Tiện Ích</div>
-              <div class="text-gray-400 text-sm">Đầy đủ dịch vụ</div>
-            </div>
-            <div class="border border-accent/30 hover:border-accent px-6 py-4 transition-colors group cursor-default">
-              <div class="text-accent font-serif text-2xl font-bold mb-1 group-hover:text-white transition-colors">Vị Trí</div>
-              <div class="text-gray-400 text-sm">Trung tâm</div>
-            </div>
-            <div class="border border-accent/30 hover:border-accent px-6 py-4 transition-colors group cursor-default">
-              <div class="text-accent font-serif text-2xl font-bold mb-1 group-hover:text-white transition-colors">Thiết Kế</div>
-              <div class="text-gray-400 text-sm">Hiện đại</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Premium image with borders -->
-        <div class="flex-1 relative group">
-          <div class="absolute -inset-6 border-2 border-accent/20 group-hover:border-accent/50 z-0 transition-all duration-700 hidden lg:block"></div>
-          <div class="absolute -inset-2 border border-accent/40 z-0 hidden lg:block"></div>
-          <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-               class="relative z-10 w-full h-auto object-cover shadow-2xl group-hover:shadow-amber-900/30 transition-all duration-700" alt="About Project">
-        </div>
-      </section>
+          </section>
 
-      <!-- Premium Properties Listing -->
-      <section id="listing" class="py-32 bg-[#0a0f1c] relative">
-        <!-- Accent glow background -->
-        <div class="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
-        
-        <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-          <div class="text-center mb-20">
-            <p class="text-accent tracking-[0.2em] text-xs uppercase font-sans font-semibold mb-6 inline-block">Bộ sưu tập độc quyền</p>
-            <h2 class="text-5xl md:text-6xl font-serif text-white mb-6">{{ 'THEME.LUXURY.LISTING_TITLE' | translate }}</h2>
-            <p class="font-sans text-gray-400 text-lg max-w-2xl mx-auto">{{ 'THEME.LUXURY.LISTING_SUB' | translate }}</p>
-          </div>
-
-          <!-- Enhanced Loading Spinner -->
-          <div *ngIf="isLoading" class="flex justify-center py-20">
-            <div class="relative w-16 h-16">
-              <div class="absolute inset-0 border-2 border-accent/20 rounded-full animate-spin"></div>
-              <div class="absolute inset-2 border-2 border-transparent border-t-accent rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 2s;"></div>
+          <!-- STATS -->
+          <div *ngSwitchCase="'stats'" style="background:var(--surface); border-bottom:1px solid #1A1A1A;">
+            <div style="max-width:1400px; margin:0 auto; padding:0 6vw;">
+              <div *ngIf="block.props.items?.length; else luxDefaultStats" class="grid divide-x" style="border-color:#1A1A1A; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+                <div *ngFor="let it of block.props.items" class="py-10 px-8 reveal-up">
+                  <div class="lux-stat-label mb-3">{{ it.label }}</div>
+                  <div class="lux-stat-num">{{ it.value }}</div>
+                </div>
+              </div>
+              <ng-template #luxDefaultStats>
+                <div class="grid grid-cols-3 divide-x" style="border-color:#1A1A1A;">
+                  <div class="py-10 pr-8 reveal-up" style="animation-delay:0.2s;">
+                    <div class="lux-stat-label mb-3">{{ 'THEME.LUXURY.STAT_PROPS' | translate }}</div>
+                    <div class="lux-stat-num">{{ properties.length }}<span>+</span></div>
+                  </div>
+                  <div class="py-10 px-8 reveal-up" style="animation-delay:0.35s;">
+                    <div class="lux-stat-label mb-3">{{ 'THEME.LUXURY.STAT_STATUS' | translate }}</div>
+                    <div class="lux-stat-num" style="font-size:1.6rem; padding-top:0.5rem;"><span>{{ 'THEME.LUXURY.STAT_ACTIVE' | translate }}</span></div>
+                  </div>
+                  <div class="py-10 pl-8 reveal-up" style="animation-delay:0.5s;">
+                    <div class="lux-stat-label mb-3">{{ 'THEME.LUXURY.STAT_SERVICE' | translate }}</div>
+                    <div class="lux-stat-num">24<span>/7</span></div>
+                  </div>
+                </div>
+              </ng-template>
             </div>
           </div>
 
-          <!-- Premium Grid Layout -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            <article *ngFor="let prop of properties; let i = index" class="group bg-[#0f172a] border border-gray-800 luxury-card" [style.animation]="'fadeUpLuxury 0.8s ease-out ' + (i * 0.15) + 's backwards'">
-              
-              <!-- Premium Image Section -->
-              <div class="block relative aspect-[4/3] overflow-hidden bg-gradient-to-b from-black to-gray-900">
-                <a [routerLink]="['/project', project?.id || prop.project_id, 'property', prop.slug]" class="block w-full h-full absolute inset-0 z-0">
-                  <img [src]="getThumbnail(prop)" class="w-full h-full object-cover transform group-hover:scale-120 transition-transform duration-700" alt="Property">
-                </a>
-                
-                <!-- Favorite button with enhanced styling -->
-                <button (click)="toggleFav($event, prop.id)" class="absolute top-5 right-5 z-10 p-3 rounded-full bg-black/50 backdrop-blur hover:bg-black/80 transition-all border border-white/20 hover:border-accent group/heart">
-                  <svg [ngClass]="isFav(prop.id) ? 'text-red-500 fill-current scale-125' : 'text-gray-300 group-hover/heart:text-accent group-hover/heart:scale-110'" class="w-5 h-5 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+          <!-- PROPERTIES -->
+          <section *ngSwitchCase="'properties'" id="listing" style="padding: 100px 6vw 140px; background:var(--surface);">
+            <div style="max-width:1400px; margin:0 auto;">
+              <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+                <div>
+                  <p class="lux-section-label reveal-up" style="animation-delay:0.05s;">{{ 'THEME.LUXURY.COLLECTION_LABEL' | translate }}</p>
+                  <h2 class="lux-section-title reveal-up" style="animation-delay:0.15s;">{{ block.props.title || ('THEME.LUXURY.LISTING_TITLE' | translate) }}</h2>
+                </div>
+                <p style="color:var(--muted); font-size:0.875rem; max-width:320px; line-height:1.7; flex-shrink:0;" class="reveal-up">{{ 'THEME.LUXURY.LISTING_SUB' | translate }}</p>
+              </div>
+
+              <div *ngIf="block.props.showFilter !== false && !isLoading" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:32px; padding-bottom:24px; border-bottom:1px solid #1E1E1E;">
+                <select class="lux-chip" [(ngModel)]="filter.propertyType" (ngModelChange)="applyFilter()">
+                  <option [ngValue]="null">{{ 'THEME.FILTER.TYPE' | translate }}</option>
+                  <option *ngFor="let c of categories" [ngValue]="c.slug">{{ c.name }}</option>
+                </select>
+                <select class="lux-chip" [(ngModel)]="filter.minPrice" (ngModelChange)="applyFilter()">
+                  <option [ngValue]="null">{{ 'THEME.FILTER.MIN_PRICE' | translate }}</option>
+                  <option [ngValue]="1000000000">{{ 'THEME.FILTER.BILLION_PLUS' | translate:{ n: 1 } }}</option>
+                  <option [ngValue]="2000000000">{{ 'THEME.FILTER.BILLION_PLUS' | translate:{ n: 2 } }}</option>
+                  <option [ngValue]="5000000000">{{ 'THEME.FILTER.BILLION_PLUS' | translate:{ n: 5 } }}</option>
+                  <option [ngValue]="10000000000">{{ 'THEME.FILTER.BILLION_PLUS' | translate:{ n: 10 } }}</option>
+                </select>
+                <select class="lux-chip" [(ngModel)]="filter.maxPrice" (ngModelChange)="applyFilter()">
+                  <option [ngValue]="null">{{ 'THEME.FILTER.MAX_PRICE' | translate }}</option>
+                  <option [ngValue]="2000000000">{{ 'THEME.FILTER.UNDER_BILLION' | translate:{ n: 2 } }}</option>
+                  <option [ngValue]="5000000000">{{ 'THEME.FILTER.UNDER_BILLION' | translate:{ n: 5 } }}</option>
+                  <option [ngValue]="10000000000">{{ 'THEME.FILTER.UNDER_BILLION' | translate:{ n: 10 } }}</option>
+                  <option [ngValue]="20000000000">{{ 'THEME.FILTER.UNDER_BILLION' | translate:{ n: 20 } }}</option>
+                </select>
+                <select class="lux-chip" [(ngModel)]="filter.bedrooms" (ngModelChange)="applyFilter()">
+                  <option [ngValue]="null">{{ 'THEME.FILTER.BEDROOMS' | translate }}</option>
+                  <option [ngValue]="1">{{ 'THEME.FILTER.BED_N' | translate:{ n: 1 } }}{{ bedroomCount(1) ? ' · ' + bedroomCount(1) : '' }}</option>
+                  <option [ngValue]="2">{{ 'THEME.FILTER.BED_N' | translate:{ n: 2 } }}{{ bedroomCount(2) ? ' · ' + bedroomCount(2) : '' }}</option>
+                  <option [ngValue]="3">{{ 'THEME.FILTER.BED_N' | translate:{ n: 3 } }}{{ bedroomCount(3) ? ' · ' + bedroomCount(3) : '' }}</option>
+                  <option [ngValue]="4">{{ 'THEME.FILTER.BED_PLUS' | translate:{ n: 4 } }}</option>
+                </select>
+                <select class="lux-chip" [(ngModel)]="filter.minArea" (ngModelChange)="applyFilter()">
+                  <option [ngValue]="null">{{ 'THEME.FILTER.AREA_FROM' | translate }}</option>
+                  <option [ngValue]="30">{{ 'THEME.FILTER.AREA_PLUS' | translate:{ n: 30 } }}</option>
+                  <option [ngValue]="50">{{ 'THEME.FILTER.AREA_PLUS' | translate:{ n: 50 } }}</option>
+                  <option [ngValue]="80">{{ 'THEME.FILTER.AREA_PLUS' | translate:{ n: 80 } }}</option>
+                  <option [ngValue]="120">{{ 'THEME.FILTER.AREA_PLUS' | translate:{ n: 120 } }}</option>
+                </select>
+                <select class="lux-chip" style="min-width:140px;" [(ngModel)]="filter.sort" (ngModelChange)="applyFilter()">
+                  <option value="newest">{{ 'THEME.FILTER.SORT_NEWEST' | translate }}</option>
+                  <option value="price_asc">{{ 'THEME.FILTER.SORT_PRICE_ASC' | translate }}</option>
+                  <option value="price_desc">{{ 'THEME.FILTER.SORT_PRICE_DESC' | translate }}</option>
+                </select>
+                <button *ngIf="isFiltered" (click)="clearFilter()" style="background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--gold);padding:8px 16px;font-family:var(--f-body);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;">
+                  {{ 'THEME.FILTER.CLEAR' | translate }} ({{ filteredProperties.length }}/{{ properties.length }})
                 </button>
-                
-                <!-- Sophisticated gradient overlay -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent opacity-70 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none"></div>
-                
-                <!-- Title & Price overlay -->
-                <div class="absolute bottom-6 left-6 right-6 z-20 flex flex-col gap-3">
-                  <h3 class="text-2xl font-serif text-white group-hover:text-accent transition-colors duration-500 line-clamp-2">{{ prop.title }}</h3>
-                  <p class="text-accent font-sans font-bold text-2xl">{{ prop.price | number }} ₫</p>
-                </div>
               </div>
-              
-              <!-- Premium Information Section -->
-              <div class="p-8 font-sans bg-[#0f172a]">
-                <!-- Features grid -->
-                <div class="grid grid-cols-3 gap-4 mb-6 pb-6 border-b border-gray-800">
-                  <div *ngIf="prop.attributes?.bedrooms" class="text-center group/feature hover:border-b-2 hover:border-accent pb-2 transition-all">
-                    <svg class="w-5 h-5 text-accent mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    <div class="text-sm font-semibold text-gray-300 group-hover/feature:text-white">{{ prop.attributes.bedrooms }}</div>
-                    <div class="text-xs text-gray-500">Phòng</div>
-                  </div>
-                  <div *ngIf="prop.attributes?.bathrooms" class="text-center group/feature hover:border-b-2 hover:border-accent pb-2 transition-all">
-                    <svg class="w-5 h-5 text-accent mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    <div class="text-sm font-semibold text-gray-300 group-hover/feature:text-white">{{ prop.attributes.bathrooms }}</div>
-                    <div class="text-xs text-gray-500">Toilet</div>
-                  </div>
-                  <div *ngIf="prop.attributes?.area" class="text-center group/feature hover:border-b-2 hover:border-accent pb-2 transition-all">
-                    <svg class="w-5 h-5 text-accent mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
-                    <div class="text-sm font-semibold text-gray-300 group-hover/feature:text-white">{{ prop.attributes.area }}</div>
-                    <div class="text-xs text-gray-500">m²</div>
-                  </div>
-                </div>
-                
-                <!-- Description -->
-                <p class="text-sm text-gray-400 line-clamp-2 leading-relaxed">{{ prop.description }}</p>
-              </div>
-            </article>
-          </div>
 
-          <!-- Empty State -->
-          <div *ngIf="!isLoading && properties.length === 0" class="text-center py-24">
-            <div class="text-6xl font-serif text-accent mb-4">✧</div>
-            <p class="text-gray-300 text-lg font-sans font-semibold mb-2">Chưa có bất động sản</p>
-            <p class="text-gray-500">Bộ sưu tập độc quyền sắp ra mắt</p>
+              <div *ngIf="isLoading || isFiltering" class="flex justify-center" style="padding:80px 0;"><div class="lux-spinner"></div></div>
+
+              <div *ngIf="!isLoading && !isFiltering" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <article *ngFor="let prop of filteredProperties; let i = index" class="lux-card reveal-up" [style.animation-delay]="(i * 0.1) + 's'">
+                  <div class="lux-card-img-wrap">
+                    <a [routerLink]="['/project', project?.slug || project?.id || prop.project_id, 'property', prop.slug]" style="display:block; height:100%;">
+                      <img [src]="getThumbnail(prop)" class="lux-card-img" [alt]="prop.title" loading="lazy">
+                    </a>
+                    <span *ngIf="prop.attributes?.property_type || prop.categories?.name" class="lux-card-badge">{{ prop.attributes?.property_type || prop.categories?.name }}</span>
+                    <button (click)="toggleFav($event, prop.id)" class="lux-fav-btn" [attr.aria-label]="'THEME.DETAIL.FAVORITE' | translate">
+                      <svg [style.color]="isFav(prop.id) ? '#ef4444' : 'var(--muted)'" [attr.fill]="isFav(prop.id) ? 'currentColor' : 'none'" style="width:18px;height:18px; transition:color 0.3s;" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="lux-card-body">
+                    <a [routerLink]="['/project', project?.slug || project?.id || prop.project_id, 'property', prop.slug]" style="text-decoration:none;"><h3 class="lux-card-title line-clamp-2">{{ prop.title }}</h3></a>
+                    <div class="lux-card-price">{{ prop.price | number }} ₫</div>
+                    <div class="lux-card-divider"></div>
+                    <div class="lux-card-meta">
+                      <span *ngIf="prop.attributes?.bedrooms" class="lux-card-meta-item">{{ prop.attributes.bedrooms }} {{ 'THEME.LUXURY.BEDROOMS' | translate }}</span>
+                      <span *ngIf="prop.attributes?.bathrooms" class="lux-card-meta-item">{{ prop.attributes.bathrooms }} {{ 'THEME.LUXURY.BATHROOMS' | translate }}</span>
+                      <span *ngIf="prop.attributes?.area" class="lux-card-meta-item">{{ prop.attributes.area }} m²</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div *ngIf="!isLoading && !isFiltering && filteredProperties.length === 0" class="text-center reveal-fade" style="padding:100px 0;">
+                <div class="font-display" style="font-size:4rem; font-style:italic; color:var(--gold); opacity:0.4; margin-bottom:20px;">✦</div>
+                <p style="font-size:1.125rem; color:var(--cream); margin-bottom:8px;">{{ 'THEME.COMMON.NO_MATCH_SHORT' | translate }}</p>
+                <p style="font-size:0.875rem; color:var(--muted);">{{ 'THEME.COMMON.ADJUST_FILTER' | translate }}</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- SECTIONS -->
+          <ng-container *ngSwitchCase="'sections'">
+            <section *ngFor="let s of projectSections" [id]="'section-' + s.id" style="padding:90px 6vw; border-top:1px solid #1A1A1A;">
+              <div style="max-width:1400px; margin:0 auto;">
+                <p class="lux-section-label">{{ 'THEME.SECTION_TYPE.' + s.section_type | translate }}</p>
+                <h2 class="lux-section-title" style="margin-bottom:32px;">{{ s.title }}</h2>
+                <div style="display:grid; gap:40px;" [style.grid-template-columns]="s.image_url ? '1.3fr 1fr' : '1fr'">
+                  <div>
+                    <p *ngIf="s.content" style="color:var(--muted); font-size:0.95rem; line-height:1.9; white-space:pre-wrap; max-width:640px;">{{ s.content }}</p>
+                    <div *ngIf="s.section_type === 'developer' && s.metadata" style="margin-top:20px; color:var(--cream); font-size:0.85rem; line-height:2;">
+                      <div *ngIf="s.metadata.name"><span style="color:var(--gold);">{{ 'THEME.COMMON.DEVELOPER' | translate }}:</span> {{ s.metadata.name }}</div>
+                      <div *ngIf="s.metadata.established_year"><span style="color:var(--gold);">{{ 'THEME.COMMON.ESTABLISHED' | translate }}:</span> {{ s.metadata.established_year }}</div>
+                      <div *ngIf="s.metadata.website"><a [href]="s.metadata.website" target="_blank" style="color:var(--gold);">{{ s.metadata.website }}</a></div>
+                    </div>
+                    <div *ngIf="s.section_type === 'location' && s.metadata?.address" style="margin-top:18px; color:var(--cream); font-size:0.9rem;">📍 {{ s.metadata.address }}</div>
+                    <div *ngIf="s.section_type === 'location' && s.metadata?.map_embed_url" style="margin-top:18px;">
+                      <iframe [src]="safe(s.metadata.map_embed_url)" style="width:100%; height:340px; border:1px solid #2A2A2A;" loading="lazy"></iframe>
+                    </div>
+                    <ul *ngIf="sectionItems(s).length" style="margin-top:18px; list-style:none; padding:0; columns:2; column-gap:40px;">
+                      <li *ngFor="let it of sectionItems(s)" style="color:var(--muted); font-size:0.9rem; padding:7px 0; break-inside:avoid;"><span style="color:var(--gold);">✦</span> {{ it }}</li>
+                    </ul>
+                  </div>
+                  <div *ngIf="s.image_url" class="relative">
+                    <div style="position:absolute; inset:-12px; border:1px solid var(--border); pointer-events:none;"></div>
+                    <img [src]="s.image_url" [alt]="s.title" class="relative" style="z-index:1; width:100%; height:100%; max-height:380px; object-fit:cover;">
+                  </div>
+                </div>
+              </div>
+            </section>
+          </ng-container>
+
+          <!-- BLOGS -->
+          <ng-container *ngSwitchCase="'blogs'">
+            <section *ngIf="projectBlogs.length" style="padding:90px 6vw; border-top:1px solid #1A1A1A; background:var(--surface);">
+              <div style="max-width:1400px; margin:0 auto;">
+                <div class="flex items-end justify-between mb-12">
+                  <div>
+                    <p class="lux-section-label">{{ 'THEME.COMMON.UPDATED' | translate }}</p>
+                    <h2 class="lux-section-title">{{ block.props.title || ('THEME.SECTION.NEWS' | translate) }}</h2>
+                  </div>
+                  <a routerLink="/blogs" style="color:var(--gold); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; text-decoration:none;">{{ 'THEME.COMMON.VIEW_ALL' | translate }} →</a>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <a *ngFor="let b of projectBlogs" [routerLink]="['/blogs', b.slug]" class="lux-card" style="text-decoration:none;">
+                    <div class="lux-card-img-wrap"><img [src]="getBlogImage(b)" class="lux-card-img" [alt]="b.title" loading="lazy"></div>
+                    <div class="lux-card-body"><h3 class="lux-card-title line-clamp-2">{{ b.title }}</h3><p style="color:var(--muted); font-size:0.75rem; margin-top:8px;">{{ b.created_at | date:'dd/MM/yyyy' }}</p></div>
+                  </a>
+                </div>
+              </div>
+            </section>
+          </ng-container>
+
+          <!-- GALLERY -->
+          <ng-container *ngSwitchCase="'gallery'">
+            <section *ngIf="(block.props.images || []).length" style="padding:90px 6vw; border-top:1px solid #1A1A1A;">
+              <div style="max-width:1400px; margin:0 auto;">
+                <h2 class="lux-section-title" *ngIf="block.props.title" style="margin-bottom:32px;">{{ block.props.title }}</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <img *ngFor="let img of block.props.images" [src]="img" alt="gallery" style="width:100%; height:280px; object-fit:cover;">
+                </div>
+              </div>
+            </section>
+          </ng-container>
+
+          <!-- TEXT -->
+          <section *ngSwitchCase="'text'" style="padding:90px 6vw; border-top:1px solid #1A1A1A;">
+            <div style="max-width:880px; margin:0 auto;">
+              <h2 class="lux-section-title" *ngIf="block.props.heading" style="margin-bottom:28px;">{{ block.props.heading }}</h2>
+              <p style="color:rgba(237,232,223,0.7); font-size:1.05rem; line-height:1.9; font-weight:300; white-space:pre-wrap;">{{ block.props.body }}</p>
+            </div>
+          </section>
+
+          <!-- CTA -->
+          <section *ngSwitchCase="'cta'" style="padding:110px 6vw; text-align:center; border-top:1px solid var(--border); background:var(--surface);">
+            <h2 class="lux-section-title" style="margin-bottom:28px;">{{ block.props.title }}</h2>
+            <a *ngIf="block.props.buttonText" [routerLink]="block.props.buttonLink || '/contact'" class="lux-cta" style="justify-content:center;">{{ block.props.buttonText }} <span class="lux-cta-arrow"></span></a>
+          </section>
+
+        </div>
+      </ng-container>
+
+      <!-- ── Footer ── -->
+      <footer style="border-top:1px solid #1A1A1A; padding:48px 6vw;">
+        <div style="max-width:1400px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px;">
+          <div>
+            <span class="font-display" style="font-size:1.1rem; font-style:italic; color:var(--muted);">{{ cfg.tokens.logoText || project?.name || 'Luxury' }}</span>
+            <p *ngIf="cfg.footer.text" style="font-size:0.78rem; color:var(--muted); margin-top:6px; max-width:520px;">{{ cfg.footer.text }}</p>
+          </div>
+          <div style="font-size:0.7rem; letter-spacing:0.15em; color:var(--muted); text-transform:uppercase; text-align:right;">
+            <ng-container *ngIf="cfg.footer.showContact && (cfg.footer.phone || cfg.footer.email)">
+              <div *ngIf="cfg.footer.phone">📞 {{ cfg.footer.phone }}</div>
+              <div *ngIf="cfg.footer.email">✉️ {{ cfg.footer.email }}</div>
+            </ng-container>
+            <div *ngIf="!cfg.footer.phone && !cfg.footer.email">{{ 'THEME.LUXURY.COPYRIGHT' | translate }}</div>
           </div>
         </div>
-      </section>
+      </footer>
 
     </div>
   `
 })
-export class LuxuryComponent implements OnInit {
+export class LuxuryComponent implements OnInit, OnChanges {
   @Input() project: any;
-  
+
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
+  private sanitizer = inject(DomSanitizer);
   private favoriteService = inject(FavoriteService);
+  private languageService = inject(LanguageService);
+  private translateService = inject(TranslateService);
   private destroyRef = inject(DestroyRef);
+
+  cfg!: LayoutConfig;
   properties: any[] = [];
+  filteredProperties: any[] = [];
+  categories: any[] = [];
+  facets: any = null;
+  projectSections: any[] = [];
+  projectBlogs: any[] = [];
   isLoading = true;
+  isFiltering = false;
+  private loaded = false;
+  private originalProject: any = null;
+
+  filter = { minPrice: null as number | null, maxPrice: null as number | null, bedrooms: null as number | null, minArea: null as number | null, maxArea: null as number | null, propertyType: null as string | null, sort: 'newest' as string };
+  get isFiltered(): boolean { return this.filter.minPrice !== null || this.filter.maxPrice !== null || this.filter.bedrooms !== null || this.filter.minArea !== null || this.filter.maxArea !== null || this.filter.propertyType !== null; }
+  applyFilter() { this.loadProperties(); }
+  clearFilter() { this.filter = { minPrice: null, maxPrice: null, bedrooms: null, minArea: null, maxArea: null, propertyType: null, sort: 'newest' }; this.loadProperties(); }
+
+  visibleBlocks(): LayoutBlock[] { return (this.cfg?.blocks || []).filter(b => b.visible); }
+  get fHead(): string { return `"${this.cfg?.tokens?.fontHead || 'Cormorant Garamond'}", Georgia, serif`; }
+  get fBody(): string { return `"${this.cfg?.tokens?.fontBody || 'DM Sans'}", system-ui, sans-serif`; }
+
+  ngOnChanges() { this.cfg = normalizeLayoutFor(this.project?.layout_config, 'luxury'); }
+
+  private loadProperties() {
+    this.isFiltering = true;
+    this.cdr.markForCheck();
+    const params: Record<string, any> = { limit: 50 };
+    if (this.project?.id)       params['project_id']    = this.project.id;
+    if (this.filter.minPrice)   params['min_price']     = this.filter.minPrice;
+    if (this.filter.maxPrice)   params['max_price']     = this.filter.maxPrice;
+    if (this.filter.bedrooms)   params['bedrooms']      = this.filter.bedrooms;
+    if (this.filter.minArea)    params['min_area']      = this.filter.minArea;
+    if (this.filter.maxArea)    params['max_area']      = this.filter.maxArea;
+    if (this.filter.propertyType) params['property_type'] = this.filter.propertyType;
+    if (this.filter.sort)       params['sort']          = this.filter.sort;
+    this.api.get<any>('/properties', params).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => { this.properties = res.data || []; this.filteredProperties = [...this.properties]; this.isLoading = false; this.isFiltering = false; this.cdr.markForCheck(); },
+      error: () => { this.isLoading = false; this.isFiltering = false; this.cdr.markForCheck(); }
+    });
+  }
+
+  private loadCategories() {
+    this.api.get<any>('/properties/categories').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => { this.categories = res.data || []; this.cdr.markForCheck(); }
+    });
+  }
+
+  private loadFacets() {
+    const params: Record<string, any> = {};
+    if (this.project?.id) params['project_id'] = this.project.id;
+    this.api.get<any>('/properties/facets', params).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => { this.facets = res.data || null; this.cdr.markForCheck(); }
+    });
+  }
+
+  private rawSections: any[] = [];
+  private loadProjectSections() {
+    if (!this.project?.id) return;
+    this.api.get<any>(`/projects/${this.project.id}/sections`).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => { this.rawSections = res.data || []; this.applySectionTranslations(); }
+    });
+  }
+
+  private applySectionTranslations() {
+    this.projectSections = this.rawSections.map(s => ({ ...s }));
+    this.cdr.markForCheck();
+    if (this.languageService.currentLang === 'vi' || !this.rawSections.length) return;
+    this.rawSections.forEach((s, idx) => {
+      this.languageService.getDynamicTranslation('project_section', s.id)
+        ?.pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(res => {
+          if (res && !res.fallback && res.data) {
+            this.projectSections[idx] = { ...this.rawSections[idx], title: res.data.title ?? this.rawSections[idx].title, content: res.data.description ?? this.rawSections[idx].content };
+            this.cdr.markForCheck();
+          }
+        });
+    });
+  }
+
+  private loadProjectBlogs() {
+    if (!this.project?.id) return;
+    this.api.get<any>('/blogs', { project_id: this.project.id, limit: 3 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => { this.projectBlogs = res.data || []; this.cdr.markForCheck(); }
+    });
+  }
+
+  bedroomCount(n: number): number { return this.facets?.bedrooms?.[String(n)] || 0; }
+  getBlogImage(blog: any): string {
+    const img = (blog?.content_blocks || []).find((b: any) => b.type === 'image' && b.value);
+    return img?.value || 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=600&q=75';
+  }
+  sectionItems(s: any): string[] { return Array.isArray(s?.metadata?.items) ? s.metadata.items : []; }
+  safe(url: string): SafeResourceUrl { return this.sanitizer.bypassSecurityTrustResourceUrl(url); }
 
   ngOnInit() {
-    // Gọi API lấy danh sách sản phẩm. Ưu tiên lọc theo dự án hiện tại
-    const endpoint = this.project?.id ? `/properties?project_id=${this.project.id}` : '/properties';
-    this.api.get<any>(endpoint).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.properties = res.data || [];
-        this.isLoading = false;
-        this.cdr.markForCheck();
-      },
-      error: () => { this.isLoading = false; this.cdr.markForCheck(); }
+    if (!this.cfg) this.cfg = normalizeLayoutFor(this.project?.layout_config, 'luxury');
+    if (this.project) {
+      this.originalProject = { ...this.project };
+      this.loadProjectTranslation();
+      this.translateService.onLangChange
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => { this.loadProjectTranslation(); this.applySectionTranslations(); });
+    }
+    if (!this.loaded) {
+      this.loaded = true;
+      this.loadProperties();
+      this.loadCategories();
+      this.loadFacets();
+      this.loadProjectSections();
+      this.loadProjectBlogs();
+    }
+  }
+
+  private loadProjectTranslation() {
+    if (this.languageService.currentLang === 'vi' || !this.project?.id) {
+      if (this.originalProject) this.project = { ...this.originalProject };
+      this.cdr.markForCheck();
+      return;
+    }
+    this.languageService.getDynamicTranslation('project', this.project.id)?.subscribe(res => {
+      if (!res.fallback && res.data) {
+        this.project = { ...this.project, name: res.data.title ?? this.project.name, description: res.data.description ?? this.project.description };
+      } else {
+        this.project = { ...this.originalProject };
+      }
+      this.cdr.markForCheck();
     });
   }
 
   getThumbnail(prop: any): string {
-    if (prop.property_media && prop.property_media.length > 0) {
+    if (prop.property_media?.length) {
       const thumb = prop.property_media.find((m: any) => m.is_thumbnail);
       return thumb ? thumb.media_url : prop.property_media[0].media_url;
     }
-    // Fallback ảnh mẫu nếu BĐS chưa có ảnh
-    return 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+    return 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
   }
 
-  isFav(propertyId: string): boolean {
-    return this.favoriteService.isFavorite(propertyId);
-  }
-
-  toggleFav(event: Event, propertyId: string) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.favoriteService.toggleFavorite(propertyId);
-    this.cdr.markForCheck();
-  }
+  isFav(propertyId: string): boolean { return this.favoriteService.isFavorite(propertyId); }
+  toggleFav(event: Event, propertyId: string) { event.preventDefault(); event.stopPropagation(); this.favoriteService.toggleFavorite(propertyId); this.cdr.markForCheck(); }
 }

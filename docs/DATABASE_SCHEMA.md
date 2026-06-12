@@ -1,6 +1,6 @@
 # 🗄️ Database Schema & Architecture
 
-Tài liệu này mô tả chi tiết cấu trúc cơ sở dữ liệu của nền tảng Pro-RealEstate, bao gồm các bảng, quan hệ, ứng dụng kiểu dữ liệu JSONB linh hoạt và các chính sách bảo mật Row Level Security (RLS) được thiết lập tại Supabase.
+Tài liệu này mô tả chi tiết cấu trúc cơ sở dữ liệu của nền tảng Điểm Tâm BĐS, bao gồm các bảng, quan hệ, ứng dụng kiểu dữ liệu JSONB linh hoạt và các chính sách bảo mật Row Level Security (RLS) được thiết lập tại Supabase.
 
 ---
 
@@ -19,6 +19,8 @@ Tài liệu này mô tả chi tiết cấu trúc cơ sở dữ liệu của nề
 *   **forum_posts** `1 - N` **forum_comments**
 *   **profiles** `1 - N` **system_logs** *(Nhật ký hoạt động)*
 *   **profiles** `1 - N` **blogs** *(Tác giả bài báo)*
+*   **homepage_banners** — độc lập (admin quản lý, không có FK)
+*   **system_settings** — độc lập (cấu hình toàn hệ thống dạng key-value)
 
 ---
 
@@ -53,9 +55,10 @@ Lưu trữ thông tin chi tiết từng bất động sản.
 *   `id` (UUID, PK)
 *   `project_id` (UUID, FK), `category_id` (INT, FK).
 *   `title`, `slug` (UNIQUE), `description`, `price` (DECIMAL, > 0).
-*   **`attributes` (JSONB):** Cột lưu trữ dữ liệu động (VD: `{ "bedrooms": 3, "pool": true }`). Sử dụng index `GIN` giúp tăng tốc độ tìm kiếm bộ lọc phức tạp.
+*   **`attributes` (JSONB):** Cột lưu trữ dữ liệu động (VD: `{ "bedrooms": 3, "pool": true }`). Sử dụng index `GIN` giúp tăng tốc độ tìm kiếm bộ lọc phức tạp. Khóa `gallery_layout` (`'default' | 'grid' | 'single'`) quy định bố cục ảnh trên trang chi tiết.
 *   `created_by`, `agent_id` (UUID, FK): Ai tạo bài, ai đang quản lý.
 *   `status`, `is_deleted` (BOOLEAN): Hỗ trợ cơ chế Soft Delete.
+*   **`detail_theme` (TEXT, nullable):** Theme riêng cho TRANG CHI TIẾT của BĐS này (`minimalist | luxury | eco-green`). `NULL` = kế thừa theme của dự án (xem `14_setup_property_display.sql`).
 
 **Bảng `property_media`**
 Quản lý danh sách hình ảnh/video của BĐS thay vì nhồi nhét vào bảng chính.
@@ -110,7 +113,46 @@ Lưu trữ bài viết tin tức, bài PR dự án.
 *   **`content_blocks` (JSONB):** Mảng lưu trữ các khối giao diện (Text, Hình ảnh, Video, Header) theo chuẩn Block-based Editor. Rất linh hoạt để xây dựng bố cục bài viết.
 *   `status` (TEXT): Trạng thái bài viết (`'draft'`, `'pending'`, `'published'`).
 
-### 2.8. Danh sách Yêu thích (Favorites) (`10_setup_favorites.sql`)
+### 2.8. Slider Banner Trang Chủ (`18_setup_homepage_banners.sql`)
+
+**Bảng `homepage_banners`**
+Lưu trữ nội dung slider trang chủ do Admin quản lý.
+
+| Cột | Kiểu | Ghi chú |
+|-----|------|---------|
+| `id` | UUID PK | |
+| `title` | TEXT | Tiêu đề overlay |
+| `subtitle` | TEXT | Mô tả phụ |
+| `image_url` | TEXT NOT NULL | URL ảnh nền (Cloudinary) |
+| `cta_text` | TEXT | Nhãn nút CTA. Mặc định: `'Khám phá ngay'` |
+| `cta_link` | TEXT | Đường dẫn khi nhấn CTA. Mặc định: `'/'` |
+| `sort_order` | INTEGER | Thứ tự hiển thị, tăng dần |
+| `is_active` | BOOLEAN | `true` = hiện; `false` = ẩn |
+| `created_at` | TIMESTAMPTZ | |
+
+**RLS:** Public SELECT chỉ khi `is_active = true` · Admin toàn quyền.
+
+### 2.9. Cài đặt Hệ thống (`19_setup_system_settings.sql`)
+
+**Bảng `system_settings`**
+Key-value store linh hoạt cho feature flags và cài đặt hệ thống. Dùng JSONB để lưu mọi kiểu dữ liệu.
+
+| Cột | Kiểu | Ghi chú |
+|-----|------|---------|
+| `key` | TEXT PK | Tên setting, VD: `'forum_enabled'` |
+| `value` | JSONB NOT NULL | Giá trị (boolean, string, object đều được) |
+| `updated_at` | TIMESTAMPTZ | Tự cập nhật khi sửa |
+
+**Seed mặc định:**
+```sql
+INSERT INTO system_settings (key, value) VALUES ('forum_enabled', 'false');
+```
+
+**RLS:** Public SELECT (tất cả) · Admin ALL (thêm/sửa/xóa).
+
+**Mở rộng:** Thêm setting mới chỉ cần INSERT thêm row, không cần sửa schema hay code backend.
+
+### 2.10. Danh sách Yêu thích (Favorites) (`10_setup_favorites.sql`)
 
 **Bảng `favorites`**
 Lưu trữ danh sách Bất động sản yêu thích (Wishlist) của người dùng.
@@ -147,3 +189,47 @@ Các chính sách RLS (`07_setup_rls_policies.sql`) đảm bảo an toàn dữ l
 
 ### Bảng `favorites`
 *   **Toàn quyền (ALL):** User chỉ có thể thao tác (Thêm/Xem/Xóa) trên danh sách yêu thích của chính họ (`auth.uid() = user_id`).
+
+---
+
+## 6. Mở rộng v2 (Trang chi tiết Dự án & Custom Theme)
+
+> Các file SQL bổ sung, chạy theo thứ tự sau bộ cũ: `11_setup_search_indexes.sql`, `12_setup_project_content.sql`, `13_setup_custom_theme.sql`.
+
+### 6.1. `blogs.project_id` (file 12)
+*   Thêm cột `project_id UUID REFERENCES projects(id) ON DELETE SET NULL` + index `idx_blogs_project_id`.
+*   **Mục đích:** gắn 1 bài blog trực tiếp với 1 dự án để hiển thị ở mục "Tin tức dự án" trên trang dự án. API `GET /blogs?project_id=<id>` lọc theo cột này.
+
+### 6.2. Bảng `project_sections` (file 12)
+Mỗi dòng là 1 khối nội dung của trang dự án (Chủ đầu tư, Vị trí, Tiện ích, Pháp lý...).
+
+| Cột | Kiểu | Ghi chú |
+|---|---|---|
+| `id` | UUID PK | |
+| `project_id` | UUID FK → projects | `ON DELETE CASCADE` |
+| `section_type` | TEXT CHECK | `overview \| developer \| location \| amenities \| legal \| payment \| custom` |
+| `title` | TEXT NOT NULL | |
+| `content` | TEXT | mô tả rich text |
+| `image_url` | TEXT | ảnh minh họa |
+| `metadata` | JSONB | **trường cố định theo loại** (xem dưới) |
+| `sort_order` | INT | thứ tự hiển thị |
+| `created_at` | TIMESTAMPTZ | |
+
+**Cấu trúc `metadata` theo `section_type`:**
+*   `developer`: `{ name, website, logo_url, established_year }`
+*   `location`: `{ address, map_embed_url, latitude, longitude }`
+*   `amenities` / `legal` / `payment`: `{ items: string[] }`
+*   `overview` / `custom`: chỉ dùng `title` + `content` + `image_url`
+
+**RLS:** Public `SELECT` (true) · `ALL` chỉ `admin`.
+
+### 6.3. `projects.layout_config` (file 13 — Custom Theme)
+*   Thêm cột `layout_config JSONB DEFAULT '{}'`. Lưu toàn bộ cấu hình của Trình dựng giao diện (Custom Theme) cho từng dự án.
+*   **Cấu trúc:** `{ tokens: {colorPrimary, colorBg, colorText, colorAccent, fontHead, fontBody, logoUrl, logoText}, blocks: [{id, type, visible, props}], footer: {text, showContact, phone, email}, basePropertyTheme }`.
+*   `type` của block: `hero | stats | properties | sections | blogs | gallery | text | cta`.
+*   Khi `projects.theme_id = 'custom'`, Theme Engine render giao diện dựa hoàn toàn vào `layout_config`.
+
+### 6.4. Tối ưu tìm kiếm (file 11)
+*   B-tree index cho các cột lọc thường dùng (`is_deleted`, `status`, `price`, `project_id`, `category_id`...).
+*   GIN index cho `properties.attributes` (JSONB) + expression index cho `bedrooms`, `area`.
+*   `tsvector` + trigger full-text search cho `properties` và `blogs`; stored function `search_properties(...)`.

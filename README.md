@@ -1,86 +1,133 @@
-# 🏢 Pro-RealEstate Platform: Multi-Theme Solution
+# Diem Tam BDS — Vietnamese Real Estate Platform
 
-[![Tech Stack](https://img.shields.io/badge/Stack-Angular%20%7C%20Node.js%20%7C%20Supabase-blue)](https://github.com/your-username/your-repo)
-[![Architecture](https://img.shields.io/badge/Architecture-GUI--BLL--DAL-orange)](#system-architecture)
-[![Deployment](https://img.shields.io/badge/Deploy-Vercel%20%26%20Railway-green)](#deployment)
+[![Stack](https://img.shields.io/badge/Stack-Angular%20%7C%20Node.js%20%7C%20Supabase-blue)](#tech-stack)
+[![Architecture](https://img.shields.io/badge/Architecture-3--Tier%20GUI--BLL--DAL-orange)](#architecture)
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel%20%26%20Railway-green)](#deployment)
 
-Đây là dự án Website thương mại Bất động sản hoàn chỉnh, được xây dựng với mục tiêu tối ưu hóa UI/UX thông qua hệ thống **Multi-Theme Engine** và quản lý dữ liệu linh hoạt bằng kiến trúc **3 lớp (3-Tier)**.
-
----
-
-## 🌟 Tính năng mũi nhọn (Key Features)
-
-### 🎨 Multi-Theme Engine
-*   **Dynamic Loading:** Tự động nạp Theme (Luxury, Minimalist, Eco-Green) dựa trên cấu hình dự án từ Database.
-*   **High Customization:** Thay đổi 80-90% giao diện giữa các theme mà không ảnh hưởng đến logic core.
-*   **Performance:** Sử dụng Angular Lazy Loading để tối ưu tốc độ tải trang cho từng theme.
-
-### 🏗️ Kiến trúc Hệ thống (System Architecture)
-Dự án tuân thủ nghiêm ngặt mô hình phân tách 3 lớp:
-*   **GUI (Presentation Layer):** Xây dựng bằng Angular, tập trung vào trải nghiệm Mobile-Responsive và State Management.
-*   **BLL (Business Logic Layer):** Node.js & Express làm nhạc trưởng điều phối API, bảo mật RBAC và tích hợp dịch vụ bên thứ 3.
-*   **DAL/DBO (Data Access Layer):** Tận dụng Supabase (PostgreSQL) với Row Level Security (RLS) và kiểu dữ liệu **JSONB** để xử lý thuộc tính BĐS linh hoạt.
-
-### 👥 Quản lý & Cộng đồng
-*   **RBAC (Role-Based Access Control):** Phân quyền chặt chẽ giữa Admin, Agent và Member.
-*   **Agent Portal:** Dashboard quản lý sản phẩm và Lead dành riêng cho môi giới (bị giới hạn quyền truy cập nhạy cảm).
-*   **Forum System:** Diễn đàn thảo luận có cơ chế kiểm duyệt bài viết (Approval Queue) và lọc từ ngữ tự động (Auto-censor).
-
-### 🌐 Đa ngôn ngữ & Tự động hóa
-*   **Auto-Translation:** Tích hợp API dịch thuật tự động cho nội dung dự án (Việt, Anh, Trung, Hàn).
-*   **Lead Capture:** Hệ thống nhận diện khách hàng quan tâm và bắn thông báo tức thời qua **Resend Email API**.
+A full-featured Vietnamese real estate platform with a multi-theme engine, admin dashboard, community forum, multilingual support, and a hero banner slider — built for the domain **bdsdiemtam.com**.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
+
+### Multi-Theme Engine
+- **Dynamic loading:** automatically renders the correct theme (Luxury, Minimalist, Eco-Green, or fully Custom) based on per-project configuration stored in the database.
+- **Custom Theme Builder:** drag-and-drop block editor lets admins design a project page — colors, fonts, layout blocks, footer — with a live preview, no code required.
+- **Performance:** Angular lazy-loading ensures each theme's bundle is only downloaded when needed.
+
+### Property Management
+- Full CRUD for listings with soft delete, media gallery (Cloudinary), and per-property theme override (`detail_theme`).
+- Flexible `attributes` JSONB column: bedrooms, area, floor, orientation, legal status, etc. — preset fields per property type, custom fields on demand.
+- Search & filter: keyword, price range, area range, bedrooms, property type, category, project, sort.
+
+### Admin & Agent Portal
+- **RBAC:** strict role separation between Admin, Agent, and Member.
+- **Agent dashboard:** manage own listings and leads; no access to other agents' sensitive data.
+- **Lead CRM:** capture inquiries, assign to agents, track status, add notes; instant email notification via Resend API.
+
+### Community Forum
+- Post creation with admin approval queue and automatic spam/profanity detection.
+- Comments, reactions (like/heart), and violation reports.
+- Admin toggle to show/hide the Forum from public navigation — off by default, switchable any time without a code change.
+- Security: `GET /forum/:id` only returns approved posts; pending post UUIDs cannot be accessed by guests.
+
+### Homepage Hero Slider
+- Admin-managed banners (title, subtitle, image, CTA button, sort order, active toggle).
+- Native CSS Scroll Snap slider — no extra library, auto-advances every 5 seconds.
+- Falls back to a static hero if no active banners exist.
+
+### Multilingual
+- Static UI: Vietnamese, English, Korean, Chinese — user switches instantly via flag selector.
+- Dynamic content (property titles, project descriptions, blogs, sections): auto-translated via MyMemory API, admin-reviewed before publishing.
+
+### Blog / CMS
+- Block-based editor: Text, Image, Video, Header blocks stored as JSONB.
+- Admin publishes directly; Agent posts go through a pending → approved workflow.
+- Blogs can be linked to a specific property or project.
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | Angular 17+, RxJS, TailwindCSS, ngx-translate |
+| **Frontend** | Angular 17+ (standalone), RxJS, TailwindCSS, ngx-translate |
 | **Backend** | Node.js, Express.js, TypeScript |
-| **Database** | Supabase (PostgreSQL), JSONB, RLS |
-| **Media & Mail** | Cloudinary, Resend API |
-| **Infrastructure** | Vercel (Frontend), Railway (Backend) |
+| **Database** | Supabase (PostgreSQL 15), JSONB, Row Level Security |
+| **Realtime** | Socket.io (lead & notification events) |
+| **Media** | Cloudinary (image/video upload) |
+| **Email** | Resend API (leads, approval notifications) |
+| **Hosting** | Vercel (frontend SPA), Railway (Node.js API) |
 
 ---
 
-## 📂 Cấu trúc thư mục (Project Structure)
+## Architecture
 
-```text
-REAL-ESTATE-PLATFORM/
-├── docs/         # Tài liệu dự án (API, Database, Hướng dẫn sử dụng)
-│   └── SYSTEM_ARCHITECTURE_AND_WORKFLOWS.md # Kiến trúc hệ thống tổng thể
-├── database/     # SQL Scripts & RLS Policies (DBO)
-├── backend/      # Express API, Middlewares, Services (BUS)
-└── frontend/     # Angular App, Theme Engine, Admin Dashboard (GUI)
+Three-tier separation — every layer is independently deployable:
+
+```
+GUI  (Angular)      →  frontend/    — components, themes, admin dashboard
+BLL  (Node/Express) →  backend/     — API routes, auth, business logic
+DAL  (Supabase)     →  database/    — PostgreSQL, RLS policies, migrations
+```
+
+**Security model:** Row Level Security is enforced at the database level as a second line of defense. The backend uses `service_role_key` only for trusted operations (logs, admin writes); all guest queries use `anon_key` and are constrained by RLS policies.
+
+---
+
+## Project Structure
+
+```
+├── database/     SQL migrations (run in numbered order on Supabase)
+├── backend/      Express API, controllers, services, middlewares
+├── frontend/     Angular app — guest UI, admin dashboard, theme engine
+└── docs/         API reference, database schema, deployment guide, user manual
 ```
 
 ---
 
-🚀 Cài đặt (Setup)
+## Local Setup
+
 ### 1. Database
-Chạy các script SQL trong thư mục `/database` trên SQL Editor của Supabase theo thứ tự đánh số.
+Run all SQL files in `database/` on Supabase SQL Editor in numbered order (`01_` → `19_`).
 
 ### 2. Backend
 ```bash
-cd backend && npm install
-# Tạo file .env và điền các API Keys (Supabase, Cloudinary, Resend)
-npm run dev
+cd backend
+npm install
+cp .env.example .env      # fill in Supabase, Cloudinary, Resend keys
+npm run dev               # starts on http://localhost:5000
 ```
 
 ### 3. Frontend
 ```bash
-cd frontend && npm install
-ng serve
+cd frontend
+npm install
+ng serve                  # starts on http://localhost:4200
 ```
 
 ---
 
-📋 Roadmap & Checklist
-Dự án được thực hiện theo quy trình chuyên nghiệp bao gồm 5 giai đoạn chính:
+## Deployment
 
-* [x] **Giai đoạn 1: DBO** - Khởi tạo Database Schema, phân quyền và bảo mật RLS tại gốc (Supabase).
-* [x] **Giai đoạn 2: BUS** - Xây dựng API Nhạc trưởng, Core Logic & Global Error Handling (Node.js).
-* [x] **Giai đoạn 3: GUI Admin** - Phát triển Dashboard quản trị phân quyền cho Admin & Agent (Angular).
-* [ ] **Giai đoạn 4: GUI Themes** - Triển khai Multi-Theme Engine, SEO & trải nghiệm người dùng tối ưu.
-* [ ] **Giai đoạn 5: Deploy & QA** - Kiểm thử bảo mật, QA và Go-live (Vercel & Railway).
+| Service | Platform | Config file |
+|---|---|---|
+| Frontend SPA | Vercel | `frontend/vercel.json` |
+| Backend API | Railway | `backend/Procfile`, `backend/render.yaml` |
+| Database | Supabase | hosted, no infra to manage |
+
+Production URLs: `https://bdsdiemtam.com` (frontend) · `https://api.bdsdiemtam.com` (API)
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full step-by-step guide including DNS setup.
+
+---
+
+## Roadmap
+
+- [x] Phase 1 — Database schema, RLS policies, seed data
+- [x] Phase 2 — REST API, authentication, business logic
+- [x] Phase 3 — Admin & Agent dashboard
+- [x] Phase 4 — Multi-theme engine, guest UI, SEO, i18n, hero slider, forum
+- [x] Phase 5 — Deployment config, documentation
+- [ ] Phase 6 — E2E tests (Playwright)
+- [ ] Phase 7 — Second-hand marketplace (individual listings, MoMo payment)

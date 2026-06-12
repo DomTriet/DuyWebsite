@@ -1,6 +1,8 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
+import { ToastService } from '../../core/services/toast.service';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 @Component({
   selector: 'app-forum-approval',
@@ -16,10 +18,10 @@ import { ApiService } from '../../core/services/api.service';
 
       <!-- Tabs -->
       <div class="flex gap-1 border-b border-gray-200 mb-8">
-        <button (click)="activeTab = 'pending'" [ngClass]="activeTab === 'pending' ? 'bg-white border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-600 hover:text-gray-900'" class="py-3 px-6 font-bold text-sm transition-all border-b-2 border-transparent">
+        <button (click)="activeTab = 'pending'" [ngClass]="activeTab === 'pending' ? 'bg-white border-b-2 border-gray-900 text-gray-900' : 'text-gray-600 hover:text-gray-900'" class="py-3 px-6 font-bold text-sm transition-all border-b-2 border-transparent">
           Bài viết chờ duyệt
         </button>
-        <button (click)="activeTab = 'reports'" [ngClass]="activeTab === 'reports' ? 'bg-white border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-600 hover:text-gray-900'" class="py-3 px-6 font-bold text-sm transition-all border-b-2 border-transparent">
+        <button (click)="activeTab = 'reports'" [ngClass]="activeTab === 'reports' ? 'bg-white border-b-2 border-gray-900 text-gray-900' : 'text-gray-600 hover:text-gray-900'" class="py-3 px-6 font-bold text-sm transition-all border-b-2 border-transparent">
           Báo cáo vi phạm
         </button>
       </div>
@@ -49,7 +51,7 @@ import { ApiService } from '../../core/services/api.service';
           <!-- Actions -->
           <div class="p-6 flex justify-end gap-3 bg-white">
             <button (click)="deletePost(post.id)" class="px-6 py-2.5 text-red-700 bg-red-50 hover:bg-red-100 rounded-lg text-sm font-bold transition-all">Xóa bài</button>
-            <button (click)="approvePost(post.id)" class="px-6 py-2.5 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-bold transition-all">Phê duyệt</button>
+            <button (click)="approvePost(post.id)" class="px-6 py-2.5 text-white bg-gray-900 hover:bg-gray-800 rounded-lg text-sm font-bold transition-all">Phê duyệt</button>
           </div>
         </div>
       </div>
@@ -91,6 +93,8 @@ export class ForumApprovalComponent implements OnInit {
   activeTab: 'pending' | 'reports' = 'pending';
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
+  private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
 
   pendingPosts: any[] = [];
   pendingReports: any[] = [];
@@ -118,31 +122,28 @@ export class ForumApprovalComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  approvePost(id: string) {
-    if (confirm('Phê duyệt bài viết này cho hiển thị lên diễn đàn?')) {
-      this.api.put<any>(`/forum/${id}/approve`, {}).subscribe({
-        next: () => this.loadData(),
-        error: (err) => alert('Lỗi: ' + (err.error?.error || 'Không thể phê duyệt'))
-      });
-    }
+  async approvePost(id: string) {
+    if (!await this.confirm.ask({ title: 'Phê duyệt bài viết', message: 'Phê duyệt bài viết này cho hiển thị lên diễn đàn?', confirmText: 'Phê duyệt' })) return;
+    this.api.put<any>(`/forum/${id}/approve`, {}).subscribe({
+      next: () => { this.toast.success('Đã phê duyệt bài viết.'); this.loadData(); },
+      error: (err) => this.toast.error(err.error?.error || 'Không thể phê duyệt')
+    });
   }
 
-  deletePost(id: string) {
-    if (confirm('Bạn chắc chắn muốn xóa bài viết này vĩnh viễn?')) {
-      this.api.delete<any>(`/forum/${id}`).subscribe({
-        next: () => this.loadData(),
-        error: (err) => alert('Lỗi: ' + (err.error?.error || 'Không thể xóa'))
-      });
-    }
+  async deletePost(id: string) {
+    if (!await this.confirm.ask({ title: 'Xóa bài viết', message: 'Bạn chắc chắn muốn xóa bài viết này vĩnh viễn?', confirmText: 'Xóa', danger: true })) return;
+    this.api.delete<any>(`/forum/${id}`).subscribe({
+      next: () => { this.toast.success('Đã xóa bài viết.'); this.loadData(); },
+      error: (err) => this.toast.error(err.error?.error || 'Không thể xóa')
+    });
   }
 
-  resolveReport(reportId: string, action: 'dismiss' | 'delete_post') {
+  async resolveReport(reportId: string, action: 'dismiss' | 'delete_post') {
     const actName = action === 'dismiss' ? 'Bỏ qua' : 'Xóa bài';
-    if (confirm(`Bạn chắc chắn muốn ${actName} báo cáo này?`)) {
-      this.api.put<any>(`/forum/reports/${reportId}/resolve`, { action }).subscribe({
-        next: () => this.loadData(),
-        error: (err) => alert('Lỗi: ' + (err.error?.error || 'Không thể xử lý'))
-      });
-    }
+    if (!await this.confirm.ask({ title: 'Xử lý báo cáo', message: `Bạn chắc chắn muốn ${actName} báo cáo này?`, confirmText: actName, danger: action === 'delete_post' })) return;
+    this.api.put<any>(`/forum/reports/${reportId}/resolve`, { action }).subscribe({
+      next: () => { this.toast.success('Đã xử lý báo cáo.'); this.loadData(); },
+      error: (err) => this.toast.error(err.error?.error || 'Không thể xử lý')
+    });
   }
 }

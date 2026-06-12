@@ -1,6 +1,6 @@
 # 📖 HƯỚNG DẪN SỬ DỤNG (USER MANUAL)
 
-Tài liệu hướng dẫn thao tác trên Hệ thống Quản trị (Dashboard) của nền tảng Pro-RealEstate dành cho hai đối tượng chính: **Quản trị viên (Admin)** và **Môi giới (Agent)**.
+Tài liệu hướng dẫn thao tác trên Hệ thống Quản trị (Dashboard) của nền tảng **Điểm Tâm BĐS** dành cho hai đối tượng chính: **Quản trị viên (Admin)** và **Môi giới (Agent)**.
 
 ---
 
@@ -29,7 +29,10 @@ Môi giới là nhân sự trực tiếp đăng bán Bất động sản và qu�
 3. **Thêm Mới / Sửa:**
    * Điền Tiêu đề, Giá, chọn Danh mục (Căn hộ, Đất nền,...).
    * **Thông số chi tiết:** Điền diện tích, số tầng, hướng...
+   * **Theme trang chi tiết:** Chọn giao diện riêng cho trang chi tiết của BĐS này (Minimalist / Luxury / Eco Green). Để **"Tự động (theo dự án)"** nếu muốn dùng theme của dự án — đây cũng là mặc định, đảm bảo các BĐS cũ giữ nguyên giao diện.
+   * **Bố cục ảnh:** Chọn cách hiển thị ảnh trên trang chi tiết — *Mặc định* (ảnh chính + dải thumbnail), *Lưới* (hiện tất cả ảnh) hoặc *1 ảnh lớn*.
    * **Kéo thả hình ảnh:** Upload trực tiếp file từ máy tính. Có thể click xóa ảnh, ảnh đầu tiên luôn mặc định là "Ảnh bìa" (Thumbnail).
+   * **👁 Xem trước:** Bấm để mở cửa sổ xem trước trang chi tiết với đúng theme + bố cục ảnh + dữ liệu đang nhập, trước khi lưu.
 4. **Xóa BĐS:** Bấm "Xóa". BĐS sẽ được ẩn khỏi giao diện khách hàng (Chuyển vào thùng rác).
 
 ### 2.2. Quản lý Khách hàng (Leads CRM)
@@ -65,4 +68,53 @@ Quản trị viên có toàn quyền xem và thao tác trên mọi hệ thống.
 2. Theo dõi 24/7 mọi hành động (Sửa/Xóa/Thêm) của hệ thống. Nhằm phát hiện nhanh ai là người đã thao tác sai trên dữ liệu nhạy cảm.
 
 ---
-*Mọi thắc mắc kỹ thuật vui lòng liên hệ đội ngũ phát triển.*
+
+## 4. Các tính năng v2 (Trang chi tiết Dự án nâng cao)
+
+### 4.1. Nhập Thông số kỹ thuật BĐS (Preset theo loại)
+1. Khi thêm/sửa Bất động sản, sau khi chọn **Danh mục**, khối "Thông số kỹ thuật" tự đổi bộ trường gợi ý phù hợp (Căn hộ → phòng ngủ/diện tích/tầng/hướng; Đất nền → diện tích/mặt tiền/lộ giới/pháp lý; Biệt thự, Nhà phố, Shophouse...).
+2. Bỏ trống trường không áp dụng. Dữ liệu được lưu vào cột `attributes` (JSONB) và dùng để **lọc** ở trang chủ và trang dự án.
+
+### 4.2. Quản lý Nội dung Dự án (Section)
+1. Vào `Quản lý Danh mục & Dự án` → bấm **"Nội dung"** ở dự án cần sửa.
+2. Thêm các section: chọn **loại** (Tổng quan / Chủ đầu tư / Vị trí / Tiện ích / Pháp lý / Thanh toán / Tùy chỉnh) → form tự hiện đúng trường (vd Vị trí có link nhúng Google Maps; Tiện ích nhập danh sách từng dòng).
+3. Kéo-thả không áp dụng ở đây; dùng ô **Thứ tự hiển thị** để sắp xếp. Section sẽ xuất hiện trên trang dự án kèm liên kết điều hướng (anchor) trên thanh nav.
+
+### 4.3. Gắn Blog với Dự án
+1. Khi viết/sửa Blog, chọn **"Thuộc dự án"** (tùy chọn). Bài viết sẽ hiển thị trong mục "Tin tức dự án" trên trang dự án tương ứng.
+
+### 4.4. Trình dựng Custom Theme (Tự thiết kế giao diện)
+1. Tạo dự án với Theme = **Custom (Tự thiết kế)**, hoặc bấm nút **🎨 Tùy biến** ở dự án bất kỳ.
+2. Trong trình dựng: cột trái chỉnh **màu sắc, phông chữ, logo**, thêm/ẩn/xóa và **kéo-thả sắp xếp các khối** (Hero, Thống kê, Danh sách BĐS, Nội dung dự án, Tin tức, Thư viện ảnh, Văn bản, CTA), cấu hình Footer; cột phải **xem trước trực tiếp**.
+3. Bấm **💾 Lưu** → mở `/project/:id` để xem giao diện khách.
+
+### 4.5. Duyệt Dịch thuật (giao diện gom nhóm)
+1. Vào `Quản lý Dịch thuật`. Mỗi mục là 1 nhóm: **🇻🇳 Tiếng Việt (gốc)** ở trên, rồi **🇬🇧 Anh → 🇨🇳 Trung → 🇰🇷 Hàn** (sửa được).
+2. Sửa nếu máy dịch chưa chuẩn → bấm **Lưu & Phê duyệt** (từng ngôn ngữ) hoặc **Lưu & duyệt cả nhóm**. Chỉ bản đã duyệt mới hiển thị trên web khách.
+
+> **Giao diện đa ngôn ngữ tĩnh** (menu, nút, nhãn) đã được dịch sẵn vi/en/ko/zh — khách đổi cờ là đổi ngay. Riêng **nội dung động** (tên/mô tả dự án, tiêu đề BĐS, blog, section) cần Admin duyệt như trên.
+
+---
+
+## 5. Cài đặt Website (Site Settings)
+
+### 5.1. Quản lý Banner Slider Trang chủ
+1. Vào sidebar Admin → **Banner Trang Chủ**.
+2. Danh sách hiển thị tất cả banner (cả đang ẩn). Cột **Hiển thị** là toggle bật/tắt nhanh.
+3. Bấm **+ Thêm banner** để mở form:
+   - **Ảnh nền** (bắt buộc): upload ảnh qua Cloudinary — tỷ lệ khuyến nghị 16:9, tối thiểu 1280×720px.
+   - **Tiêu đề / Mô tả**: text overlay hiển thị trên ảnh.
+   - **Nhãn nút CTA / Đường dẫn**: nút kêu gọi hành động (VD: "Xem ngay" → `/properties`).
+   - **Thứ tự**: số nhỏ hiển thị trước.
+4. Dùng nút ▲ ▼ để đổi thứ tự banner trong danh sách.
+5. Slider trang chủ sẽ tự động chuyển slide mỗi 5 giây. Nếu không có banner nào đang bật, trang chủ hiển thị hero tĩnh mặc định.
+
+### 5.2. Bật / Tắt Forum công khai
+1. Vào sidebar Admin → **Cài đặt Website**.
+2. Phần **"Tính năng Forum"**: toggle **"Hiển thị Forum công khai"**.
+   - **BẬT**: Link "Cộng đồng" xuất hiện ngay trên thanh điều hướng và footer (không cần reload trang).
+   - **TẮT** *(mặc định)*: Forum bị ẩn hoàn toàn khỏi khách vãng lai. Admin vẫn có thể vào `/forum` trực tiếp để kiểm tra nội dung.
+3. Thay đổi được lưu ngay vào database và phản ánh realtime trên toàn bộ phiên người dùng đang mở.
+
+---
+*Mọi thắc mắc kỹ thuật vui lòng liên hệ đội ngũ phát triển tại contact@bdsdiemtam.com*

@@ -1,6 +1,8 @@
-# 📖 API Reference (Pro-RealEstate)
+# 📖 API Reference — Điểm Tâm BĐS
 
-Base URL: `http://localhost:5000/api` (Đổi thành URL thực tế khi lên Production)
+Base URL:
+- **Development:** `http://localhost:5000/api`
+- **Production:** `https://api.bdsdiemtam.com/api`
 
 > **Lưu ý Authentication**: Các API yêu cầu `[Auth]` cần đính kèm header:
 > `Authorization: Bearer <your_jwt_token>`
@@ -75,6 +77,9 @@ Base URL: `http://localhost:5000/api` (Đổi thành URL thực tế khi lên Pr
   * `manage=true`: Thêm cờ này khi gọi từ Admin/Agent Dashboard.
   * `trash=true`: Kết hợp với `manage=true` để lấy danh sách các BĐS đã bị xóa mềm (nằm trong Thùng rác).
   * `category_id`, `project_id`, `min_price`, `max_price`, `search`: Bộ lọc tìm kiếm. Từ khóa `search` sẽ được đối chiếu trong cả Tiêu đề (`title`) và Mô tả (`description`).
+  * `bedrooms`, `property_type`: Lọc theo số phòng ngủ và loại bất động sản.
+  * `min_area`, `max_area`: Lọc theo diện tích tối thiểu / tối đa (m²).
+  * `sort`: Sắp xếp kết quả. Giá trị hợp lệ: `price_asc`, `price_desc`, `newest`, `area_asc`, `area_desc`.
 * **Response:** Trả về danh sách `data` (bao gồm thông tin dự án, danh mục, hình ảnh và thông tin chi tiết người môi giới phụ trách trong object `agent: { full_name, phone, email, avatar_url }`) và cấu trúc phân trang `meta: { total, page, limit }`.
 * **Lưu ý Phân quyền:** 
   * Nếu truyền `manage=true` và gọi bởi Role `agent`, hệ thống tự động lọc CHỈ trả về các BĐS do Agent đó tạo (`created_by`) hoặc phụ trách (`agent_id`).
@@ -94,7 +99,8 @@ Base URL: `http://localhost:5000/api` (Đổi thành URL thực tế khi lên Pr
   "title": "Căn hộ Vinhome",
   "description": "View hồ đẹp",
   "price": 2500000000,
-  "attributes": { "bedrooms": 3, "pool": true } // Hoặc stringified JSON
+  "attributes": { "bedrooms": 3, "pool": true, "gallery_layout": "grid" }, // Hoặc stringified JSON. gallery_layout: default|grid|single
+  "detail_theme": "luxury" // Tùy chọn: theme trang chi tiết (minimalist|luxury|eco-green). Bỏ qua/null = theo theme dự án
 }
 ```
 
@@ -157,6 +163,7 @@ Base URL: `http://localhost:5000/api` (Đổi thành URL thực tế khi lên Pr
 
 ### 4.2 Lấy chi tiết Bài viết
 * **Endpoint:** `GET /forum/:id`
+* **Bảo mật:** Chỉ trả về bài có `status = 'approved'`. Truy cập bài đang chờ duyệt (pending) sẽ nhận `404`.
 
 ### 4.3 Lấy danh sách bài đang chờ duyệt `[Auth: Admin]`
 * **Endpoint:** `GET /forum/pending`
@@ -293,3 +300,87 @@ Base URL: `http://localhost:5000/api` (Đổi thành URL thực tế khi lên Pr
 ### 10.3 Lấy chi tiết BĐS Yêu thích `[Auth]`
 * **Endpoint:** `GET /favorites`
 * **Response:** Trả về danh sách chi tiết BĐS (bao gồm media) để hiển thị trong trang Profile. Hệ thống sẽ tự động lọc ra những BĐS đã bị xóa (`is_deleted = true`).
+
+---
+
+## 11. Mở rộng v2 (Trang chi tiết Dự án, Custom Theme & Tìm kiếm)
+
+### 11.1 Tìm kiếm & Gợi ý BĐS (Public)
+* `GET /properties/suggestions?q=<từ khóa>&limit=6` — Autocomplete: trả title + slug + giá + ảnh.
+* `GET /properties/facets?project_id=<id>` — Số liệu lọc: `price.min/max`, đếm theo `bedrooms`, bucket `area`. Dùng để hiển thị số lượng cạnh mỗi mức lọc.
+* `GET /properties` đã hỗ trợ đầy đủ tham số lọc: `search, min_price, max_price, category_id, project_id, bedrooms, min_area, max_area, property_type, sort (newest|oldest|price_asc|price_desc), page, limit`.
+
+### 11.2 Section nội dung Dự án
+* `GET /projects/:id/sections` — **Public**. Trả danh sách section theo `sort_order`.
+* `POST /projects/:id/sections` `[Auth: Admin]` — Body: `{ section_type, title, content, image_url, metadata, sort_order }`.
+* `PUT /projects/sections/:sectionId` `[Auth: Admin]` — Cập nhật 1 section.
+* `DELETE /projects/sections/:sectionId` `[Auth: Admin]`.
+* *Lưu ý routing:* các route `/sections/:sectionId` đặt **trước** `/:id` để tránh match nhầm.
+
+### 11.3 Blog gắn Dự án
+* `GET /blogs?project_id=<id>&limit=3` — Lọc bài blog đã `published` thuộc 1 dự án (mục "Tin tức dự án").
+* `POST /blogs` & `PUT /blogs/:id` — nhận thêm trường `project_id` (tùy chọn) ngoài `property_id`.
+
+### 11.4 Custom Theme (Trình dựng giao diện)
+* Lưu cấu hình: `PUT /projects/:id` `[Auth: Admin]` với body `{ theme_id: 'custom', layout_config: {...} }`. Không có endpoint riêng — tái dùng API cập nhật dự án.
+* Trang khách lấy `layout_config` qua `GET /projects/:id` (Theme Resolver) và render block-based.
+
+### 11.5 Dịch thuật (cập nhật — gom nhóm)
+* `GET /translations/pending` `[Auth: Admin]` — **trả về dữ liệu GOM NHÓM theo từng entity**: `[{ entity_type, entity_id, source: {bản gốc tiếng Việt}, langs: [{id, lang_code, translation_data, is_approved}] (thứ tự en→zh→ko) }]`. Chỉ gồm nhóm còn ≥1 bản dịch chưa duyệt.
+* `PUT /translations/:id` `[Auth: Admin]` — lưu `{ translation_data }` (tự động duyệt).
+* `PUT /translations/:id/approve` `[Auth: Admin]`.
+* `GET /translations?entity_type=&entity_id=&lang_code=` — Public, có Fallback: nếu chưa duyệt → trả bản gốc tiếng Việt. Hỗ trợ `entity_type`: `property | project | blog | project_section`.
+
+---
+
+## 12. Banners (Slider trang chủ)
+
+### 12.1 Lấy danh sách Banner đang hiển thị (Public)
+* **Endpoint:** `GET /banners`
+* **Response:** Trả về danh sách banner có `is_active = true`, sắp xếp theo `sort_order ASC`.
+
+### 12.2 Lấy toàn bộ Banner (Admin)
+* **Endpoint:** `GET /banners/all` `[Auth: Admin]`
+* **Response:** Toàn bộ banner bao gồm cả bị ẩn.
+
+### 12.3 Tạo Banner mới `[Auth: Admin]`
+* **Endpoint:** `POST /banners`
+* **Body (JSON):**
+```json
+{
+  "image_url": "https://res.cloudinary.com/...",
+  "title": "Khám phá BĐS cao cấp",
+  "subtitle": "Hàng nghìn căn hộ chờ bạn",
+  "cta_text": "Xem ngay",
+  "cta_link": "/properties",
+  "sort_order": 1,
+  "is_active": true
+}
+```
+
+### 12.4 Cập nhật Banner `[Auth: Admin]`
+* **Endpoint:** `PUT /banners/:id`
+* **Body (JSON):** Các field cần thay đổi (partial update).
+
+### 12.5 Xóa Banner `[Auth: Admin]`
+* **Endpoint:** `DELETE /banners/:id`
+
+---
+
+## 13. Settings (Cài đặt hệ thống)
+
+### 13.1 Lấy tất cả Settings (Public)
+* **Endpoint:** `GET /settings`
+* **Response:** `{ "forum_enabled": false, "maintenance_mode": false }` (dạng key-value map).
+* **Lưu ý:** Được gọi khi app khởi động để load toàn bộ feature flags.
+
+### 13.2 Cập nhật một Setting `[Auth: Admin]`
+* **Endpoint:** `PUT /settings/:key`
+* **Body (JSON):** `{ "value": true }`
+* **Ví dụ:** `PUT /settings/forum_enabled` với body `{ "value": true }` để bật Forum công khai.
+
+**Các setting hiện có:**
+
+| Key | Kiểu | Mặc định | Mô tả |
+|-----|------|----------|-------|
+| `forum_enabled` | boolean | `false` | Hiển thị Forum trong nav/footer công khai |

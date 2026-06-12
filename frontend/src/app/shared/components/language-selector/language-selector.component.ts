@@ -18,16 +18,16 @@ import { LanguageService } from '../../../core/services/language.service';
       <!-- Dropdown Content (Hiện khi Hover) -->
       <div class="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100">
         <div class="p-2 space-y-1 text-left">
-          <button (click)="switchLang('vi')" [ngClass]="{'bg-indigo-50 text-indigo-700': currentLang === 'vi', 'text-gray-700 hover:bg-gray-50': currentLang !== 'vi'}" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button (click)="switchLang('vi')" [ngClass]="{'bg-gray-100 text-gray-900 font-semibold': currentLang === 'vi', 'text-gray-700 hover:bg-gray-50': currentLang !== 'vi'}" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
             <img src="https://flagcdn.com/w20/vn.png" alt="VN" class="w-5 h-auto rounded-sm shadow-sm"> Tiếng Việt
           </button>
-          <button (click)="switchLang('en')" [ngClass]="{'bg-indigo-50 text-indigo-700': currentLang === 'en', 'text-gray-700 hover:bg-gray-50': currentLang !== 'en'}" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button (click)="switchLang('en')" [ngClass]="{'bg-gray-100 text-gray-900 font-semibold': currentLang === 'en', 'text-gray-700 hover:bg-gray-50': currentLang !== 'en'}" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
             <img src="https://flagcdn.com/w20/us.png" alt="EN" class="w-5 h-auto rounded-sm shadow-sm"> English
           </button>
-          <button (click)="switchLang('ko')" [ngClass]="{'bg-indigo-50 text-indigo-700': currentLang === 'ko', 'text-gray-700 hover:bg-gray-50': currentLang !== 'ko'}" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button (click)="switchLang('ko')" [ngClass]="{'bg-gray-100 text-gray-900 font-semibold': currentLang === 'ko', 'text-gray-700 hover:bg-gray-50': currentLang !== 'ko'}" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
             <img src="https://flagcdn.com/w20/kr.png" alt="KR" class="w-5 h-auto rounded-sm shadow-sm"> 한국어
           </button>
-          <button (click)="switchLang('zh')" [ngClass]="{'bg-indigo-50 text-indigo-700': currentLang === 'zh', 'text-gray-700 hover:bg-gray-50': currentLang !== 'zh'}" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button (click)="switchLang('zh')" [ngClass]="{'bg-gray-100 text-gray-900 font-semibold': currentLang === 'zh', 'text-gray-700 hover:bg-gray-50': currentLang !== 'zh'}" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
             <img src="https://flagcdn.com/w20/cn.png" alt="CN" class="w-5 h-auto rounded-sm shadow-sm"> 中文
           </button>
         </div>
