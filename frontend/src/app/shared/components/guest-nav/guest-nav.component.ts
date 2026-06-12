@@ -51,7 +51,7 @@ import { Observable } from 'rxjs';
 
         <!-- Logo -->
         <a routerLink="/" style="text-decoration:none; flex-shrink:0;">
-          <app-logo size="1.05rem"></app-logo>
+          <app-logo variant="compact" compactWidth="160px" compactHeight="39"></app-logo>
         </a>
 
         <!-- Desktop links -->

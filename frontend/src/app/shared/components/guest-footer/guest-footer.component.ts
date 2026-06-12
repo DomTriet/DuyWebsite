@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
           <!-- Brand -->
           <div class="col-span-2 md:col-span-1">
             <div class="logo-light" style="margin-bottom:10px;">
-              <app-logo size="1.05rem" [showSlogan]="false" class="light"></app-logo>
+              <app-logo variant="compact" compactWidth="170px" compactHeight="41" [light]="true"></app-logo>
             </div>
             <p style="font-size:0.875rem; line-height:1.7; color:#555;">{{ 'FOOTER.TAGLINE' | translate }}</p>
           </div>
@@ -49,8 +49,8 @@ import { Observable } from 'rxjs';
           <div>
             <h4 class="text-white text-sm font-semibold mb-4 uppercase tracking-wider">{{ 'NAVBAR.CONTACT' | translate }}</h4>
             <ul class="space-y-2 text-sm">
-              <li>📞 1900 1234 5678</li>
-              <li>✉️ contact&#64;bdsdiemtam.com</li>
+              <li>📞 0975 982 592 — 0983 123 306</li>
+              <li>✉️ bdsdiemtam&#64;gmail.com</li>
               <li>📍 TP. Hồ Chí Minh</li>
             </ul>
           </div>

@@ -88,7 +88,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
     // Supabase tự động gửi email chứa link reset mật khẩu
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'http://localhost:4200/auth/reset-password', // Trỏ đúng về route của Angular
+      redirectTo: 'https://duy-website.vercel.app/auth/reset-password',
     });
 
     if (error) throw error;
