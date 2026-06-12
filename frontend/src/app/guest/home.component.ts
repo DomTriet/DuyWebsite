@@ -76,10 +76,10 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
       <section style="position:relative; background:#0f0d0a; overflow:hidden;">
         <!-- Background image -->
         <div style="position:absolute; inset:0; background:url('assets/images/hero-bg.png') center/cover no-repeat; transform:scale(1.02);"></div>
-        <!-- Vignette: tối dần từ rìa vào, trung tâm rõ ảnh -->
-        <div style="position:absolute; inset:0; background: radial-gradient(ellipse at 50% 45%, transparent 18%, rgba(0,0,0,0.42) 55%, rgba(0,0,0,0.78) 100%);"></div>
-        <!-- Top + bottom fade -->
-        <div style="position:absolute; inset:0; background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 22%, transparent 68%, rgba(0,0,0,0.55) 100%);"></div>
+        <!-- Vignette: tối ở tâm (nổi chữ), trong dần ra cạnh (ảnh rõ) -->
+        <div style="position:absolute; inset:0; background: radial-gradient(ellipse 70% 60% at 50% 42%, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.38) 45%, rgba(0,0,0,0.08) 75%, transparent 100%);"></div>
+        <!-- Cạnh trên/dưới mờ nhẹ để blend vào trang -->
+        <div style="position:absolute; inset:0; background: linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, transparent 18%, transparent 78%, rgba(0,0,0,0.28) 100%);"></div>
 
         <div class="max-w-5xl mx-auto" style="position:relative; z-index:2; padding: clamp(80px,12vw,120px) 16px clamp(64px,10vw,96px);">
 

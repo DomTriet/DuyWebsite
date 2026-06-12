@@ -53,6 +53,7 @@ import { Observable } from 'rxjs';
     }
     .hamburger:hover { background: #F7F6F3; }
     .hamburger span { display: block; width: 20px; height: 2px; background: #0D0D0D; border-radius: 2px; }
+    @media (min-width: 768px) { .hamburger { display: none !important; } }
     /* Mobile Drawer */
     .drawer-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 150;

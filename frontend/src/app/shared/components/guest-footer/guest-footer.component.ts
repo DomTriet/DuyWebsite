@@ -49,7 +49,8 @@ import { Observable } from 'rxjs';
           <div>
             <h4 class="text-white text-sm font-semibold mb-4 uppercase tracking-wider">{{ 'NAVBAR.CONTACT' | translate }}</h4>
             <ul class="space-y-2 text-sm">
-              <li>📞 0975 982 592 — 0983 123 306</li>
+              <li style="white-space:nowrap;">📞 0975 982 592</li>
+              <li style="white-space:nowrap; padding-left:1.4rem;">0983 123 306</li>
               <li>✉️ bdsdiemtam&#64;gmail.com</li>
               <li>📍 TP. Hồ Chí Minh</li>
             </ul>
