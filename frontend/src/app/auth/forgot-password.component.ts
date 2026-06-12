@@ -20,8 +20,16 @@ import { take } from 'rxjs/operators';
     .field-error { border-color: #ef4444 !important; }
   `],
   template: `
-    <div class="min-h-screen bg-gray-50 flex items-center justify-center px-6">
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-10">
       <div class="w-full max-w-md">
+
+        <!-- Back to home -->
+        <a routerLink="/" class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 font-semibold text-sm transition-colors group mb-8">
+          <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Về trang chủ
+        </a>
 
         <!-- Logo -->
         <div class="text-center mb-12">
