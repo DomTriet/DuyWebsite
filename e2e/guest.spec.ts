@@ -1,7 +1,7 @@
 /**
  * Guest E2E Tests — Trang công khai
  * Chạy với: npx playwright test e2e/guest.spec.ts
- * Yêu cầu: dev server đang chạy ở localhost:4200
+ * Yêu cầu: dev server đang chạy ở duy-website.vercel.app
  */
 import { test, expect, Page } from '@playwright/test';
 

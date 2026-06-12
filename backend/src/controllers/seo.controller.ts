@@ -14,7 +14,7 @@ export const getSitemap = async (req: Request, res: Response, next: NextFunction
       });
     }
 
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;
     
     res.header('Content-Type', 'application/xml');
     res.status(200).send(sitemap);

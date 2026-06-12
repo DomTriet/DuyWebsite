@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'e2e/report' }]],
   use: {
-    baseURL: 'http://localhost:4200',
+    baseURL: 'https://duy-website.vercel.app',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     // Không kết nối thật đến backend trong E2E — test UI behavior
@@ -24,7 +24,7 @@ export default defineConfig({
   // Nếu muốn tự start dev server: bỏ comment webServer bên dưới
   // webServer: {
   //   command: 'cd frontend && npx ng serve',
-  //   url: 'http://localhost:4200',
+  //   url: 'https://duy-website.vercel.app',
   //   reuseExistingServer: true,
   //   timeout: 120_000,
   // },

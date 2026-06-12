@@ -1,7 +1,7 @@
 /**
  * Auth E2E Tests — Login / Register / Forgot Password / Reset Password
  * Chạy với: npx playwright test e2e/auth.spec.ts
- * Yêu cầu: dev server đang chạy ở localhost:4200
+ * Yêu cầu: dev server đang chạy ở duy-website.vercel.app
  */
 import { test, expect, Page } from '@playwright/test';
 

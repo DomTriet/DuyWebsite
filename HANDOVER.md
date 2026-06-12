@@ -32,7 +32,7 @@ cd backend && npm install
 npm run dev            # chạy dev (hoặc: npm run build && npm start)
 # 3) Frontend
 cd frontend && npm install
-npm start              # http://localhost:4200  (API mặc định http://localhost:5000/api)
+npm start              # https://duy-website.vercel.app  (API mặc định https://duywebsite-production.up.railway.app/api)
 ```
 
 ## 4. Triển khai Production

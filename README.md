@@ -96,14 +96,14 @@ Run all SQL files in `database/` on Supabase SQL Editor in numbered order (`01_`
 cd backend
 npm install
 cp .env.example .env      # fill in Supabase, Cloudinary, Resend keys
-npm run dev               # starts on http://localhost:5000
+npm run dev               # starts on https://duywebsite-production.up.railway.app
 ```
 
 ### 3. Frontend
 ```bash
 cd frontend
 npm install
-ng serve                  # starts on http://localhost:4200
+ng serve                  # starts on https://duy-website.vercel.app
 ```
 
 ---

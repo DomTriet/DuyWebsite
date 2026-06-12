@@ -62,7 +62,7 @@ npm run lint
 npm start
 
 # Test in browser
-# Navigate to: http://localhost:4200
+# Navigate to: https://duy-website.vercel.app
 ```
 
 **Test Checklist:**

@@ -18,7 +18,7 @@ export const generateSitemap = async (): Promise<void> => {
       });
     }
 
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;
     
     // Lưu file sitemap vào thư mục frontend/src/assets (Hoặc public tùy cấu trúc Frontend sau này)
     fs.writeFileSync(path.join(__dirname, '../../sitemap.xml'), sitemap);

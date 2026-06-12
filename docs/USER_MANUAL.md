@@ -7,7 +7,7 @@ Tài liệu hướng dẫn thao tác trên Hệ thống Quản trị (Dashboard)
 ## 1. Hướng dẫn Chung (Đăng nhập & Tài khoản)
 
 ### 1.1. Đăng nhập và Quên mật khẩu
-1. Truy cập đường dẫn: `http://[ten-mien]/auth/login`
+1. Truy cập đường dẫn: `https://[ten-mien]/auth/login`
 2. Nhập Email và Mật khẩu đã được cấp hoặc đã đăng ký.
 3. Nếu quên mật khẩu, chọn **"Quên mật khẩu?"**. Hệ thống sẽ yêu cầu nhập Email để gửi liên kết khôi phục.
    * *Lưu ý:* Cần đợi 60 giây giữa các lần gửi yêu cầu khôi phục để tránh spam hệ thống. Nhớ kiểm tra thư mục Spam/Junk.

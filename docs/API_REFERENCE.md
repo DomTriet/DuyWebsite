@@ -1,7 +1,7 @@
 # 📖 API Reference — Điểm Tâm BĐS
 
 Base URL:
-- **Development:** `http://localhost:5000/api`
+- **Development:** `https://duywebsite-production.up.railway.app/api`
 - **Production:** `https://api.bdsdiemtam.com/api`
 
 > **Lưu ý Authentication**: Các API yêu cầu `[Auth]` cần đính kèm header:
