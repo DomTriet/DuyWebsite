@@ -12,15 +12,28 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
-const io = new Server(server, { cors: { origin: CORS_ORIGIN } });
+const ALLOWED_ORIGINS = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
+  : ['https://bdsdiemtam.com', 'https://www.bdsdiemtam.com'];
+
+const corsOptions = {
+  origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) => {
+    // Cho phép requests không có origin (mobile apps, Postman, server-to-server)
+    if (!origin) return cb(null, true);
+    if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    cb(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+};
+
+const io = new Server(server, { cors: { origin: ALLOWED_ORIGINS, credentials: true } });
 
 // Gắn io vào app để dùng ở mọi Controller qua req.app.get('io')
 app.set('io', io);
 const PORT = process.env.PORT || 5000;
 
 // Middlewares cơ bản
-app.use(cors({ origin: CORS_ORIGIN }));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

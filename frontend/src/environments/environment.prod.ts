@@ -1,6 +1,5 @@
 export const environment = {
   production: true,
-  // TODO: thay bằng URL Railway thực tế sau khi deploy backend
-  apiUrl: 'https://duywebsite-production.up.railway.app/api',
-  socketUrl: 'https://duywebsite-production.up.railway.app'
+  apiUrl: 'https://api.bdsdiemtam.com/api',
+  socketUrl: 'https://api.bdsdiemtam.com'
 };
