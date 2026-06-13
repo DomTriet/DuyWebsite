@@ -47,7 +47,40 @@
   animation: pulse-subtle 2s ease-in-out infinite;
 }
 
-/* A11y: tôn trọng người dùng tắt hiệu ứng chuyển động (WCAG 2.3.3) */
+/* ── Image loading: fade-in để tránh flash đen/trắng ── */
+img {
+  color: transparent; /* Ẩn alt text broken icon */
+}
+@keyframes imgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+img[src]:not([src=""]) {
+  animation: imgFadeIn 0.35s ease both;
+}
+
+/* ── Skeleton shimmer ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #ebebeb 25%, #f5f5f5 50%, #ebebeb 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
+/* ── Route progress bar ── */
+#route-progress {
+  position: fixed; top: 0; left: 0; height: 2px; z-index: 9999;
+  background: linear-gradient(90deg, #B8860B, #D4A017);
+  transition: width 0.25s ease, opacity 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 0 6px rgba(184,134,11,0.6);
+}
+
+/* ── A11y: tôn trọng người dùng tắt hiệu ứng chuyển động (WCAG 2.3.3) ── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

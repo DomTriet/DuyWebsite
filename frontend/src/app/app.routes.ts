@@ -60,12 +60,12 @@ export const routes: Routes = [
   // MODULE THEME ENGINE: DỰ ÁN & BẤT ĐỘNG SẢN
   // ==========================================
   {
-    path: 'project/:id',
+    path: 'project/:projectSlug',
     resolve: { theme: themeResolver },
     loadComponent: () => import('./themes/theme-container.component').then(m => m.ThemeContainerComponent)
   },
   {
-    path: 'project/:id/property/:slug',
+    path: 'project/:projectSlug/property/:propSlug',
     resolve: { theme: themeResolver },
     loadComponent: () => import('./themes/theme-property-container.component').then(m => m.ThemePropertyContainerComponent)
   },

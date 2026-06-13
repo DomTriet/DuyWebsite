@@ -3,6 +3,7 @@ import { supabase } from '../config/supabase';
 import { censorContent, hasSpamLinks } from '../services/censor.service';
 import { logAction } from '../services/log.service';
 import { sendEmail } from '../services/notification.service';
+import { forumApprovedEmail } from '../utils/email-templates';
 
 /**
  * Lấy danh sách bài viết trên Diễn đàn (Chỉ lấy bài đã được duyệt)
@@ -89,8 +90,11 @@ export const approvePost = async (req: Request, res: Response, next: NextFunctio
       if (authorData?.user?.email) {
         sendEmail(
           authorData.user.email,
-          '[Pro-RealEstate] Bài viết của bạn đã được duyệt',
-          `Chúc mừng! Bài đăng "<b>${post.title}</b>" của bạn đã được duyệt và hiển thị trên diễn đàn.`
+          `[Điểm Tâm BĐS] Bài viết đã được duyệt — ${post.title}`,
+          forumApprovedEmail({
+            postTitle: post.title,
+            postUrl: `https://bdsdiemtam.com/forum/${post.id}`,
+          })
         ).catch(err => console.error(err));
       }
     }

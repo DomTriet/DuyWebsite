@@ -11,6 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SeoService } from '../../core/services/seo.service';
 import { FavoriteService } from '../../core/services/favorite.service';
 import { TrustUrlPipe } from '../../shared/pipes/trust-url.pipe';
+import { LightboxService } from '../../shared/services/lightbox.service';
 
 @Component({
   selector: 'app-eco-green-property-detail',
@@ -184,18 +185,25 @@ import { TrustUrlPipe } from '../../shared/pipes/trust-url.pipe';
 
       <!-- Lưới -->
       <div *ngSwitchCase="'grid'" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:4px; background:var(--bg-deep,#0f1f17);">
-        <img *ngFor="let img of property.property_media" [src]="img.media_url" style="width:100%; height:280px; object-fit:cover;" [alt]="property.title">
+        <img *ngFor="let img of property.property_media; let i = index"
+             [src]="img.media_url"
+             (click)="openLightbox(i)"
+             style="width:100%; height:280px; object-fit:cover; cursor:zoom-in;"
+             [alt]="property.title">
       </div>
 
       <!-- 1 ảnh lớn -->
-      <div *ngSwitchCase="'single'" class="gallery-hero">
+      <div *ngSwitchCase="'single'" class="gallery-hero" style="cursor:zoom-in;" (click)="openLightbox(0)">
         <img [src]="activeImage" class="gallery-hero-img" [alt]="property.title">
         <div class="gallery-hero-overlay"></div>
+        <span style="position:absolute;bottom:14px;right:16px;background:rgba(15,31,23,0.65);border:1px solid rgba(82,183,136,0.35);color:var(--mint);font-size:11px;font-weight:600;padding:4px 12px;pointer-events:none;">
+          🔍 Phóng to
+        </span>
       </div>
 
       <!-- Mặc định -->
       <ng-container *ngSwitchDefault>
-      <div class="gallery-hero">
+      <div class="gallery-hero" style="cursor:zoom-in;" (click)="openLightbox()">
         <img [src]="activeImage" class="gallery-hero-img" [alt]="property.title">
         <div class="gallery-hero-overlay"></div>
         <span class="gallery-count">{{ currentIndex + 1 }} / {{ property.property_media?.length || 1 }}</span>
@@ -380,6 +388,7 @@ export class EcoGreenPropertyDetailComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private seoService = inject(SeoService);
   private favoriteService = inject(FavoriteService);
+  private lightboxSvc = inject(LightboxService);
 
   @Input() property: any = null;
   @Input() preview = false;
@@ -423,6 +432,12 @@ export class EcoGreenPropertyDetailComponent implements OnInit {
   }
 
   selectImage(url: string, index: number) { this.activeImage = url; this.currentIndex = index; }
+
+  openLightbox(idx?: number) {
+    const images = (this.property?.property_media || []).map((m: any) => m.media_url);
+    if (!images.length) return;
+    this.lightboxSvc.open(images, idx ?? this.currentIndex);
+  }
 
   prevImage() {
     const media = this.property?.property_media;

@@ -11,6 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SeoService } from '../../core/services/seo.service';
 import { FavoriteService } from '../../core/services/favorite.service';
 import { TrustUrlPipe } from '../../shared/pipes/trust-url.pipe';
+import { LightboxService } from '../../shared/services/lightbox.service';
 
 @Component({
   selector: 'app-luxury-property-detail',
@@ -164,19 +165,26 @@ import { TrustUrlPipe } from '../../shared/pipes/trust-url.pipe';
       <!-- Lưới -->
       <div *ngSwitchCase="'grid'" style="background:var(--surface); padding:4px;">
         <div style="max-width:1500px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:4px;">
-          <img *ngFor="let img of property.property_media" [src]="img.media_url" style="width:100%; height:320px; object-fit:cover;" [alt]="property.title">
+          <img *ngFor="let img of property.property_media; let i = index"
+               [src]="img.media_url"
+               (click)="openLightbox(i)"
+               style="width:100%; height:320px; object-fit:cover; cursor:zoom-in;"
+               [alt]="property.title">
         </div>
       </div>
 
       <!-- 1 ảnh lớn -->
-      <div *ngSwitchCase="'single'" class="gallery-main">
+      <div *ngSwitchCase="'single'" class="gallery-main" style="cursor:zoom-in;" (click)="openLightbox(0)">
         <img [src]="activeImage" class="gallery-main-img" [alt]="property.title">
         <div class="gallery-overlay"></div>
+        <span style="position:absolute;bottom:16px;right:20px;background:rgba(10,10,10,0.6);border:1px solid rgba(201,168,76,0.4);color:var(--gold);font-size:11px;font-weight:600;padding:5px 12px;pointer-events:none;">
+          🔍 Phóng to
+        </span>
       </div>
 
       <!-- Mặc định -->
       <ng-container *ngSwitchDefault>
-      <div class="gallery-main">
+      <div class="gallery-main" style="cursor:zoom-in;" (click)="openLightbox()">
         <img [src]="activeImage" class="gallery-main-img" [alt]="property.title">
         <div class="gallery-overlay"></div>
         <span class="gallery-count">
@@ -392,6 +400,7 @@ export class LuxuryPropertyDetailComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private seoService = inject(SeoService);
   private favoriteService = inject(FavoriteService);
+  private lightboxSvc = inject(LightboxService);
 
   @Input() property: any = null;
   @Input() preview = false;
@@ -439,6 +448,12 @@ export class LuxuryPropertyDetailComponent implements OnInit {
   selectImage(url: string, index: number) {
     this.activeImage = url;
     this.currentIndex = index;
+  }
+
+  openLightbox(idx?: number) {
+    const images = (this.property?.property_media || []).map((m: any) => m.media_url);
+    if (!images.length) return;
+    this.lightboxSvc.open(images, idx ?? this.currentIndex);
   }
 
   prevImage() {

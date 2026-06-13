@@ -6,7 +6,7 @@ import { resend } from '../config/resend';
 export const sendEmail = async (to: string, subject: string, htmlContent: string): Promise<void> => {
   try {
     const data = await resend.emails.send({
-      from: 'Pro-RealEstate <noreply@yourdomain.com>', // Thay bằng domain thật khi go-live
+      from: 'Điểm Tâm BĐS <noreply@bdsdiemtam.com>',
       to: [to],
       subject: subject,
       html: htmlContent,

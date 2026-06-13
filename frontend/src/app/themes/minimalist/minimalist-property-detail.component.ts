@@ -11,6 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SeoService } from '../../core/services/seo.service';
 import { FavoriteService } from '../../core/services/favorite.service';
 import { TrustUrlPipe } from '../../shared/pipes/trust-url.pipe';
+import { LightboxService } from '../../shared/services/lightbox.service';
 
 @Component({
   selector: 'app-minimalist-property-detail',
@@ -143,21 +144,31 @@ import { TrustUrlPipe } from '../../shared/pipes/trust-url.pipe';
       <ng-container [ngSwitch]="galleryLayout">
         <!-- Lưới -->
         <div *ngSwitchCase="'grid'" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:4px; background:var(--bg);">
-          <img *ngFor="let img of property.property_media" [src]="img.media_url" style="width:100%; height:260px; object-fit:cover;" [alt]="property.title">
+          <img *ngFor="let img of property.property_media; let i = index"
+               [src]="img.media_url"
+               (click)="openLightbox(i)"
+               style="width:100%; height:260px; object-fit:cover; cursor:zoom-in;"
+               [alt]="property.title">
         </div>
         <!-- 1 ảnh lớn -->
-        <div *ngSwitchCase="'single'" style="height:68vh; min-height:420px; overflow:hidden; background:var(--bg);">
+        <div *ngSwitchCase="'single'" style="height:68vh; min-height:420px; overflow:hidden; background:var(--bg); cursor:zoom-in; position:relative;" (click)="openLightbox(0)">
           <img [src]="activeImage" class="gallery-main-img" [alt]="property.title">
+          <span style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.55);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;pointer-events:none;">
+            🔍 Phóng to
+          </span>
         </div>
         <!-- Mặc định: ảnh chính + dải thumbnail -->
         <div *ngSwitchDefault class="gallery-wrap">
-          <div style="overflow:hidden;">
+          <div style="overflow:hidden; cursor:zoom-in; position:relative;" (click)="openLightbox()">
             <img [src]="activeImage" class="gallery-main-img" [alt]="property.title">
+            <span style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.55);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;pointer-events:none;">
+              🔍 Phóng to
+            </span>
           </div>
           <div class="gallery-strip">
             <img *ngFor="let img of property.property_media; let i = index"
                  [src]="img.media_url"
-                 (click)="selectImage(img.media_url)"
+                 (click)="selectImage(img.media_url, i)"
                  [ngClass]="{'active': activeImage === img.media_url}"
                  class="thumb-img" [alt]="'THEME.DETAIL.IMAGE_N' | translate:{ n: i+1 }">
           </div>
@@ -320,7 +331,10 @@ export class MinimalistPropertyDetailComponent implements OnInit {
   @Input() preview = false;
   originalProperty: any = null;
   activeImage = '';
+  currentIndex = 0;
   isFav = false;
+
+  private lightbox = inject(LightboxService);
 
   get galleryLayout(): string { return this.property?.attributes?.gallery_layout || 'default'; }
 
@@ -356,7 +370,16 @@ export class MinimalistPropertyDetailComponent implements OnInit {
     }
   }
 
-  selectImage(url: string) { this.activeImage = url; }
+  selectImage(url: string, idx?: number) {
+    this.activeImage = url;
+    this.currentIndex = idx ?? (this.property?.property_media?.findIndex((m: any) => m.media_url === url) ?? 0);
+  }
+
+  openLightbox(idx?: number) {
+    const images = (this.property?.property_media || []).map((m: any) => m.media_url);
+    if (!images.length) return;
+    this.lightbox.open(images, idx ?? this.currentIndex);
+  }
 
   toggleFav() {
     this.favoriteService.toggleFavorite(this.property.id);

@@ -14,7 +14,7 @@ export const themeResolver: ResolveFn<any> = (route, state): Observable<any> => 
   const router = inject(Router);
   
   // Lấy ID hoặc Slug của dự án từ thanh URL (Giả sử route là /project/:id)
-  const projectId = route.paramMap.get('id');
+  const projectId = route.paramMap.get('projectSlug');
 
   if (!projectId) {
     // Nếu không có projectId (ví dụ trang chủ chung), fallback về theme mặc định

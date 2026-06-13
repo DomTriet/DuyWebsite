@@ -37,7 +37,7 @@ export class ThemePropertyContainerComponent implements OnInit {
       projectTheme = projectData.layout_config?.basePropertyTheme || 'minimalist';
     }
 
-    const slug = this.route.snapshot.paramMap.get('slug');
+    const slug = this.route.snapshot.paramMap.get('propSlug');
 
     // SSR: skip — Angular sẽ hydrate ở browser
     if (!isPlatformBrowser(this.platformId)) {

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { supabase } from '../config/supabase';
 import { sendEmail } from '../services/notification.service';
 import { logAction } from '../services/log.service';
+import { leadNotificationEmail } from '../utils/email-templates';
 
 /**
  * Admin / Agent lấy danh sách Khách hàng
@@ -134,19 +135,13 @@ export const submitLead = async (req: Request, res: Response, next: NextFunction
       const agentEmail = agentData?.user?.email;
 
       if (agentEmail) {
-        const emailSubject = `[Pro-RealEstate] Khách hàng mới quan tâm dự án`;
-        const emailHtml = `
-          <h2>Bạn có một khách hàng mới!</h2>
-          <p><strong>Tên khách hàng:</strong> ${customer_name}</p>
-          <p><strong>Email:</strong> ${customer_email || 'Không cung cấp'}</p>
-          <p><strong>Số điện thoại:</strong> ${customer_phone || 'Không cung cấp'}</p>
-          <p><strong>Lời nhắn:</strong> ${message || 'Không có'}</p>
-          <br/>
-          <p>Hãy truy cập trang Quản trị Agent Dashboard để xem chi tiết và liên hệ với khách hàng nhé.</p>
-        `;
-        
-        // 3. Gọi Background Service bắn email
-        // Chạy bất đồng bộ (không await) để phản hồi API ngay lập tức cho khách hàng
+        const emailSubject = `[Điểm Tâm BĐS] Khách hàng mới quan tâm — ${customer_name}`;
+        const emailHtml = leadNotificationEmail({
+          customerName: customer_name,
+          customerEmail: customer_email,
+          customerPhone: customer_phone,
+          message,
+        });
         sendEmail(agentEmail, emailSubject, emailHtml).catch(err => console.error(err));
       }
     }
