@@ -19,13 +19,17 @@ import { LightboxService } from '../../services/lightbox.service';
       position: absolute; inset: 0; z-index: 1;
       display: flex; align-items: center; justify-content: center;
       touch-action: none;
+      cursor: default;
     }
+    .lb-img-wrap.can-pan  { cursor: grab; }
+    .lb-img-wrap.panning  { cursor: grabbing; }
     .lb-img {
       max-width: 92vw; max-height: 82vh;
       object-fit: contain; border-radius: 4px;
-      transition: transform .2s ease;
+      transition: transform .15s ease;
       user-select: none; pointer-events: none;
     }
+    .lb-img-wrap.panning .lb-img { transition: none; }
     .lb-btn {
       position: fixed; z-index: 10;
       background: rgba(255,255,255,0.15); border: none;
@@ -66,21 +70,25 @@ import { LightboxService } from '../../services/lightbox.service';
   template: `
     <div *ngIf="state().open" class="lb-overlay" (click)="onOverlayClick($event)">
 
-      <!-- Image layer (z-index: 1) — buttons rendered AFTER so they paint on top -->
       <div class="lb-img-wrap"
+           [class.can-pan]="zoom() > 1 && !isPanning()"
+           [class.panning]="isPanning()"
            (click)="$event.stopPropagation()"
+           (mousedown)="onMouseDown($event)"
+           (mousemove)="onMouseMove($event)"
+           (mouseup)="onMouseUp()"
+           (mouseleave)="onMouseUp()"
            (touchstart)="onTouchStart($event)"
            (touchmove)="onTouchMove($event)"
-           (touchend)="onTouchEnd()">
+           (touchend)="onTouchEnd($event)"
+           (wheel)="onWheel($event)">
         <img class="lb-img"
              [src]="currentImage()"
-             [style.transform]="'scale(' + zoom() + ')'"
-             (wheel)="onWheel($event)"
+             [style.transform]="imgTransform()"
              alt="Ảnh full size"
              draggable="false">
       </div>
 
-      <!-- Controls — rendered after img-wrap → z-index: 10 → always on top -->
       <span class="lb-counter" *ngIf="state().images.length > 1">
         {{ state().index + 1 }} / {{ state().images.length }}
       </span>
@@ -116,13 +124,33 @@ export class LightboxComponent {
   private svc = inject(LightboxService);
   private platformId = inject(PLATFORM_ID);
 
-  readonly state = this.svc.state;
+  readonly state        = this.svc.state;
   readonly currentImage = computed(() => this.state().images[this.state().index] ?? '');
-  readonly zoom = signal(1);
-  readonly zoomPercent = computed(() => Math.round(this.zoom() * 100));
+  readonly zoom         = signal(1);
+  readonly zoomPercent  = computed(() => Math.round(this.zoom() * 100));
+  readonly panX         = signal(0);
+  readonly panY         = signal(0);
+  readonly isPanning    = signal(false);
 
-  private pinchStartDist = 0;
-  private pinchStartZoom = 1;
+  readonly imgTransform = computed(() =>
+    `translate(${this.panX()}px, ${this.panY()}px) scale(${this.zoom()})`
+  );
+
+  // Mouse drag state
+  private mouseDragActive  = false;
+  private dragStartX       = 0;
+  private dragStartY       = 0;
+  private dragStartPanX    = 0;
+  private dragStartPanY    = 0;
+  private didDrag          = false;
+
+  // Touch state
+  private pinchStartDist   = 0;
+  private pinchStartZoom   = 1;
+  private touchPanStartX   = 0;
+  private touchPanStartY   = 0;
+  private touchPanStartPX  = 0;
+  private touchPanStartPY  = 0;
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -135,52 +163,99 @@ export class LightboxComponent {
   @HostListener('document:keydown', ['$event'])
   onKey(e: KeyboardEvent) {
     if (!this.state().open) return;
-    if (e.key === 'Escape')           this.close();
-    if (e.key === 'ArrowRight')       this.svc.next();
-    if (e.key === 'ArrowLeft')        this.svc.prev();
-    if (e.key === '+' || e.key === '=') this.zoomIn();
-    if (e.key === '-')                this.zoomOut();
+    if (e.key === 'Escape')              this.close();
+    if (e.key === 'ArrowRight')          this.svc.next();
+    if (e.key === 'ArrowLeft')           this.svc.prev();
+    if (e.key === '+' || e.key === '=')  this.zoomIn();
+    if (e.key === '-')                   this.zoomOut();
   }
 
+  // ── Overlay backdrop click ───────────────────────────────────────────
   onOverlayClick(e: MouseEvent) {
+    if (this.didDrag) { this.didDrag = false; return; }
     if ((e.target as HTMLElement).classList.contains('lb-overlay')) this.close();
   }
 
+  // ── Mouse wheel zoom ─────────────────────────────────────────────────
   onWheel(e: WheelEvent) {
     e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    this.zoom.update(z => Math.min(4, Math.max(0.3, +(z + delta).toFixed(1))));
+    const delta = e.deltaY > 0 ? -0.15 : 0.15;
+    this.zoom.update(z => Math.min(4, Math.max(0.3, +(z + delta).toFixed(2))));
+    if (this.zoom() <= 1) this.resetPan();
   }
 
+  // ── Mouse drag (desktop) ─────────────────────────────────────────────
+  onMouseDown(e: MouseEvent) {
+    if (this.zoom() <= 1) return;
+    this.mouseDragActive = true;
+    this.didDrag = false;
+    this.isPanning.set(true);
+    this.dragStartX    = e.clientX;
+    this.dragStartY    = e.clientY;
+    this.dragStartPanX = this.panX();
+    this.dragStartPanY = this.panY();
+    e.preventDefault();
+  }
+
+  onMouseMove(e: MouseEvent) {
+    if (!this.mouseDragActive) return;
+    const dx = e.clientX - this.dragStartX;
+    const dy = e.clientY - this.dragStartY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) this.didDrag = true;
+    this.panX.set(this.dragStartPanX + dx);
+    this.panY.set(this.dragStartPanY + dy);
+  }
+
+  onMouseUp() {
+    this.mouseDragActive = false;
+    this.isPanning.set(false);
+  }
+
+  // ── Touch (mobile): 1 finger = pan, 2 fingers = pinch zoom ──────────
   onTouchStart(e: TouchEvent) {
     if (e.touches.length === 2) {
-      this.pinchStartDist = this.touchDist(e.touches);
-      this.pinchStartZoom = this.zoom();
+      this.pinchStartDist  = this.touchDist(e.touches);
+      this.pinchStartZoom  = this.zoom();
+    } else if (e.touches.length === 1 && this.zoom() > 1) {
+      this.touchPanStartX  = e.touches[0].clientX;
+      this.touchPanStartY  = e.touches[0].clientY;
+      this.touchPanStartPX = this.panX();
+      this.touchPanStartPY = this.panY();
+      this.isPanning.set(true);
     }
   }
 
   onTouchMove(e: TouchEvent) {
     e.preventDefault();
-    if (e.touches.length !== 2) return;
-    const dist = this.touchDist(e.touches);
-    const scale = dist / this.pinchStartDist;
-    this.zoom.set(Math.min(4, Math.max(0.3, +(this.pinchStartZoom * scale).toFixed(2))));
+    if (e.touches.length === 2) {
+      const dist  = this.touchDist(e.touches);
+      const scale = dist / this.pinchStartDist;
+      this.zoom.set(Math.min(4, Math.max(0.3, +(this.pinchStartZoom * scale).toFixed(2))));
+    } else if (e.touches.length === 1 && this.zoom() > 1) {
+      this.panX.set(this.touchPanStartPX + (e.touches[0].clientX - this.touchPanStartX));
+      this.panY.set(this.touchPanStartPY + (e.touches[0].clientY - this.touchPanStartY));
+    }
   }
 
-  onTouchEnd() {
+  onTouchEnd(e: TouchEvent) {
     this.pinchStartDist = 0;
+    if (e.touches.length === 0) this.isPanning.set(false);
+    if (this.zoom() <= 1) this.resetPan();
   }
 
+  // ── Helpers ──────────────────────────────────────────────────────────
   private touchDist(touches: TouchList): number {
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  close()          { this.svc.close(); this.zoom.set(1); }
-  next(e: Event)   { e.stopPropagation(); this.svc.next(); this.zoom.set(1); }
-  prev(e: Event)   { e.stopPropagation(); this.svc.prev(); this.zoom.set(1); }
-  zoomIn()         { this.zoom.update(z => Math.min(4, +(z + 0.25).toFixed(2))); }
-  zoomOut()        { this.zoom.update(z => Math.max(0.3, +(z - 0.25).toFixed(2))); }
-  resetZoom()      { this.zoom.set(1); }
+  private resetPan() { this.panX.set(0); this.panY.set(0); }
+
+  close()        { this.svc.close(); this.zoom.set(1); this.resetPan(); }
+  next(e: Event) { e.stopPropagation(); this.svc.next(); this.zoom.set(1); this.resetPan(); }
+  prev(e: Event) { e.stopPropagation(); this.svc.prev(); this.zoom.set(1); this.resetPan(); }
+  zoomIn()       { this.zoom.update(z => Math.min(4, +(z + 0.25).toFixed(2))); }
+  zoomOut()      { this.zoom.update(z => Math.max(0.3, +(z - 0.25).toFixed(2))); if (this.zoom() <= 1) this.resetPan(); }
+  resetZoom()    { this.zoom.set(1); this.resetPan(); }
 }
