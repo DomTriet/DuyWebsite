@@ -1,0 +1,255 @@
+<!--
+  ============================================================
+  SUPABASE EMAIL TEMPLATES — Điểm Tâm BĐS
+  ============================================================
+  Cách dùng:
+    Supabase Dashboard → Authentication → Email Templates
+    Chọn từng loại, paste HTML + Subject tương ứng vào
+
+  Biến Supabase:
+    {{ .ConfirmationURL }} — link xác nhận (Supabase tự điền)
+    {{ .SiteURL }}         — https://bdsdiemtam.com
+    {{ .Email }}           — email người dùng
+  ============================================================
+-->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     1. CONFIRM SIGNUP — Xác nhận đăng ký tài khoản
+     Subject: Xác nhận email của bạn — Điểm Tâm BĐS
+     ══════════════════════════════════════════════════════════ -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Xác nhận email — Điểm Tâm BĐS</title>
+</head>
+<body style="margin:0;padding:0;background:#F5F4F0;font-family:'Helvetica Neue',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F4F0;padding:40px 16px;">
+  <tr><td align="center">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+
+      <!-- Header -->
+      <tr><td style="background:#0D0D0D;border-radius:16px 16px 0 0;padding:28px 40px;text-align:center;">
+        <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.45);">Bất Động Sản</p>
+        <p style="margin:5px 0 0;font-size:23px;font-weight:700;color:#fff;font-family:Georgia,serif;letter-spacing:-0.01em;">Điểm Tâm</p>
+      </td></tr>
+
+      <!-- Gold line -->
+      <tr><td style="height:3px;background:linear-gradient(90deg,#B8860B,#D4A017,#B8860B);"></td></tr>
+
+      <!-- Body -->
+      <tr><td style="background:#fff;padding:44px 40px;border-radius:0 0 16px 16px;">
+
+        <!-- Icon -->
+        <div style="text-align:center;margin-bottom:28px;">
+          <div style="display:inline-block;width:60px;height:60px;background:#FBF6EC;border-radius:50%;line-height:60px;font-size:28px;">✉️</div>
+        </div>
+
+        <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#0D0D0D;text-align:center;">Xác nhận địa chỉ email</h1>
+        <p style="margin:0 0 28px;font-size:15px;color:#6B7280;line-height:1.7;text-align:center;">
+          Cảm ơn bạn đã đăng ký tài khoản tại <strong>Bất Động Sản Điểm Tâm</strong>.<br>
+          Nhấn nút bên dưới để kích hoạt tài khoản của bạn.
+        </p>
+
+        <!-- CTA Button -->
+        <div style="text-align:center;margin-bottom:32px;">
+          <a href="{{ .ConfirmationURL }}"
+             style="display:inline-block;background:#0D0D0D;color:#fff;font-size:15px;font-weight:700;padding:15px 36px;border-radius:10px;text-decoration:none;letter-spacing:0.02em;">
+            Xác nhận tài khoản
+          </a>
+        </div>
+
+        <!-- Divider -->
+        <div style="height:1px;background:#F0EFE9;margin-bottom:24px;"></div>
+
+        <!-- Fallback link -->
+        <p style="margin:0 0 6px;font-size:12px;color:#9CA3AF;text-align:center;">
+          Nếu nút không hoạt động, copy và dán link này vào trình duyệt:
+        </p>
+        <p style="margin:0;font-size:11px;color:#B8860B;text-align:center;word-break:break-all;">
+          {{ .ConfirmationURL }}
+        </p>
+
+        <p style="margin:24px 0 0;font-size:12px;color:#D1D5DB;text-align:center;">
+          Link có hiệu lực trong <strong>24 giờ</strong>. Nếu bạn không đăng ký, hãy bỏ qua email này.
+        </p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td style="padding:20px 40px;text-align:center;">
+        <p style="margin:0;font-size:11px;color:#9CA3AF;line-height:1.7;">
+          Email tự động từ hệ thống Điểm Tâm BĐS · Vui lòng không trả lời<br>
+          <a href="{{ .SiteURL }}" style="color:#B8860B;text-decoration:none;">bdsdiemtam.com</a>
+        </p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     2. RESET PASSWORD — Đặt lại mật khẩu
+     Subject: Yêu cầu đặt lại mật khẩu — Điểm Tâm BĐS
+     ══════════════════════════════════════════════════════════ -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Đặt lại mật khẩu — Điểm Tâm BĐS</title>
+</head>
+<body style="margin:0;padding:0;background:#F5F4F0;font-family:'Helvetica Neue',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F4F0;padding:40px 16px;">
+  <tr><td align="center">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+
+      <!-- Header -->
+      <tr><td style="background:#0D0D0D;border-radius:16px 16px 0 0;padding:28px 40px;text-align:center;">
+        <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.45);">Bất Động Sản</p>
+        <p style="margin:5px 0 0;font-size:23px;font-weight:700;color:#fff;font-family:Georgia,serif;letter-spacing:-0.01em;">Điểm Tâm</p>
+      </td></tr>
+
+      <!-- Gold line -->
+      <tr><td style="height:3px;background:linear-gradient(90deg,#B8860B,#D4A017,#B8860B);"></td></tr>
+
+      <!-- Body -->
+      <tr><td style="background:#fff;padding:44px 40px;border-radius:0 0 16px 16px;">
+
+        <!-- Icon -->
+        <div style="text-align:center;margin-bottom:28px;">
+          <div style="display:inline-block;width:60px;height:60px;background:#FEF2F2;border-radius:50%;line-height:60px;font-size:28px;">🔐</div>
+        </div>
+
+        <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#0D0D0D;text-align:center;">Đặt lại mật khẩu</h1>
+        <p style="margin:0 0 28px;font-size:15px;color:#6B7280;line-height:1.7;text-align:center;">
+          Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản liên kết với email này.<br>
+          Nhấn nút bên dưới để tạo mật khẩu mới.
+        </p>
+
+        <!-- CTA Button -->
+        <div style="text-align:center;margin-bottom:32px;">
+          <a href="{{ .ConfirmationURL }}"
+             style="display:inline-block;background:#0D0D0D;color:#fff;font-size:15px;font-weight:700;padding:15px 36px;border-radius:10px;text-decoration:none;letter-spacing:0.02em;">
+            Đặt lại mật khẩu
+          </a>
+        </div>
+
+        <!-- Warning box -->
+        <div style="background:#FFF8EC;border:1px solid #FDE68A;border-radius:10px;padding:14px 18px;margin-bottom:24px;">
+          <p style="margin:0;font-size:13px;color:#92400E;line-height:1.6;">
+            ⚠️ <strong>Lưu ý bảo mật:</strong> Nếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này. Mật khẩu của bạn sẽ không thay đổi.
+          </p>
+        </div>
+
+        <!-- Divider -->
+        <div style="height:1px;background:#F0EFE9;margin-bottom:24px;"></div>
+
+        <!-- Fallback link -->
+        <p style="margin:0 0 6px;font-size:12px;color:#9CA3AF;text-align:center;">
+          Nếu nút không hoạt động, copy và dán link này vào trình duyệt:
+        </p>
+        <p style="margin:0;font-size:11px;color:#B8860B;text-align:center;word-break:break-all;">
+          {{ .ConfirmationURL }}
+        </p>
+
+        <p style="margin:24px 0 0;font-size:12px;color:#D1D5DB;text-align:center;">
+          Link có hiệu lực trong <strong>1 giờ</strong>.
+        </p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td style="padding:20px 40px;text-align:center;">
+        <p style="margin:0;font-size:11px;color:#9CA3AF;line-height:1.7;">
+          Email tự động từ hệ thống Điểm Tâm BĐS · Vui lòng không trả lời<br>
+          <a href="{{ .SiteURL }}" style="color:#B8860B;text-decoration:none;">bdsdiemtam.com</a>
+        </p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     3. CHANGE EMAIL — Xác nhận thay đổi địa chỉ email
+     Subject: Xác nhận email mới — Điểm Tâm BĐS
+     ══════════════════════════════════════════════════════════ -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Xác nhận email mới — Điểm Tâm BĐS</title>
+</head>
+<body style="margin:0;padding:0;background:#F5F4F0;font-family:'Helvetica Neue',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F4F0;padding:40px 16px;">
+  <tr><td align="center">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+
+      <!-- Header -->
+      <tr><td style="background:#0D0D0D;border-radius:16px 16px 0 0;padding:28px 40px;text-align:center;">
+        <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.45);">Bất Động Sản</p>
+        <p style="margin:5px 0 0;font-size:23px;font-weight:700;color:#fff;font-family:Georgia,serif;letter-spacing:-0.01em;">Điểm Tâm</p>
+      </td></tr>
+
+      <!-- Gold line -->
+      <tr><td style="height:3px;background:linear-gradient(90deg,#B8860B,#D4A017,#B8860B);"></td></tr>
+
+      <!-- Body -->
+      <tr><td style="background:#fff;padding:44px 40px;border-radius:0 0 16px 16px;">
+
+        <!-- Icon -->
+        <div style="text-align:center;margin-bottom:28px;">
+          <div style="display:inline-block;width:60px;height:60px;background:#EFF6FF;border-radius:50%;line-height:60px;font-size:28px;">📧</div>
+        </div>
+
+        <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#0D0D0D;text-align:center;">Xác nhận email mới</h1>
+        <p style="margin:0 0 28px;font-size:15px;color:#6B7280;line-height:1.7;text-align:center;">
+          Bạn vừa yêu cầu thay đổi địa chỉ email tài khoản tại <strong>Điểm Tâm BĐS</strong>.<br>
+          Nhấn nút bên dưới để xác nhận địa chỉ email mới.
+        </p>
+
+        <!-- CTA Button -->
+        <div style="text-align:center;margin-bottom:32px;">
+          <a href="{{ .ConfirmationURL }}"
+             style="display:inline-block;background:#0D0D0D;color:#fff;font-size:15px;font-weight:700;padding:15px 36px;border-radius:10px;text-decoration:none;letter-spacing:0.02em;">
+            Xác nhận email mới
+          </a>
+        </div>
+
+        <!-- Divider -->
+        <div style="height:1px;background:#F0EFE9;margin-bottom:24px;"></div>
+
+        <!-- Fallback link -->
+        <p style="margin:0 0 6px;font-size:12px;color:#9CA3AF;text-align:center;">
+          Nếu nút không hoạt động, copy và dán link này vào trình duyệt:
+        </p>
+        <p style="margin:0;font-size:11px;color:#B8860B;text-align:center;word-break:break-all;">
+          {{ .ConfirmationURL }}
+        </p>
+
+        <p style="margin:24px 0 0;font-size:12px;color:#D1D5DB;text-align:center;">
+          Link có hiệu lực trong <strong>24 giờ</strong>. Nếu bạn không thực hiện thay đổi này, hãy bỏ qua email.
+        </p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td style="padding:20px 40px;text-align:center;">
+        <p style="margin:0;font-size:11px;color:#9CA3AF;line-height:1.7;">
+          Email tự động từ hệ thống Điểm Tâm BĐS · Vui lòng không trả lời<br>
+          <a href="{{ .SiteURL }}" style="color:#B8860B;text-decoration:none;">bdsdiemtam.com</a>
+        </p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>
