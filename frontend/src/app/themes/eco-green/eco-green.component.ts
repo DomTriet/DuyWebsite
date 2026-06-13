@@ -26,8 +26,8 @@ import { LayoutConfig, LayoutBlock, normalizeLayoutFor } from '../custom/custom-
       --bark:      #5C4033;
       --muted:     #7A8C7E;
       --white:     #FFFFFF;
-      --f-head: 'Lora', Georgia, serif;
-      --f-body: 'Inter', system-ui, sans-serif;
+      --f-head: 'Cormorant Garamond', Georgia, serif;
+      --f-body: 'Be Vietnam Pro', system-ui, sans-serif;
     }
     * { box-sizing: border-box; }
     .font-head { font-family: var(--f-head); }

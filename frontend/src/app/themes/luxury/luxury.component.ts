@@ -26,7 +26,7 @@ import { LayoutConfig, LayoutBlock, normalizeLayoutFor } from '../custom/custom-
       --muted: #888880;
       --border: rgba(201,168,76,0.18);
       --f-display: 'Cormorant Garamond', Georgia, serif;
-      --f-body: 'DM Sans', system-ui, sans-serif;
+      --f-body: 'Be Vietnam Pro', system-ui, sans-serif;
     }
     * { box-sizing: border-box; }
     .font-display { font-family: var(--f-display); }
@@ -387,7 +387,7 @@ export class LuxuryComponent implements OnInit, OnChanges {
 
   visibleBlocks(): LayoutBlock[] { return (this.cfg?.blocks || []).filter(b => b.visible); }
   get fHead(): string { return `"${this.cfg?.tokens?.fontHead || 'Cormorant Garamond'}", Georgia, serif`; }
-  get fBody(): string { return `"${this.cfg?.tokens?.fontBody || 'DM Sans'}", system-ui, sans-serif`; }
+  get fBody(): string { return `"${this.cfg?.tokens?.fontBody || 'Be Vietnam Pro'}", system-ui, sans-serif`; }
 
   ngOnChanges() { this.cfg = normalizeLayoutFor(this.project?.layout_config, 'luxury'); }
 

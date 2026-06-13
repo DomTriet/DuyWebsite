@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { supabase } from '../config/supabase';
 import { logAction } from '../services/log.service';
 import { autoTranslateAllLangs } from '../services/translation.service';
-import { generateSlug } from '../utils/slug.util';
+import { generateSlug, makeUniqueSlug } from '../utils/slug.util';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -63,7 +63,7 @@ export const createProject = async (req: Request, res: Response, next: NextFunct
     const userId = req.user?.id;
 
     const baseSlug = generateSlug(name);
-    const uniqueSlug = `${baseSlug}-${Date.now().toString().slice(-6)}`;
+    const uniqueSlug = await makeUniqueSlug('projects', baseSlug);
 
     const { data, error } = await supabase
       .from('projects')
@@ -98,7 +98,7 @@ export const updateProject = async (req: Request, res: Response, next: NextFunct
 
     // Tái tạo slug khi đổi tên dự án
     if (updates.name && !updates.slug) {
-      updates.slug = `${generateSlug(updates.name)}-${Date.now().toString().slice(-6)}`;
+      updates.slug = await makeUniqueSlug('projects', generateSlug(updates.name), id);
     }
 
     const { data, error } = await supabase

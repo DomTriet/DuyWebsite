@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { supabase } from '../config/supabase';
-import { generateSlug } from '../utils/slug.util';
+import { generateSlug, makeUniqueSlug } from '../utils/slug.util';
 import { logAction } from '../services/log.service';
 import { autoTranslateAllLangs } from '../services/translation.service';
 
@@ -314,9 +314,9 @@ export const createProperty = async (req: Request, res: Response, next: NextFunc
     const userId = req.user?.id;
     const role = req.user?.role;
 
-    // 1. Tạo slug từ Tiêu đề + ID ngẫu nhiên để tránh trùng lặp
+    // 1. Tạo slug từ Tiêu đề, tự động thêm -2/-3 nếu trùng
     const baseSlug = generateSlug(title);
-    const uniqueSlug = `${baseSlug}-${Date.now().toString().slice(-5)}`;
+    const uniqueSlug = await makeUniqueSlug('properties', baseSlug);
 
     // 2. Xác định Agent phụ trách: Nếu người tạo là Agent thì tự gán vào bài. Nếu là Admin thì có thể gán cho Agent khác.
     const agent_id = role === 'agent' ? userId : req.body.agent_id;
@@ -375,7 +375,7 @@ export const updateProperty = async (req: Request, res: Response, next: NextFunc
 
     // Cập nhật Slug nếu đổi tiêu đề
     if (updates.title && !updates.slug) {
-      updates.slug = `${generateSlug(updates.title)}-${Date.now().toString().slice(-5)}`;
+      updates.slug = await makeUniqueSlug('properties', generateSlug(updates.title), id);
     }
 
     if (Object.keys(updates).length > 0) {

@@ -30,7 +30,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
     }
 
     .font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
-    .font-body    { font-family: 'DM Sans', system-ui, sans-serif; }
+    .font-body    { font-family: 'Be Vietnam Pro', system-ui, sans-serif; }
 
     @keyframes revealUp {
       from { opacity: 0; transform: translateY(24px); }
@@ -264,7 +264,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
                 </div>
               </div>
 
-              <div style="margin-top:20px; font-family:'DM Sans',sans-serif; font-size:1.75rem; font-weight:500; color:var(--gold);">
+              <div style="margin-top:20px; font-family:'Be Vietnam Pro',sans-serif; font-size:1.75rem; font-weight:500; color:var(--gold);">
                 {{ property.price | number }} ₫
               </div>
             </header>
@@ -334,7 +334,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
                 <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=60"
                      style="width:100%;height:100%;object-fit:cover;opacity:0.3;" [alt]="'THEME.DETAIL.MAP' | translate">
                 <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-                  <div style="background:rgba(10,10,10,0.75);border:1px solid var(--border);padding:12px 28px;font-family:'DM Sans',sans-serif;font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;backdrop-filter:blur(8px);">
+                  <div style="background:rgba(10,10,10,0.75);border:1px solid var(--border);padding:12px 28px;font-family:'Be Vietnam Pro',sans-serif;font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;backdrop-filter:blur(8px);">
                     <svg style="width:14px;height:14px;flex-shrink:0;" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
                     </svg>

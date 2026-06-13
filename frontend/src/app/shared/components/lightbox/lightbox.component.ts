@@ -1,4 +1,4 @@
-import { Component, inject, HostListener, computed, signal, PLATFORM_ID } from '@angular/core';
+import { Component, inject, HostListener, computed, signal, effect, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { LightboxService } from '../../services/lightbox.service';
 
@@ -12,51 +12,75 @@ import { LightboxService } from '../../services/lightbox.service';
       background: rgba(0,0,0,0.92); backdrop-filter: blur(6px);
       display: flex; align-items: center; justify-content: center;
       animation: lbFadeIn .18s ease;
+      touch-action: none;
     }
     @keyframes lbFadeIn { from { opacity:0; } to { opacity:1; } }
     .lb-img-wrap {
-      position: relative; display: flex; align-items: center; justify-content: center;
-      width: 100%; height: 100%;
+      position: absolute; inset: 0; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      touch-action: none;
     }
     .lb-img {
-      max-width: 92vw; max-height: 88vh;
+      max-width: 92vw; max-height: 82vh;
       object-fit: contain; border-radius: 4px;
       transition: transform .2s ease;
-      cursor: grab;
-      user-select: none;
+      user-select: none; pointer-events: none;
     }
-    .lb-img:active { cursor: grabbing; }
     .lb-btn {
-      position: fixed; background: rgba(255,255,255,0.12); border: none;
+      position: fixed; z-index: 10;
+      background: rgba(255,255,255,0.15); border: none;
       color: #fff; cursor: pointer; border-radius: 50%;
-      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
       transition: background .15s; font-size: 18px;
+      -webkit-tap-highlight-color: transparent;
     }
-    .lb-btn:hover { background: rgba(255,255,255,0.24); }
+    .lb-btn:hover, .lb-btn:active { background: rgba(255,255,255,0.32); }
     .lb-close { top: 16px; right: 16px; }
-    .lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
-    .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
+    .lb-prev { left: 12px; top: 50%; transform: translateY(-50%); }
+    .lb-next { right: 12px; top: 50%; transform: translateY(-50%); }
     .lb-zoom-bar {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 10;
       display: flex; align-items: center; gap: 8px;
-      background: rgba(0,0,0,0.55); border-radius: 30px; padding: 8px 16px;
+      background: rgba(0,0,0,0.6); border-radius: 30px; padding: 8px 16px;
+      -webkit-tap-highlight-color: transparent;
     }
     .lb-zoom-btn {
       background: rgba(255,255,255,0.15); border: none; color: #fff;
-      cursor: pointer; border-radius: 50%; width: 32px; height: 32px;
+      cursor: pointer; border-radius: 50%; width: 40px; height: 40px;
       display: flex; align-items: center; justify-content: center;
       font-size: 16px; font-weight: 700; transition: background .15s;
+      -webkit-tap-highlight-color: transparent;
     }
-    .lb-zoom-btn:hover { background: rgba(255,255,255,0.3); }
+    .lb-zoom-btn:active { background: rgba(255,255,255,0.4); }
     .lb-zoom-label { color: rgba(255,255,255,0.7); font-size: 13px; min-width: 42px; text-align: center; }
     .lb-counter {
       position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 10;
       background: rgba(0,0,0,0.5); border-radius: 20px; padding: 4px 14px;
       color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 600;
+      pointer-events: none;
     }
   `],
   template: `
     <div *ngIf="state().open" class="lb-overlay" (click)="onOverlayClick($event)">
+
+      <!-- Image layer (z-index: 1) — buttons rendered AFTER so they paint on top -->
+      <div class="lb-img-wrap"
+           (click)="$event.stopPropagation()"
+           (touchstart)="onTouchStart($event)"
+           (touchmove)="onTouchMove($event)"
+           (touchend)="onTouchEnd()">
+        <img class="lb-img"
+             [src]="currentImage()"
+             [style.transform]="'scale(' + zoom() + ')'"
+             (wheel)="onWheel($event)"
+             alt="Ảnh full size"
+             draggable="false">
+      </div>
+
+      <!-- Controls — rendered after img-wrap → z-index: 10 → always on top -->
       <span class="lb-counter" *ngIf="state().images.length > 1">
         {{ state().index + 1 }} / {{ state().images.length }}
       </span>
@@ -72,15 +96,6 @@ import { LightboxService } from '../../services/lightbox.service';
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
         </svg>
       </button>
-
-      <div class="lb-img-wrap" (click)="$event.stopPropagation()">
-        <img class="lb-img"
-             [src]="currentImage()"
-             [style.transform]="'scale(' + zoom() + ')'"
-             (wheel)="onWheel($event)"
-             alt="Ảnh full size"
-             draggable="false">
-      </div>
 
       <button *ngIf="state().images.length > 1" class="lb-btn lb-next" (click)="next($event)" aria-label="Ảnh tiếp theo">
         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,18 +118,28 @@ export class LightboxComponent {
 
   readonly state = this.svc.state;
   readonly currentImage = computed(() => this.state().images[this.state().index] ?? '');
-
   readonly zoom = signal(1);
   readonly zoomPercent = computed(() => Math.round(this.zoom() * 100));
+
+  private pinchStartDist = 0;
+  private pinchStartZoom = 1;
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      effect(() => {
+        document.body.style.overflow = this.state().open ? 'hidden' : '';
+      });
+    }
+  }
 
   @HostListener('document:keydown', ['$event'])
   onKey(e: KeyboardEvent) {
     if (!this.state().open) return;
-    if (e.key === 'Escape')      this.close();
-    if (e.key === 'ArrowRight')  this.svc.next();
-    if (e.key === 'ArrowLeft')   this.svc.prev();
+    if (e.key === 'Escape')           this.close();
+    if (e.key === 'ArrowRight')       this.svc.next();
+    if (e.key === 'ArrowLeft')        this.svc.prev();
     if (e.key === '+' || e.key === '=') this.zoomIn();
-    if (e.key === '-')           this.zoomOut();
+    if (e.key === '-')                this.zoomOut();
   }
 
   onOverlayClick(e: MouseEvent) {
@@ -127,10 +152,35 @@ export class LightboxComponent {
     this.zoom.update(z => Math.min(4, Math.max(0.3, +(z + delta).toFixed(1))));
   }
 
-  close()     { this.svc.close(); this.zoom.set(1); }
-  next(e: Event) { e.stopPropagation(); this.svc.next(); this.zoom.set(1); }
-  prev(e: Event) { e.stopPropagation(); this.svc.prev(); this.zoom.set(1); }
-  zoomIn()    { this.zoom.update(z => Math.min(4, +(z + 0.25).toFixed(2))); }
-  zoomOut()   { this.zoom.update(z => Math.max(0.3, +(z - 0.25).toFixed(2))); }
-  resetZoom() { this.zoom.set(1); }
+  onTouchStart(e: TouchEvent) {
+    if (e.touches.length === 2) {
+      this.pinchStartDist = this.touchDist(e.touches);
+      this.pinchStartZoom = this.zoom();
+    }
+  }
+
+  onTouchMove(e: TouchEvent) {
+    e.preventDefault();
+    if (e.touches.length !== 2) return;
+    const dist = this.touchDist(e.touches);
+    const scale = dist / this.pinchStartDist;
+    this.zoom.set(Math.min(4, Math.max(0.3, +(this.pinchStartZoom * scale).toFixed(2))));
+  }
+
+  onTouchEnd() {
+    this.pinchStartDist = 0;
+  }
+
+  private touchDist(touches: TouchList): number {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  close()          { this.svc.close(); this.zoom.set(1); }
+  next(e: Event)   { e.stopPropagation(); this.svc.next(); this.zoom.set(1); }
+  prev(e: Event)   { e.stopPropagation(); this.svc.prev(); this.zoom.set(1); }
+  zoomIn()         { this.zoom.update(z => Math.min(4, +(z + 0.25).toFixed(2))); }
+  zoomOut()        { this.zoom.update(z => Math.max(0.3, +(z - 0.25).toFixed(2))); }
+  resetZoom()      { this.zoom.set(1); }
 }

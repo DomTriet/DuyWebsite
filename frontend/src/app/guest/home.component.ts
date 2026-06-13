@@ -17,8 +17,8 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
   imports: [CommonModule, RouterModule, ReactiveFormsModule, TranslateModule, GuestNavComponent, GuestFooterComponent],
   styles: [`
     :host { display: block; }
-    .hero-title { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.035em; line-height: 1.05; }
-    .section-title { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; }
+    .hero-title { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: -0.02em; line-height: 1.05; font-style: italic; }
+    .section-title { font-family: 'Be Vietnam Pro', system-ui, sans-serif; letter-spacing: -0.025em; }
     .field { border: 1.5px solid #E5E4E0; border-radius: 10px; padding: 12px 14px; font-size: 0.875rem; background: #fff; transition: border-color 0.2s; width: 100%; color: #111; appearance: none; min-height: 44px; }
     .field:focus { outline: none; border-color: #111; }
     .search-wrap { box-shadow: 0 2px 40px rgba(0,0,0,0.08); }
@@ -28,7 +28,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
     .prop-card:hover { transform: translateY(-5px); box-shadow: 0 20px 48px rgba(0,0,0,0.10); border-color: #D4D4D4; }
     .proj-card { border: 1px solid #EBEBEB; border-radius: 20px; background: #fff; transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s; display: flex; flex-direction: column; }
     .proj-card:hover { transform: translateY(-6px); box-shadow: 0 24px 56px rgba(0,0,0,0.11); }
-    .price-tag { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; color: #0D0D0D; }
+    .price-tag { font-family: 'Be Vietnam Pro', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; color: #0D0D0D; }
     .brand-btn { display: block; text-align: center; background: #0D0D0D; color: #fff !important; border-radius: 10px; font-weight: 700; font-size: 0.875rem; padding: 12px 20px; border: none; cursor: pointer; transition: background 0.2s; text-decoration: none; min-height: 44px; }
     .brand-btn:hover { background: #2A2A2A; }
     .reveal { animation: revealUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
@@ -53,10 +53,10 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
             <div class="slide-bg" [style.background-image]="'url(' + b.image_url + ')'"></div>
             <div class="slide-overlay"></div>
             <div class="slide-content">
-              <h1 style="font-family:'Lora',Georgia,serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:700;color:#F7F6F3;margin-bottom:14px;line-height:1.15;">{{ b.title }}</h1>
+              <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:700;color:#F7F6F3;margin-bottom:14px;line-height:1.15;">{{ b.title }}</h1>
               <p *ngIf="b.subtitle" style="font-size:1rem;color:rgba(247,246,243,0.8);margin-bottom:28px;line-height:1.7;">{{ b.subtitle }}</p>
               <a *ngIf="b.cta_link" [routerLink]="b.cta_link"
-                 style="display:inline-block;background:#F7F6F3;color:#0D0D0D;font-family:'Space Grotesk',system-ui,sans-serif;font-weight:700;font-size:0.9rem;padding:12px 28px;border-radius:10px;text-decoration:none;transition:background 0.2s;">
+                 style="display:inline-block;background:#F7F6F3;color:#0D0D0D;font-family:'Be Vietnam Pro',system-ui,sans-serif;font-weight:700;font-size:0.9rem;padding:12px 28px;border-radius:10px;text-decoration:none;transition:background 0.2s;">
                 {{ b.cta_text || 'Khám phá ngay' }}
               </a>
             </div>

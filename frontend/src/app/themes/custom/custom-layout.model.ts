@@ -38,8 +38,9 @@ export interface LayoutConfig {
 
 // Danh sách font đã được nạp sẵn trong index.html
 export const FONT_OPTIONS = [
+  'Be Vietnam Pro', 'Cormorant Garamond',
   'Space Grotesk', 'Inter', 'Lora', 'DM Sans',
-  'Playfair Display', 'Cormorant Garamond', 'Quicksand'
+  'Playfair Display', 'Quicksand'
 ];
 
 // Palette các block có thể thêm trong builder
@@ -95,8 +96,8 @@ export function defaultLayout(): LayoutConfig {
       colorBg: '#FFFFFF',
       colorText: '#0F0F0F',
       colorAccent: '#0052CC',
-      fontHead: 'Space Grotesk',
-      fontBody: 'Inter',
+      fontHead: 'Cormorant Garamond',
+      fontBody: 'Be Vietnam Pro',
       logoUrl: '',
       logoText: ''
     },
@@ -114,10 +115,10 @@ export function defaultLayout(): LayoutConfig {
 
 // ── Preset token mặc định cho từng theme (tái hiện đúng màu/font hiện tại) ──
 export const THEME_TOKEN_PRESETS: Record<string, ThemeTokens> = {
-  minimalist:  { colorPrimary: '#0052CC', colorBg: '#FFFFFF', colorText: '#0F0F0F', colorAccent: '#0052CC', fontHead: 'Space Grotesk', fontBody: 'Inter', logoUrl: '', logoText: '' },
-  luxury:      { colorPrimary: '#C9A84C', colorBg: '#0A0A0A', colorText: '#EDE8DF', colorAccent: '#C9A84C', fontHead: 'Playfair Display', fontBody: 'DM Sans', logoUrl: '', logoText: '' },
-  'eco-green': { colorPrimary: '#2D6A4F', colorBg: '#FAF8F3', colorText: '#1B4332', colorAccent: '#52B788', fontHead: 'Lora', fontBody: 'Quicksand', logoUrl: '', logoText: '' },
-  custom:      { colorPrimary: '#0052CC', colorBg: '#FFFFFF', colorText: '#0F0F0F', colorAccent: '#0052CC', fontHead: 'Space Grotesk', fontBody: 'Inter', logoUrl: '', logoText: '' },
+  minimalist:  { colorPrimary: '#0052CC', colorBg: '#FFFFFF', colorText: '#0F0F0F', colorAccent: '#0052CC', fontHead: 'Cormorant Garamond', fontBody: 'Be Vietnam Pro', logoUrl: '', logoText: '' },
+  luxury:      { colorPrimary: '#C9A84C', colorBg: '#0A0A0A', colorText: '#EDE8DF', colorAccent: '#C9A84C', fontHead: 'Cormorant Garamond', fontBody: 'Be Vietnam Pro', logoUrl: '', logoText: '' },
+  'eco-green': { colorPrimary: '#2D6A4F', colorBg: '#FAF8F3', colorText: '#1B4332', colorAccent: '#52B788', fontHead: 'Cormorant Garamond', fontBody: 'Be Vietnam Pro', logoUrl: '', logoText: '' },
+  custom:      { colorPrimary: '#0052CC', colorBg: '#FFFFFF', colorText: '#0F0F0F', colorAccent: '#0052CC', fontHead: 'Cormorant Garamond', fontBody: 'Be Vietnam Pro', logoUrl: '', logoText: '' },
 };
 
 /**

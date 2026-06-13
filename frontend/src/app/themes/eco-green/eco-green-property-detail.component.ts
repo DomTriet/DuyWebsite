@@ -31,7 +31,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
     }
 
     .font-head { font-family: 'Lora', Georgia, serif; }
-    .font-body { font-family: 'Inter', system-ui, sans-serif; }
+    .font-body { font-family: 'Be Vietnam Pro', system-ui, sans-serif; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
@@ -109,7 +109,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
       margin-bottom: 8px;
     }
     .attr-val {
-      font-family: 'Lora', serif; font-style: italic;
+      font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic;
       font-size: 1.4rem; color: var(--forest); line-height: 1;
     }
 
@@ -136,7 +136,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
     .eco-sidebar-header {
       background: var(--leaf);
       padding: 16px 22px;
-      font-family: 'Lora', serif; font-style: italic;
+      font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic;
       font-size: 1rem; color: var(--cream);
     }
 
@@ -246,14 +246,14 @@ import { LightboxService } from '../../shared/services/lightbox.service';
 
             <!-- Header -->
             <header>
-              <div style="font-family:'Inter',sans-serif;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+              <div style="font-family:'Be Vietnam Pro',sans-serif;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:14px;display:flex;align-items:center;gap:10px;">
                 <span style="width:16px;height:1px;background:var(--sage);display:block;"></span>
                 {{ property.categories?.name || 'Eco Living' }}
               </div>
               <h1 class="font-head" style="font-size:clamp(1.9rem,3.5vw,3rem);font-weight:400;font-style:italic;color:var(--forest);line-height:1.15;margin-bottom:14px;">
                 {{ property.title }}
               </h1>
-              <div style="font-family:'Inter',sans-serif;font-size:1.3rem;font-weight:700;color:var(--leaf);">
+              <div style="font-family:'Be Vietnam Pro',sans-serif;font-size:1.3rem;font-weight:700;color:var(--leaf);">
                 {{ property.price | number }} ₫
               </div>
             </header>
@@ -287,7 +287,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
 
             <!-- Description -->
             <div>
-              <div style="font-family:'Inter',sans-serif;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:18px;display:flex;align-items:center;gap:10px;">
+              <div style="font-family:'Be Vietnam Pro',sans-serif;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:18px;display:flex;align-items:center;gap:10px;">
                 <span style="width:16px;height:1px;background:var(--sage);display:block;"></span>
                 {{ 'THEME.DETAIL.DESCRIPTION' | translate }}
               </div>
@@ -298,7 +298,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
 
             <!-- Location — address + live map embed -->
             <div>
-              <div style="font-family:'Inter',sans-serif;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:18px;display:flex;align-items:center;gap:10px;">
+              <div style="font-family:'Be Vietnam Pro',sans-serif;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:18px;display:flex;align-items:center;gap:10px;">
                 <span style="width:16px;height:1px;background:var(--sage);display:block;"></span>
                 {{ 'THEME.DETAIL.LOCATION' | translate }}
               </div>
@@ -322,7 +322,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
                 <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=50"
                      style="width:100%;height:100%;object-fit:cover;opacity:0.35;" [alt]="'THEME.DETAIL.MAP' | translate">
                 <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-                  <span style="background:rgba(26,58,42,0.7);border:1px solid rgba(82,183,136,0.4);padding:10px 22px;font-family:'Inter',sans-serif;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mint);backdrop-filter:blur(8px);">
+                  <span style="background:rgba(26,58,42,0.7);border:1px solid rgba(82,183,136,0.4);padding:10px 22px;font-family:'Be Vietnam Pro',sans-serif;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mint);backdrop-filter:blur(8px);">
                     {{ 'THEME.DETAIL.VIEW_MAP' | translate }}
                   </span>
                 </div>
@@ -332,7 +332,7 @@ import { LightboxService } from '../../shared/services/lightbox.service';
             <!-- Property Sections -->
             <ng-container *ngIf="property.property_sections && property.property_sections.length > 0">
               <div *ngFor="let sec of $any(property.property_sections)" style="border-top:1px solid rgba(82,183,136,0.2);padding-top:28px;">
-                <div style="font-family:'Inter',sans-serif;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:18px;display:flex;align-items:center;gap:10px;">
+                <div style="font-family:'Be Vietnam Pro',sans-serif;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:18px;display:flex;align-items:center;gap:10px;">
                   <span style="width:16px;height:1px;background:var(--sage);display:block;"></span>
                   {{ $any(sec).title }}
                 </div>

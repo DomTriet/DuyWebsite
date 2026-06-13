@@ -28,8 +28,8 @@ import { LightboxService } from '../../shared/services/lightbox.service';
       --blue: #0052CC;
     }
 
-    .font-head { font-family: 'Space Grotesk', system-ui, sans-serif; }
-    .font-body { font-family: 'Inter', system-ui, sans-serif; }
+    .font-head { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .font-body { font-family: 'Be Vietnam Pro', system-ui, sans-serif; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }

@@ -24,8 +24,8 @@ import { LayoutConfig, LayoutBlock, normalizeLayoutFor } from '../custom/custom-
       --bg: #FAFAF8;
       --white: #FFFFFF;
       --blue: #0052CC;
-      --f-head: 'Space Grotesk', system-ui, sans-serif;
-      --f-body: 'Inter', system-ui, sans-serif;
+      --f-head: 'Cormorant Garamond', Georgia, serif;
+      --f-body: 'Be Vietnam Pro', system-ui, sans-serif;
     }
 
     * { box-sizing: border-box; }
@@ -491,8 +491,8 @@ export class MinimalistComponent implements OnInit, OnChanges {
   clearFilter() { this.filter = { minPrice: null, maxPrice: null, bedrooms: null, minArea: null, maxArea: null, propertyType: null, sort: 'newest' }; this.loadProperties(); }
 
   visibleBlocks(): LayoutBlock[] { return (this.cfg?.blocks || []).filter(b => b.visible); }
-  get fHead(): string { return `"${this.cfg?.tokens?.fontHead || 'Space Grotesk'}", system-ui, sans-serif`; }
-  get fBody(): string { return `"${this.cfg?.tokens?.fontBody || 'Inter'}", system-ui, sans-serif`; }
+  get fHead(): string { return `"${this.cfg?.tokens?.fontHead || 'Cormorant Garamond'}", Georgia, serif`; }
+  get fBody(): string { return `"${this.cfg?.tokens?.fontBody || 'Be Vietnam Pro'}", system-ui, sans-serif`; }
 
   ngOnChanges() { this.cfg = normalizeLayoutFor(this.project?.layout_config, 'minimalist'); }
 

@@ -12,8 +12,8 @@ import { GuestFooterComponent } from '../shared/components/guest-footer/guest-fo
   imports: [CommonModule, RouterModule, TranslateModule, GuestNavComponent, GuestFooterComponent],
   styles: [`
     :host { display: block; }
-    .page-title { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.03em; }
-    .editorial-title { font-family: 'Lora', Georgia, serif; font-style: italic; }
+    .page-title { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: -0.02em; font-style: italic; }
+    .editorial-title { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; }
     .value-card { border: 1px solid #EBEBEB; border-radius: 16px; background: #fff; padding: 28px; transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s; }
     .value-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
     .icon-box { width: 48px; height: 48px; border-radius: 12px; background: #F0EFE9; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
