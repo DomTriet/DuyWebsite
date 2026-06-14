@@ -32,6 +32,9 @@ const io = new Server(server, { cors: { origin: ALLOWED_ORIGINS, credentials: tr
 app.set('io', io);
 const PORT = process.env.PORT || 5000;
 
+// Trust Railway/Vercel/Render reverse proxy — cần để express-rate-limit đọc đúng IP thật
+app.set('trust proxy', 1);
+
 // Middlewares cơ bản
 app.use(cors(corsOptions));
 app.use(express.json());

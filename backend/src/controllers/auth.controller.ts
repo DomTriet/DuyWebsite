@@ -88,7 +88,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
     // Supabase tự động gửi email chứa link reset mật khẩu
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://duy-website.vercel.app/auth/reset-password',
+      redirectTo: `${process.env.FRONTEND_URL || 'https://bdsdiemtam.com'}/auth/reset-password`,
     });
 
     if (error) throw error;
