@@ -455,7 +455,7 @@ import { LayoutConfig, LayoutBlock, normalizeLayoutFor } from '../custom/custom-
           <div *ngIf="cfg.footer.showContact" style="font-size:0.72rem; color:var(--subtle); text-align:right; letter-spacing:0.05em;">
             <div *ngIf="cfg.footer.phone">📞 {{ cfg.footer.phone }}</div>
             <div *ngIf="cfg.footer.email">✉️ {{ cfg.footer.email }}</div>
-            <div *ngIf="!cfg.footer.phone && !cfg.footer.email" style="text-transform:uppercase;">© 2025</div>
+            <div *ngIf="!cfg.footer.phone && !cfg.footer.email" style="text-transform:uppercase;">© {{ currentYear }}</div>
           </div>
         </div>
       </footer>
@@ -465,6 +465,7 @@ import { LayoutConfig, LayoutBlock, normalizeLayoutFor } from '../custom/custom-
 })
 export class MinimalistComponent implements OnInit, OnChanges {
   @Input() project: any;
+  currentYear = new Date().getFullYear();
 
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);

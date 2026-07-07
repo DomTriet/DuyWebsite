@@ -3,7 +3,7 @@
     "TAGLINE": "구매자와 판매자를 스마트하게 연결하는 첨단 부동산 플랫폼.",
     "EXPLORE": "둘러보기",
     "ACCOUNT": "계정",
-    "COPYRIGHT": "© 2025 Bất Động Sản Điểm Tâm. 모든 권리 보유.",
+    "COPYRIGHT": "© {{year}} Bất Động Sản Điểm Tâm. 모든 권리 보유.",
     "DESIGNED_BY": "Điểm Tâm BĐS 팀 디자인"
   },
   "CONTACT_PAGE": {
@@ -14,7 +14,7 @@
     "EMAIL": "이메일",
     "EMAIL_NOTE": "24시간 이내 답변",
     "ADDRESS": "주소",
-    "ADDRESS_NOTE": "호치민시 1군",
+    "ADDRESS_NOTE": "호치민시 떤푸군 (Tân Phú)",
     "CTA_TITLE": "더 알아보기",
     "CTA_SUB": "부동산 전문가의 유용한 글을 읽어보세요",
     "READ_BLOG": "블로그 읽기"
@@ -287,7 +287,7 @@
       "SEC_LOCATION_DESC": "도심",
       "SEC_DESIGN": "디자인",
       "SEC_DESIGN_DESC": "현대 건축",
-      "COPYRIGHT": "© 2025 · 모든 권리 보유",
+      "COPYRIGHT": "© {{year}} · 모든 권리 보유",
       "LISTING_TITLE": "한정 컬렉션",
       "LISTING_SUB": "가치 있는 소유자만을 위한 건축 명작.",
       "STAT_PROPS": "부동산",
@@ -325,7 +325,7 @@
       "FEAT_COMMUNITY_DESC": "녹색 생활 가치를 공유하는 주민을 연결합니다.",
       "FEAT_SMART": "스마트 디자인",
       "FEAT_SMART_DESC": "스마트홈, 자연 환기, 친환경 자재.",
-      "COPYRIGHT": "© 2025 · 매일 녹색 생활"
+      "COPYRIGHT": "© {{year}} · 매일 녹색 생활"
     },
     "ECO": {
       "BADGE": "녹색 공간 - 평화로운 삶",

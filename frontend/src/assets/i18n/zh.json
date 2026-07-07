@@ -3,7 +3,7 @@
     "TAGLINE": "高科技房地产平台，智能连接买家与卖家。",
     "EXPLORE": "探索",
     "ACCOUNT": "账户",
-    "COPYRIGHT": "© 2025 Bất Động Sản Điểm Tâm. 版权所有。",
+    "COPYRIGHT": "© {{year}} Bất Động Sản Điểm Tâm. 版权所有。",
     "DESIGNED_BY": "由 Điểm Tâm BĐS 团队设计"
   },
   "CONTACT_PAGE": {
@@ -14,7 +14,7 @@
     "EMAIL": "邮箱",
     "EMAIL_NOTE": "24小时内回复",
     "ADDRESS": "地址",
-    "ADDRESS_NOTE": "胡志明市第一郡",
+    "ADDRESS_NOTE": "胡志明市新富郡 (Tân Phú)",
     "CTA_TITLE": "了解更多",
     "CTA_SUB": "阅读房地产专家的实用文章",
     "READ_BLOG": "阅读博客"
@@ -287,7 +287,7 @@
       "SEC_LOCATION_DESC": "市中心",
       "SEC_DESIGN": "设计",
       "SEC_DESIGN_DESC": "现代建筑",
-      "COPYRIGHT": "© 2025 · 版权所有",
+      "COPYRIGHT": "© {{year}} · 版权所有",
       "LISTING_TITLE": "限量收藏",
       "LISTING_SUB": "专为尊贵业主打造的建筑杰作。",
       "STAT_PROPS": "房产",
@@ -325,7 +325,7 @@
       "FEAT_COMMUNITY_DESC": "连接拥有共同绿色生活价值观的居民。",
       "FEAT_SMART": "智能设计",
       "FEAT_SMART_DESC": "智能家居、自然通风、环保材料。",
-      "COPYRIGHT": "© 2025 · 每天绿色生活"
+      "COPYRIGHT": "© {{year}} · 每天绿色生活"
     },
     "ECO": {
       "BADGE": "绿色空间 - 宁静生活",

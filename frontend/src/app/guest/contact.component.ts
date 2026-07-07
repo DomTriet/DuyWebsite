@@ -41,13 +41,13 @@ import { GuestFooterComponent } from '../shared/components/guest-footer/guest-fo
             </div>
             <h3 class="page-title" style="font-size:0.9rem; font-weight:700; color:#0D0D0D; margin-bottom:6px;">{{ c.titleKey | translate }}</h3>
             <p style="color:#374151; font-weight:600; font-size:0.9rem; margin-bottom:4px;">{{ c.value }}</p>
-            <p style="font-size:0.75rem; color:#9CA3AF;">{{ c.noteKey | translate }}</p>
+            <p *ngIf="c.noteKey" style="font-size:0.75rem; color:#9CA3AF;">{{ c.noteKey | translate }}</p>
           </div>
         </div>
 
         <!-- CTA (dark editorial) -->
         <div style="background:#0D0D0D; border-radius:20px; padding:52px 40px; text-align:center;">
-          <p style="font-size:0.65rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#555; margin-bottom:12px;">Pro•RealEstate</p>
+          <p style="font-size:0.65rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#555; margin-bottom:12px;">Bất Động Sản Điểm Tâm</p>
           <h2 class="page-title" style="font-size:clamp(1.5rem,4vw,2rem); font-weight:700; color:#F7F6F3; margin-bottom:10px;">{{ 'CONTACT_PAGE.CTA_TITLE' | translate }}</h2>
           <p style="color:#888; margin-bottom:24px; font-size:0.9rem; line-height:1.7;">{{ 'CONTACT_PAGE.CTA_SUB' | translate }}</p>
           <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:12px;">
@@ -72,7 +72,7 @@ export class ContactComponent implements OnInit {
     {
       titleKey: 'CONTACT_PAGE.HOTLINE',
       value: '0975 982 592 — 0983 123 306',
-      noteKey: 'CONTACT_PAGE.HOTLINE_NOTE',
+      noteKey: null,
       icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z'
     },
     {
@@ -83,7 +83,7 @@ export class ContactComponent implements OnInit {
     },
     {
       titleKey: 'CONTACT_PAGE.ADDRESS',
-      value: '123 Nguyễn Văn Linh',
+      value: 'Nguyễn Xuân Khoát, Tân Phú, TP.HCM',
       noteKey: 'CONTACT_PAGE.ADDRESS_NOTE',
       icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z'
     },

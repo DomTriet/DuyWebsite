@@ -22,7 +22,7 @@ export const censorContent = (content: string): string => {
  * Kiểm tra xem bài đăng có chứa link rác hay không
  */
 export const hasSpamLinks = (content: string): boolean => {
-  const whitelistDomains = ['pro-realestate.com', 'youtube.com']; // domain của dự án
+  const whitelistDomains = ['bdsdiemtam.com', 'youtube.com']; // domain của dự án
   // Trả về true nếu phát hiện có chèn link
   const matches = content.match(SPAM_LINK_REGEX);
   if (!matches) return false;

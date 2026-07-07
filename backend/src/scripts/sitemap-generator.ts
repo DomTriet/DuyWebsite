@@ -8,13 +8,14 @@ import path from 'path';
 export const generateSitemap = async (): Promise<void> => {
   try {
     const { data: properties } = await supabase.from('properties').select('slug').eq('is_deleted', false);
-    
-    let urls = `<url><loc>https://pro-realestate.com/</loc></url>\n`;
-    urls += `<url><loc>https://pro-realestate.com/properties</loc></url>\n`;
-    
+    const baseUrl = process.env.FRONTEND_URL || 'https://bdsdiemtam.com';
+
+    let urls = `<url><loc>${baseUrl}/</loc></url>\n`;
+    urls += `<url><loc>${baseUrl}/properties</loc></url>\n`;
+
     if (properties) {
       properties.forEach(p => {
-        urls += `<url><loc>https://pro-realestate.com/properties/${p.slug}</loc></url>\n`;
+        urls += `<url><loc>${baseUrl}/properties/${p.slug}</loc></url>\n`;
       });
     }
 

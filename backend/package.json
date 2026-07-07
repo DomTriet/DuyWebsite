@@ -1,7 +1,7 @@
 {
-  "name": "pro-realestate-backend",
+  "name": "bdsdiemtam-backend",
   "version": "1.0.0",
-  "description": "Backend API for Pro-RealEstate Platform",
+  "description": "Backend API for Bat Dong San Diem Tam Platform",
   "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",

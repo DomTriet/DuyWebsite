@@ -3,7 +3,7 @@
     "TAGLINE": "A high-tech real estate platform connecting buyers and sellers intelligently.",
     "EXPLORE": "Explore",
     "ACCOUNT": "Account",
-    "COPYRIGHT": "© 2025 Bất Động Sản Điểm Tâm. All rights reserved.",
+    "COPYRIGHT": "© {{year}} Bất Động Sản Điểm Tâm. All rights reserved.",
     "DESIGNED_BY": "Designed by the Điểm Tâm BĐS team"
   },
   "CONTACT_PAGE": {
@@ -14,7 +14,7 @@
     "EMAIL": "Email",
     "EMAIL_NOTE": "Reply within 24 hours",
     "ADDRESS": "Address",
-    "ADDRESS_NOTE": "District 1, Ho Chi Minh City",
+    "ADDRESS_NOTE": "Tân Phú, Ho Chi Minh City",
     "CTA_TITLE": "Discover more",
     "CTA_SUB": "Read useful articles from real estate experts",
     "READ_BLOG": "Read blog"
@@ -287,7 +287,7 @@
       "SEC_LOCATION_DESC": "City center",
       "SEC_DESIGN": "Design",
       "SEC_DESIGN_DESC": "Modern architecture",
-      "COPYRIGHT": "© 2025 · All rights reserved",
+      "COPYRIGHT": "© {{year}} · All rights reserved",
       "LISTING_TITLE": "Limited Collection",
       "LISTING_SUB": "Architectural masterpieces exclusively for worthy owners.",
       "STAT_PROPS": "Properties",
@@ -325,7 +325,7 @@
       "FEAT_COMMUNITY_DESC": "Connecting residents who share green living values.",
       "FEAT_SMART": "Smart design",
       "FEAT_SMART_DESC": "Smart home, natural ventilation, friendly materials.",
-      "COPYRIGHT": "© 2025 · Green living every day"
+      "COPYRIGHT": "© {{year}} · Green living every day"
     },
     "ECO": {
       "BADGE": "GREEN SPACE - PEACEFUL LIVING",

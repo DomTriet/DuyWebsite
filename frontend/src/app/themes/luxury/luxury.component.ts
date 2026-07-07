@@ -349,7 +349,7 @@ import { LayoutConfig, LayoutBlock, normalizeLayoutFor } from '../custom/custom-
               <div *ngIf="cfg.footer.phone">📞 {{ cfg.footer.phone }}</div>
               <div *ngIf="cfg.footer.email">✉️ {{ cfg.footer.email }}</div>
             </ng-container>
-            <div *ngIf="!cfg.footer.phone && !cfg.footer.email">{{ 'THEME.LUXURY.COPYRIGHT' | translate }}</div>
+            <div *ngIf="!cfg.footer.phone && !cfg.footer.email">{{ 'THEME.LUXURY.COPYRIGHT' | translate:{ year: currentYear } }}</div>
           </div>
         </div>
       </footer>
@@ -359,6 +359,7 @@ import { LayoutConfig, LayoutBlock, normalizeLayoutFor } from '../custom/custom-
 })
 export class LuxuryComponent implements OnInit, OnChanges {
   @Input() project: any;
+  currentYear = new Date().getFullYear();
 
   private api = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);

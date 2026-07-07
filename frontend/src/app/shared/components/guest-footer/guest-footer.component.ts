@@ -52,13 +52,13 @@ import { Observable } from 'rxjs';
               <li style="white-space:nowrap;">📞 0975 982 592</li>
               <li style="white-space:nowrap; padding-left:1.4rem;">0983 123 306</li>
               <li style="display:flex; align-items:flex-start; gap:4px;"><span style="flex-shrink:0;">✉️</span><span style="word-break:break-all;">bdsdiemtam&#64;gmail.com</span></li>
-              <li>📍 TP. Hồ Chí Minh</li>
+              <li>📍 Nguyễn Xuân Khoát, Tân Phú, TP.HCM</li>
             </ul>
           </div>
         </div>
 
         <div class="border-t border-gray-800 pt-6 flex flex-wrap justify-between items-center gap-3 text-xs">
-          <span>{{ 'FOOTER.COPYRIGHT' | translate }}</span>
+          <span>{{ 'FOOTER.COPYRIGHT' | translate:{ year: currentYear } }}</span>
           <span>{{ 'FOOTER.DESIGNED_BY' | translate }}</span>
         </div>
       </div>
@@ -68,4 +68,5 @@ import { Observable } from 'rxjs';
 export class GuestFooterComponent {
   private settings = inject(SettingsService);
   forumEnabled$: Observable<boolean> = this.settings.getSetting('forum_enabled');
+  currentYear = new Date().getFullYear();
 }

@@ -7,7 +7,7 @@ import cloudinary from '../config/cloudinary';
 export const uploadMedia = async (filePath: string): Promise<string> => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: 'pro-realestate/properties',
+      folder: 'bdsdiemtam/properties',
     });
     return result.secure_url;
   } catch (error) {

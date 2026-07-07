@@ -3,7 +3,7 @@
     "TAGLINE": "Nền tảng bất động sản công nghệ cao, kết nối người mua và người bán thông minh.",
     "EXPLORE": "Khám phá",
     "ACCOUNT": "Tài khoản",
-    "COPYRIGHT": "© 2025 Bất Động Sản Điểm Tâm. Mọi quyền được bảo lưu.",
+    "COPYRIGHT": "© {{year}} Bất Động Sản Điểm Tâm. Mọi quyền được bảo lưu.",
     "DESIGNED_BY": "Thiết kế bởi đội ngũ Điểm Tâm BĐS"
   },
   "CONTACT_PAGE": {
@@ -14,7 +14,7 @@
     "EMAIL": "Email",
     "EMAIL_NOTE": "Phản hồi trong 24 giờ",
     "ADDRESS": "Địa chỉ",
-    "ADDRESS_NOTE": "Quận 1, TP. Hồ Chí Minh",
+    "ADDRESS_NOTE": "Tân Phú, TP. Hồ Chí Minh",
     "CTA_TITLE": "Khám phá thêm",
     "CTA_SUB": "Tham khảo những bài viết hữu ích từ chuyên gia bất động sản",
     "READ_BLOG": "Đọc blog"
@@ -287,7 +287,7 @@
       "SEC_LOCATION_DESC": "Trung tâm",
       "SEC_DESIGN": "Thiết Kế",
       "SEC_DESIGN_DESC": "Kiến trúc hiện đại",
-      "COPYRIGHT": "© 2025 · Mọi quyền được bảo lưu",
+      "COPYRIGHT": "© {{year}} · Mọi quyền được bảo lưu",
       "LISTING_TITLE": "Bộ Sưu Tập Giới Hạn",
       "LISTING_SUB": "Những tuyệt tác kiến trúc dành riêng cho chủ nhân xứng tầm.",
       "STAT_PROPS": "Bất động sản",
@@ -325,7 +325,7 @@
       "FEAT_COMMUNITY_DESC": "Kết nối cư dân cùng chung giá trị sống xanh.",
       "FEAT_SMART": "Thiết kế thông minh",
       "FEAT_SMART_DESC": "Smart home, thông gió tự nhiên, vật liệu thân thiện.",
-      "COPYRIGHT": "© 2025 · Sống xanh mỗi ngày"
+      "COPYRIGHT": "© {{year}} · Sống xanh mỗi ngày"
     },
     "ECO": {
       "BADGE": "KHÔNG GIAN XANH - SỐNG AN LÀNH",

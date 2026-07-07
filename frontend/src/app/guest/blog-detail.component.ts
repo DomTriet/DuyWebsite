@@ -98,7 +98,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
         <!-- CTA Section (dark editorial) -->
         <div style="background:#0D0D0D; border-radius:20px; padding:56px 48px; text-align:center;">
-          <p style="font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#666; margin-bottom:14px;">Pro•RealEstate</p>
+          <p style="font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#666; margin-bottom:14px;">Bất Động Sản Điểm Tâm</p>
           <h3 class="blog-headline" style="font-size:clamp(1.5rem,4vw,2.2rem); font-weight:700; color:#F7F6F3; margin-bottom:12px;">{{ 'BLOG_DETAIL.CTA_TITLE' | translate }}</h3>
           <p style="color:#999; margin-bottom:28px; font-size:0.95rem; line-height:1.7;">{{ 'BLOG_DETAIL.CTA_SUB' | translate }}</p>
           <a routerLink="/blogs" style="display:inline-block; background:#F7F6F3; color:#0D0D0D; padding:13px 28px; border-radius:10px; font-weight:700; font-size:0.875rem; text-decoration:none; transition:background 0.2s;" onmouseover="this.style.background='#EBEBEB'" onmouseout="this.style.background='#F7F6F3'">
